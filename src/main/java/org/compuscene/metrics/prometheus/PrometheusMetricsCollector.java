@@ -53,7 +53,7 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("cluster_shards_number", "Number of shards", "type");
         this.catalog.registerGauge("cluster_pending_tasks_number", "Number of pending tasks");
         this.catalog.registerGauge("cluster_task_max_waiting_time_seconds", "Max waiting time in seconds for tasks");
-        this.catalog.registerGauge("cluster_is_timedout", "Is the cluster in timed out status ?");
+        this.catalog.registerGauge("cluster_is_timedout_bool", "Is the cluster in timed out status ?");
         this.catalog.registerGauge("cluster_inflight_fetch_number", "Number of in flight fetches");
     }
 
@@ -75,30 +75,35 @@ public class PrometheusMetricsCollector {
         this.catalog.setGauge("cluster_pending_tasks_number", res.getNumberOfPendingTasks());
         this.catalog.setGauge("cluster_task_max_waiting_time_seconds", res.getTaskMaxWaitingTime().getSeconds());
 
-        this.catalog.setGauge("cluster_is_timedout", res.isTimedOut() ? 1 : 0);
+        this.catalog.setGauge("cluster_is_timedout_bool", res.isTimedOut() ? 1 : 0);
 
         this.catalog.setGauge("cluster_inflight_fetch_number", res.getNumberOfInFlightFetch());
     }
 
     private void registerJVMMetrics() {
-        this.catalog.registerGauge("jvm_uptime_seconds", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_mem_heap_max_bytes", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_mem_heap_used_bytes", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_mem_heap_used_percent", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_mem_nonheap_used_bytes", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_mem_heap_committed_bytes", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_mem_nonheap_committed_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("jvm_uptime_seconds", "JVM uptime", "node");
+        this.catalog.registerGauge("jvm_mem_heap_max_bytes", "Max memory used in heap", "node");
+        this.catalog.registerGauge("jvm_mem_heap_used_bytes", "Memory used in heap", "node");
+        this.catalog.registerGauge("jvm_mem_heap_used_percent", "Percentage of memory used in heap", "node");
+        this.catalog.registerGauge("jvm_mem_nonheap_used_bytes", "Memory used apart from heap", "node");
+        this.catalog.registerGauge("jvm_mem_heap_committed_bytes", "Committed bytes in heap", "node");
+        this.catalog.registerGauge("jvm_mem_nonheap_committed_bytes", "Committed bytes apart from heap", "node");
+
         this.catalog.registerGauge("jvm_mem_pool_max_bytes", "No Help provided for the moment", "node", "pool");
         this.catalog.registerGauge("jvm_mem_pool_peak_max_bytes", "No Help provided for the moment", "node", "pool");
         this.catalog.registerGauge("jvm_mem_pool_used_bytes", "No Help provided for the moment", "node", "pool");
         this.catalog.registerGauge("jvm_mem_pool_peak_used_bytes", "No Help provided for the moment", "node", "pool");
-        this.catalog.registerGauge("jvm_threads_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_threads_peak_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_gc_collection_count", "No Help provided for the moment", "node", "gc");
-        this.catalog.registerGauge("jvm_gc_collection_time_seconds", "No Help provided for the moment", "node", "gc");
+
+        this.catalog.registerGauge("jvm_threads_count", "Number of threads", "node");
+        this.catalog.registerGauge("jvm_threads_peak_count", "Peak of threads", "node");
+
+        this.catalog.registerGauge("jvm_gc_collection_count", "Number of GC collections", "node", "gc");
+        this.catalog.registerGauge("jvm_gc_collection_time_seconds", "Time spent for GC collections", "node", "gc");
+
         this.catalog.registerGauge("jvm_bufferpool_count", "No Help provided for the moment", "node", "bufferpool");
         this.catalog.registerGauge("jvm_bufferpool_total_capacity_bytes", "No Help provided for the moment", "node", "bufferpool");
         this.catalog.registerGauge("jvm_bufferpool_used_bytes", "No Help provided for the moment", "node", "bufferpool");
+
         this.catalog.registerGauge("jvm_classes_loaded_count", "No Help provided for the moment", "node");
         this.catalog.registerGauge("jvm_classes_total_loaded_count", "No Help provided for the moment", "node");
         this.catalog.registerGauge("jvm_classes_unloaded_count", "No Help provided for the moment", "node");
@@ -314,32 +319,32 @@ public class PrometheusMetricsCollector {
     }
 
     private void registerTransportMetrics() {
-        this.catalog.registerGauge("transport_server_open", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("transport_rx_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("transport_tx_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("transport_rx_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("transport_tx_size", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("transport_server_open_number", "Opened connections", "node");
+        this.catalog.registerGauge("transport_rx_count", "Received packets", "node");
+        this.catalog.registerGauge("transport_tx_count", "Sent packets", "node");
+        this.catalog.registerGauge("transport_rx_size_bytes", "Bytes received", "node");
+        this.catalog.registerGauge("transport_tx_size_bytes", "Bytes sent", "node");
     }
 
     private void updateTransportMetrics(String node, TransportStats ts) {
         if (ts != null) {
-            this.catalog.setGauge("transport_server_open", ts.getServerOpen(), node);
+            this.catalog.setGauge("transport_server_open_number", ts.getServerOpen(), node);
             this.catalog.setGauge("transport_rx_count", ts.getRxCount(), node);
             this.catalog.setGauge("transport_tx_count", ts.getTxCount(), node);
-            this.catalog.setGauge("transport_rx_size", ts.getRxSize().bytes(), node);
-            this.catalog.setGauge("transport_tx_size", ts.getTxSize().bytes(), node);
+            this.catalog.setGauge("transport_rx_size_bytes", ts.getRxSize().bytes(), node);
+            this.catalog.setGauge("transport_tx_size_bytes", ts.getTxSize().bytes(), node);
         }
     }
 
     private void registerHTTPMetrics() {
-        this.catalog.registerGauge("http_server_open", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("http_total_open", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("http_open_server_number", "Number of open server connections", "node");
+        this.catalog.registerGauge("http_open_total_number", "Number of open total connections", "node");
     }
 
     private void updateHTTPMetrics(String node, HttpStats http) {
         if (http != null) {
-            this.catalog.setGauge("http_server_open", http.getServerOpen(), node);
-            this.catalog.setGauge("http_total_open", http.getTotalOpen(), node);
+            this.catalog.setGauge("http_open_server_number", http.getServerOpen(), node);
+            this.catalog.setGauge("http_open_total_number", http.getTotalOpen(), node);
         }
     }
 
@@ -443,12 +448,12 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("fs_total_total_bytes", "Total disk space for all mountpoints", "node");
         this.catalog.registerGauge("fs_total_available_bytes", "Available disk space for all mountpoints", "node");
         this.catalog.registerGauge("fs_total_free_bytes", "Total free disk space for all mountpoints", "node");
-        this.catalog.registerGauge("fs_total_spins_bool", "Is it a spinning disk ?", "node");
+        this.catalog.registerGauge("fs_total_is_spinning_bool", "Is it a spinning disk ?", "node");
 
         this.catalog.registerGauge("fs_path_total_bytes", "Total disk space", "node", "path", "mount", "type");
         this.catalog.registerGauge("fs_path_available_bytes", "Available disk space", "node", "path", "mount", "type");
         this.catalog.registerGauge("fs_path_free_bytes", "Free disk space", "node", "path", "mount", "type");
-        this.catalog.registerGauge("fs_path_spins_bool", "Is it a spinning disk ?", "node", "path", "mount", "type");
+        this.catalog.registerGauge("fs_path_is_spinning_bool", "Is it a spinning disk ?", "node", "path", "mount", "type");
     }
 
     private void updateFsMetrics(String node, FsInfo fs) {
@@ -456,7 +461,7 @@ public class PrometheusMetricsCollector {
             this.catalog.setGauge("fs_total_total_bytes", fs.getTotal().getTotal().bytes(), node);
             this.catalog.setGauge("fs_total_available_bytes", fs.getTotal().getAvailable().bytes(), node);
             this.catalog.setGauge("fs_total_free_bytes", fs.getTotal().getFree().bytes(), node);
-            this.catalog.setGauge("fs_total_spins_bool", fs.getTotal().getSpins() ? 1 : 0, node);
+            this.catalog.setGauge("fs_total_is_spinning_bool", fs.getTotal().getSpins() ? 1 : 0, node);
 
             for (FsInfo.Path fspath : fs) {
                 String path = fspath.getPath();
@@ -465,7 +470,7 @@ public class PrometheusMetricsCollector {
                 this.catalog.setGauge("fs_path_total_bytes", fspath.getTotal().bytes(), node, path, mount, type);
                 this.catalog.setGauge("fs_path_available_bytes", fspath.getAvailable().bytes(), node, path, mount, type);
                 this.catalog.setGauge("fs_path_free_bytes", fspath.getFree().bytes(), node, path, mount, type);
-                this.catalog.setGauge("fs_path_spins_bool", fspath.getSpins() ? 1 : 0, node, path, mount, type);
+                this.catalog.setGauge("fs_path_is_spinning_bool", fspath.getSpins() ? 1 : 0, node, path, mount, type);
             }
         }
     }
