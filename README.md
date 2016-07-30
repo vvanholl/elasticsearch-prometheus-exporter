@@ -71,21 +71,24 @@ es_indices_percolate_count{cluster="develop",node="develop01",} 0.0
 
 ### Configure Prometheus target
 
-On your Prometheus servers, configure a new job as usual :
+On your Prometheus servers, configure a new job as usual.
+
+For example, if you have a cluster of 3 nodes :
 
 ```
 -   job_name: elasticsearch
     scrape_interval: 10s
     metrics_path: "/_prometheus/metrics"
     static_configs:
-    -   targets:
-        - localhost:9200
+    - targets:
+      - node1:9200
+      - node1:9200
+      - node3:9200
 ```
 
+Of course, you could use a service discovery service instead of a static config.
+
 Just keep in mind that metrics_path must be `/_prometheus/metrics` otherwise Prometheus will find no metric.
-
-Of course, you can use a service discovery instead of a static config.
-
 
 ## Project sources
 
