@@ -484,23 +484,22 @@ public class PrometheusMetricsCollector {
 
         this.updateClusterMetrics(clusterHealthResponse);
 
-        NodesStatsRequest nodesStatsRequest = new NodesStatsRequest().all();
+        NodesStatsRequest nodesStatsRequest = new NodesStatsRequest("_local").all();
         NodesStatsResponse nodesStatsResponse = this.client.admin().cluster().nodesStats(nodesStatsRequest).actionGet();
 
-        for (NodeStats nodeStats : nodesStatsResponse.getNodes()) {
-            String node = nodeStats.getNode().getName();
-            this.updateJVMMetrics(node, nodeStats.getJvm());
-            this.updateIndicesMetrics(node, nodeStats.getIndices());
-            this.updateTransportMetrics(node, nodeStats.getTransport());
-            this.updateHTTPMetrics(node, nodeStats.getHttp());
-            this.updateScriptMetrics(node, nodeStats.getScriptStats());
-            this.updateProcessMetrics(node, nodeStats.getProcess());
-            this.updateOsMetrics(node, nodeStats.getOs());
-            this.updateCircuitBreakersMetrics(node, nodeStats.getBreaker());
-            this.updateThreadPoolMetrics(node, nodeStats.getThreadPool());
-            this.updateFsMetrics(node, nodeStats.getFs());
-        }
+        NodeStats nodeStats = nodesStatsResponse.getAt(0);
 
+        String node = nodeStats.getNode().getName();
+        this.updateJVMMetrics(node, nodeStats.getJvm());
+        this.updateIndicesMetrics(node, nodeStats.getIndices());
+        this.updateTransportMetrics(node, nodeStats.getTransport());
+        this.updateHTTPMetrics(node, nodeStats.getHttp());
+        this.updateScriptMetrics(node, nodeStats.getScriptStats());
+        this.updateProcessMetrics(node, nodeStats.getProcess());
+        this.updateOsMetrics(node, nodeStats.getOs());
+        this.updateCircuitBreakersMetrics(node, nodeStats.getBreaker());
+        this.updateThreadPoolMetrics(node, nodeStats.getThreadPool());
+        this.updateFsMetrics(node, nodeStats.getFs());
     }
 
     public PrometheusMetricsCatalog getCatalog() {
