@@ -1,5 +1,6 @@
 package org.elasticsearch.rest.prometheus;
 
+import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.logging.ESLogger;
@@ -11,8 +12,6 @@ import org.elasticsearch.rest.*;
 import static org.elasticsearch.rest.RestRequest.Method.GET;
 import static org.elasticsearch.rest.RestStatus.INTERNAL_SERVER_ERROR;
 import static org.elasticsearch.rest.RestStatus.OK;
-
-import org.compuscene.metrics.prometheus.*;
 
 
 public class RestPrometheusMetricsAction extends BaseRestHandler {
@@ -36,7 +35,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
 
         this.collector.updateMetrics();
 
-        try{
+        try {
             channel.sendResponse(new BytesRestResponse(OK, this.collector.getCatalog().toTextFormat()));
         } catch (java.io.IOException e) {
             channel.sendResponse(new BytesRestResponse(INTERNAL_SERVER_ERROR, ""));

@@ -2,7 +2,9 @@ package org.compuscene.metrics.prometheus;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.cluster.node.stats.*;
+import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
+import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsRequest;
+import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.http.HttpStats;
 import org.elasticsearch.indices.NodeIndicesStats;
@@ -30,7 +32,7 @@ public class PrometheusMetricsCollector {
 
         String cluster = nodesStatsResponse.getClusterNameAsString();
 
-        this.catalog = new PrometheusMetricsCatalog(cluster,"es_");
+        this.catalog = new PrometheusMetricsCatalog(cluster, "es_");
 
         this.registerClusterMetrics();
         this.registerJVMMetrics();
@@ -500,7 +502,7 @@ public class PrometheusMetricsCollector {
 
     }
 
-    public PrometheusMetricsCatalog getCatalog(){
+    public PrometheusMetricsCatalog getCatalog() {
         return this.catalog;
     }
 }
