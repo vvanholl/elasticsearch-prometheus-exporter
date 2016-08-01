@@ -19,13 +19,14 @@ Current available metrics are :
 
 ## Compatibility matrix
 
-| Elasticsearch  | Plugin         | Release date |
-| -------------- | -------------- | ------------ |
-| 2.3.4          | 2.3.4.0        | Jul 30, 2016 |
+| Elasticsearch  | Plugin         | Release date | Prod ready ? |
+| -------------- | -------------- | ------------ | ------------ |
+| 2.3.4          | 2.3.4.1        | Aug 01, 2016 | NO           |
+| 2.3.4          | 2.3.4.0        | Jul 30, 2016 | NO           |
 
 ## Install
 
-    ./bin/plugin install http://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-2.3.4.0.zip
+    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.4.0/elasticsearch-prometheus-exporter-2.3.4.1.zip
 
 Do not forget to restart the node after installation !
 
@@ -48,23 +49,25 @@ Metrics are directly available at address :
 As a sample result, you get :
 
 ```
-# HELP es_os_swap_used_bytes Swap used
-# TYPE es_os_swap_used_bytes gauge
-es_os_swap_used_bytes{cluster="develop",node="develop01",} 3.3759232E7
-# HELP es_indices_querycache_cache_count No Help provided for the moment
-# TYPE es_indices_querycache_cache_count gauge
-es_indices_querycache_cache_count{cluster="develop",node="develop01",} 0.0
-# HELP es_jvm_classes_total_loaded_count No Help provided for the moment
-# TYPE es_jvm_classes_total_loaded_count gauge
-es_jvm_classes_total_loaded_count{cluster="develop",node="develop01",} 7732.0
-# HELP es_circuitbreaker_estimated_bytes Circuit breaker estimated size
-# TYPE es_circuitbreaker_estimated_bytes gauge
-es_circuitbreaker_estimated_bytes{cluster="develop",node="develop01",name="request",} 0.0
-es_circuitbreaker_estimated_bytes{cluster="develop",node="develop01",name="fielddata",} 0.0
-es_circuitbreaker_estimated_bytes{cluster="develop",node="develop01",name="parent",} 0.0
-# HELP es_indices_percolate_count No Help provided for the moment
-# TYPE es_indices_percolate_count gauge
-es_indices_percolate_count{cluster="develop",node="develop01",} 0.0
+# HELP es_process_mem_total_virtual_bytes Memory used by ES process
+# TYPE es_process_mem_total_virtual_bytes gauge
+es_process_mem_total_virtual_bytes{cluster="develop",node="develop01",} 3.626733568E9
+# HELP es_indices_indexing_is_throttled_bool Is indexing throttling ?
+# TYPE es_indices_indexing_is_throttled_bool gauge
+es_indices_indexing_is_throttled_bool{cluster="develop",node="develop01",} 0.0
+# HELP es_jvm_gc_collection_time_seconds Time spent for GC collections
+# TYPE es_jvm_gc_collection_time_seconds counter
+es_jvm_gc_collection_time_seconds{cluster="develop",node="develop01",gc="old",} 0.0
+es_jvm_gc_collection_time_seconds{cluster="develop",node="develop01",gc="young",} 0.0
+# HELP es_indices_requestcache_memory_size_bytes Memory used for request cache
+# TYPE es_indices_requestcache_memory_size_bytes gauge
+es_indices_requestcache_memory_size_bytes{cluster="develop",node="develop01",} 0.0
+# HELP es_indices_search_open_contexts_number Number of search open contexts
+# TYPE es_indices_search_open_contexts_number gauge
+es_indices_search_open_contexts_number{cluster="develop",node="develop01",} 0.0
+# HELP es_jvm_mem_nonheap_used_bytes Memory used apart from heap
+# TYPE es_jvm_mem_nonheap_used_bytes gauge
+es_jvm_mem_nonheap_used_bytes{cluster="develop",node="develop01",} 5.5302736E7
 
 ...
 ```
