@@ -99,16 +99,16 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("jvm_threads_number", "Number of threads", "node");
         this.catalog.registerGauge("jvm_threads_peak_number" , "Peak number of threads", "node");
 
-        this.catalog.registerGauge("jvm_gc_collection_count", "Count of GC collections", "node", "gc");
+        this.catalog.registerCounter("jvm_gc_collection_count", "Count of GC collections", "node", "gc");
         this.catalog.registerGauge("jvm_gc_collection_time_seconds", "Time spent for GC collections", "node", "gc");
 
         this.catalog.registerGauge("jvm_bufferpool_number", "Number of buffer pools", "node", "bufferpool");
         this.catalog.registerGauge("jvm_bufferpool_total_capacity_bytes", "Total capacity provided by buffer pools", "node", "bufferpool");
         this.catalog.registerGauge("jvm_bufferpool_used_bytes", "Used memory in buffer pools", "node", "bufferpool");
 
-        this.catalog.registerGauge("jvm_classes_loaded_count", "Count of loaded classes", "node");
-        this.catalog.registerGauge("jvm_classes_total_loaded_count", "Total count of loaded classes", "node");
-        this.catalog.registerGauge("jvm_classes_unloaded_count", "Count of unloaded classes", "node");
+        this.catalog.registerCounter("jvm_classes_loaded_count", "Count of loaded classes", "node");
+        this.catalog.registerCounter("jvm_classes_total_loaded_count", "Total count of loaded classes", "node");
+        this.catalog.registerCounter("jvm_classes_unloaded_count", "Count of unloaded classes", "node");
     }
 
     private void updateJVMMetrics(String node, JvmStats jvm) {
@@ -135,7 +135,7 @@ public class PrometheusMetricsCollector {
 
             for (JvmStats.GarbageCollector gc : jvm.getGc().getCollectors()) {
                 String name = gc.getName();
-                this.catalog.setGauge("jvm_gc_collection_count", gc.getCollectionCount(), node, name);
+                this.catalog.setCounter("jvm_gc_collection_count", gc.getCollectionCount(), node, name);
                 this.catalog.setGauge("jvm_gc_collection_time_seconds", gc.getCollectionTime().getSeconds(), node, name);
             }
 
@@ -146,9 +146,9 @@ public class PrometheusMetricsCollector {
                 this.catalog.setGauge("jvm_bufferpool_used_bytes", bp.getUsed().bytes(), node, name);
             }
             if (jvm.getClasses() != null) {
-                this.catalog.setGauge("jvm_classes_loaded_count", jvm.getClasses().getLoadedClassCount(), node);
-                this.catalog.setGauge("jvm_classes_total_loaded_count", jvm.getClasses().getTotalLoadedClassCount(), node);
-                this.catalog.setGauge("jvm_classes_unloaded_count", jvm.getClasses().getUnloadedClassCount(), node);
+                this.catalog.setCounter("jvm_classes_loaded_count", jvm.getClasses().getLoadedClassCount(), node);
+                this.catalog.setCounter("jvm_classes_total_loaded_count", jvm.getClasses().getTotalLoadedClassCount(), node);
+                this.catalog.setCounter("jvm_classes_unloaded_count", jvm.getClasses().getUnloadedClassCount(), node);
             }
         }
     }
@@ -343,8 +343,8 @@ public class PrometheusMetricsCollector {
 
     private void registerTransportMetrics() {
         this.catalog.registerGauge("transport_server_open_number", "Opened server connections", "node");
-        this.catalog.registerGauge("transport_rx_count", "Received packets", "node");
-        this.catalog.registerGauge("transport_tx_count", "Sent packets", "node");
+        this.catalog.registerCounter("transport_rx_count", "Received packets", "node");
+        this.catalog.registerCounter("transport_tx_count", "Sent packets", "node");
         this.catalog.registerGauge("transport_rx_size_bytes", "Bytes received", "node");
         this.catalog.registerGauge("transport_tx_size_bytes", "Bytes sent", "node");
     }
@@ -352,8 +352,8 @@ public class PrometheusMetricsCollector {
     private void updateTransportMetrics(String node, TransportStats ts) {
         if (ts != null) {
             this.catalog.setGauge("transport_server_open_number", ts.getServerOpen(), node);
-            this.catalog.setGauge("transport_rx_count", ts.getRxCount(), node);
-            this.catalog.setGauge("transport_tx_count", ts.getTxCount(), node);
+            this.catalog.setCounter("transport_rx_count", ts.getRxCount(), node);
+            this.catalog.setCounter("transport_tx_count", ts.getTxCount(), node);
             this.catalog.setGauge("transport_rx_size_bytes", ts.getRxSize().bytes(), node);
             this.catalog.setGauge("transport_tx_size_bytes", ts.getTxSize().bytes(), node);
         }
@@ -361,25 +361,25 @@ public class PrometheusMetricsCollector {
 
     private void registerHTTPMetrics() {
         this.catalog.registerGauge("http_open_server_number", "Number of open server connections", "node");
-        this.catalog.registerGauge("http_open_total_count", "Count of opened connections", "node");
+        this.catalog.registerCounter("http_open_total_count", "Count of opened connections", "node");
     }
 
     private void updateHTTPMetrics(String node, HttpStats http) {
         if (http != null) {
             this.catalog.setGauge("http_open_server_number", http.getServerOpen(), node);
-            this.catalog.setGauge("http_open_total_count", http.getTotalOpen(), node);
+            this.catalog.setCounter("http_open_total_count", http.getTotalOpen(), node);
         }
     }
 
     private void registerScriptMetrics() {
-        this.catalog.registerGauge("script_cache_evictions_count", "Number of evictions in scripts cache", "node");
-        this.catalog.registerGauge("script_compilations_count", "Number of scripts compilations", "node");
+        this.catalog.registerCounter("script_cache_evictions_count", "Number of evictions in scripts cache", "node");
+        this.catalog.registerCounter("script_compilations_count", "Number of scripts compilations", "node");
     }
 
     private void updateScriptMetrics(String node, ScriptStats sc) {
         if (sc != null) {
-            this.catalog.setGauge("script_cache_evictions_count", sc.getCacheEvictions(), node);
-            this.catalog.setGauge("script_compilations_count", sc.getCompilations(), node);
+            this.catalog.setCounter("script_cache_evictions_count", sc.getCacheEvictions(), node);
+            this.catalog.setCounter("script_compilations_count", sc.getCompilations(), node);
         }
     }
 
@@ -433,7 +433,7 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("circuitbreaker_estimated_bytes", "Circuit breaker estimated size", "node", "name");
         this.catalog.registerGauge("circuitbreaker_limit_bytes", "Circuit breaker size limit", "node", "name");
         this.catalog.registerGauge("circuitbreaker_overhead_ratio", "Circuit breaker overhead ratio", "node", "name");
-        this.catalog.registerGauge("circuitbreaker_tripped_count", "Circuit breaker tripped count", "node", "name");
+        this.catalog.registerCounter("circuitbreaker_tripped_count", "Circuit breaker tripped count", "node", "name");
     }
 
     private void updateCircuitBreakersMetrics(String node, AllCircuitBreakerStats acbs) {
@@ -443,14 +443,14 @@ public class PrometheusMetricsCollector {
                 this.catalog.setGauge("circuitbreaker_estimated_bytes", cbs.getEstimated(), node, name);
                 this.catalog.setGauge("circuitbreaker_limit_bytes", cbs.getLimit(), node, name);
                 this.catalog.setGauge("circuitbreaker_overhead_ratio", cbs.getOverhead(), node, name);
-                this.catalog.setGauge("circuitbreaker_tripped_count", cbs.getTrippedCount(), node, name);
+                this.catalog.setCounter("circuitbreaker_tripped_count", cbs.getTrippedCount(), node, name);
             }
         }
     }
 
     private void registerThreadPoolMetrics() {
         this.catalog.registerGauge("threadpool_threads_number", "Number of threads in thread pool", "node", "name", "type");
-        this.catalog.registerGauge("threadpool_threads_count", "Count of threads in thread pool", "node", "name", "type");
+        this.catalog.registerCounter("threadpool_threads_count", "Count of threads in thread pool", "node", "name", "type");
         this.catalog.registerGauge("threadpool_tasks_number", "Number of tasks in thread pool", "node", "name", "type");
     }
 
@@ -461,8 +461,8 @@ public class PrometheusMetricsCollector {
                 this.catalog.setGauge("threadpool_threads_number", st.getThreads(), node, name, "threads");
                 this.catalog.setGauge("threadpool_threads_number", st.getActive(), node, name, "active");
                 this.catalog.setGauge("threadpool_threads_number", st.getLargest(), node, name, "largest");
-                this.catalog.setGauge("threadpool_threads_count", st.getCompleted(), node, name, "completed");
-                this.catalog.setGauge("threadpool_threads_count", st.getRejected(), node, name, "rejected");
+                this.catalog.setCounter("threadpool_threads_count", st.getCompleted(), node, name, "completed");
+                this.catalog.setCounter("threadpool_threads_count", st.getRejected(), node, name, "rejected");
                 this.catalog.setGauge("threadpool_tasks_number", st.getQueue(), node, name, "queue");
             }
         }

@@ -1,6 +1,7 @@
 package org.compuscene.metrics.prometheus;
 
 import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.exporter.common.TextFormat;
 
@@ -39,6 +40,24 @@ public class PrometheusMetricsCatalog {
 
         Gauge gauge = (Gauge) this.metrics.get(metric);
         gauge.labels(extended_label_values).set(value);
+    }
+
+    public void registerCounter(String metric, String help, String... labels) {
+        String[] extended_labels = new String[labels.length + 1];
+        extended_labels[0] = "cluster";
+        for (int i = 0; i < labels.length; i++) extended_labels[i + 1] = labels[i];
+
+        Counter counter = Counter.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
+        this.metrics.put(metric, counter);
+    }
+
+    public void setCounter(String metric, double value, String... label_values) {
+        String[] extended_label_values = new String[label_values.length + 1];
+        extended_label_values[0] = this.cluster;
+        for (int i = 0; i < label_values.length; i++) extended_label_values[i + 1] = label_values[i];
+
+        Counter counter = (Counter) this.metrics.get(metric);
+        counter.labels(extended_label_values).inc(value - counter.labels(extended_label_values).get());
     }
 
     public String toTextFormat() throws IOException {
