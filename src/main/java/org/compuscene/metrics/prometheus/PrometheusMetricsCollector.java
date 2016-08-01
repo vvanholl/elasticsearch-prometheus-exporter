@@ -84,31 +84,31 @@ public class PrometheusMetricsCollector {
 
     private void registerJVMMetrics() {
         this.catalog.registerGauge("jvm_uptime_seconds", "JVM uptime", "node");
-        this.catalog.registerGauge("jvm_mem_heap_max_bytes", "Max memory used in heap", "node");
+        this.catalog.registerGauge("jvm_mem_heap_max_bytes", "Maximum used memory in heap", "node");
         this.catalog.registerGauge("jvm_mem_heap_used_bytes", "Memory used in heap", "node");
         this.catalog.registerGauge("jvm_mem_heap_used_percent", "Percentage of memory used in heap", "node");
         this.catalog.registerGauge("jvm_mem_nonheap_used_bytes", "Memory used apart from heap", "node");
         this.catalog.registerGauge("jvm_mem_heap_committed_bytes", "Committed bytes in heap", "node");
         this.catalog.registerGauge("jvm_mem_nonheap_committed_bytes", "Committed bytes apart from heap", "node");
 
-        this.catalog.registerGauge("jvm_mem_pool_max_bytes", "No Help provided for the moment", "node", "pool");
-        this.catalog.registerGauge("jvm_mem_pool_peak_max_bytes", "No Help provided for the moment", "node", "pool");
-        this.catalog.registerGauge("jvm_mem_pool_used_bytes", "No Help provided for the moment", "node", "pool");
-        this.catalog.registerGauge("jvm_mem_pool_peak_used_bytes", "No Help provided for the moment", "node", "pool");
+        this.catalog.registerGauge("jvm_mem_pool_max_bytes", "Maximum usage of memory pool", "node", "pool");
+        this.catalog.registerGauge("jvm_mem_pool_peak_max_bytes", "Maximum usage peak of memory pool", "node", "pool");
+        this.catalog.registerGauge("jvm_mem_pool_used_bytes", "Used memory in memory pool", "node", "pool");
+        this.catalog.registerGauge("jvm_mem_pool_peak_used_bytes", "Used memory peak in memory pool", "node", "pool");
 
-        this.catalog.registerGauge("jvm_threads_count", "Number of threads", "node");
-        this.catalog.registerGauge("jvm_threads_peak_count", "Peak of threads", "node");
+        this.catalog.registerGauge("jvm_threads_number", "Number of threads", "node");
+        this.catalog.registerGauge("jvm_threads_peak_number" , "Peak number of threads", "node");
 
-        this.catalog.registerGauge("jvm_gc_collection_count", "Number of GC collections", "node", "gc");
+        this.catalog.registerGauge("jvm_gc_collection_count", "Count of GC collections", "node", "gc");
         this.catalog.registerGauge("jvm_gc_collection_time_seconds", "Time spent for GC collections", "node", "gc");
 
-        this.catalog.registerGauge("jvm_bufferpool_count", "No Help provided for the moment", "node", "bufferpool");
-        this.catalog.registerGauge("jvm_bufferpool_total_capacity_bytes", "No Help provided for the moment", "node", "bufferpool");
-        this.catalog.registerGauge("jvm_bufferpool_used_bytes", "No Help provided for the moment", "node", "bufferpool");
+        this.catalog.registerGauge("jvm_bufferpool_number", "Number of buffer pools", "node", "bufferpool");
+        this.catalog.registerGauge("jvm_bufferpool_total_capacity_bytes", "Total capacity provided by buffer pools", "node", "bufferpool");
+        this.catalog.registerGauge("jvm_bufferpool_used_bytes", "Used memory in buffer pools", "node", "bufferpool");
 
-        this.catalog.registerGauge("jvm_classes_loaded_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_classes_total_loaded_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("jvm_classes_unloaded_count", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("jvm_classes_loaded_count", "Count of loaded classes", "node");
+        this.catalog.registerGauge("jvm_classes_total_loaded_count", "Total count of loaded classes", "node");
+        this.catalog.registerGauge("jvm_classes_unloaded_count", "Count of unloaded classes", "node");
     }
 
     private void updateJVMMetrics(String node, JvmStats jvm) {
@@ -130,8 +130,8 @@ public class PrometheusMetricsCollector {
                 this.catalog.setGauge("jvm_mem_pool_peak_used_bytes", mp.getPeakUsed().bytes(), node, name);
             }
 
-            this.catalog.setGauge("jvm_threads_count", jvm.getThreads().getCount(), node);
-            this.catalog.setGauge("jvm_threads_peak_count", jvm.getThreads().getPeakCount(), node);
+            this.catalog.setGauge("jvm_threads_number", jvm.getThreads().getCount(), node);
+            this.catalog.setGauge("jvm_threads_peak_number", jvm.getThreads().getPeakCount(), node);
 
             for (JvmStats.GarbageCollector gc : jvm.getGc().getCollectors()) {
                 String name = gc.getName();
@@ -141,7 +141,7 @@ public class PrometheusMetricsCollector {
 
             for (JvmStats.BufferPool bp : jvm.getBufferPools()) {
                 String name = bp.getName();
-                this.catalog.setGauge("jvm_bufferpool_count", bp.getCount(), node, name);
+                this.catalog.setGauge("jvm_bufferpool_number", bp.getCount(), node, name);
                 this.catalog.setGauge("jvm_bufferpool_total_capacity_bytes", bp.getTotalCapacity().bytes(), node, name);
                 this.catalog.setGauge("jvm_bufferpool_used_bytes", bp.getUsed().bytes(), node, name);
             }
@@ -154,175 +154,195 @@ public class PrometheusMetricsCollector {
     }
 
     private void registerIndicesMetrics() {
-        this.catalog.registerGauge("indices_doc_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_doc_deleted", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_store_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_store_throttle_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_doc_count", "Total number of documents", "node");
+        this.catalog.registerGauge("indices_doc_deleted_count", "Number of deleted documents", "node");
+
+        this.catalog.registerGauge("indices_store_size_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_store_throttle_time_seconds", "No Help provided for the moment", "node");
+
         this.catalog.registerGauge("indices_indexing_delete_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_delete_curent", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_delete_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_delete_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_delete_time_seconds", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_indexing_index_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_index_current", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_index_failed", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_index_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_index_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_index_failed_count", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_index_time_seconds", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_indexing_noop_update_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_is_throttled", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_indexing_throttle_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_get_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_get_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_is_throttled_bool", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_indexing_throttle_time_seconds", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_get_count", "Number of get", "node");
+        this.catalog.registerGauge("indices_get_time_seconds", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_get_exists_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_get_exists_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_get_exists_time_seconds", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_get_missing_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_get_missing_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_open_contexts", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_get_missing_time_seconds", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_search_open_contexts_number", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_search_fetch_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_fetch_current", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_fetch_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_search_fetch_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_search_fetch_time_seconds", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_search_query_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_query_current", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_query_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_search_query_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_search_query_time_seconds", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_search_scroll_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_scroll_current", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_search_scroll_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_current", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_current_docs", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_current_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total_docs", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total_stop_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total_throttled_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_merges_total_auto_throttle", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_refresh_total", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_refresh_total_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_flush_total", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_flush_total_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_search_scroll_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_search_scroll_time_seconds", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_merges_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_current_docs_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_current_size_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_time_seconds", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_docs_count", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_size_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_stopped_time_seconds", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_throttled_time_seconds", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_merges_total_auto_throttle_bytes", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_refresh_total_count", "Total number of refreshes", "node");
+        this.catalog.registerGauge("indices_refresh_total_time_seconds", "Total time spent for refreshes", "node");
+
+        this.catalog.registerGauge("indices_flush_total_count", "Total number of flushes", "node");
+        this.catalog.registerGauge("indices_flush_total_time_seconds", "Total time spent for flushes", "node");
+
         this.catalog.registerGauge("indices_querycache_cache_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_querycache_cache_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_querycache_evictions", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_querycache_cache_size_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_querycache_evictions_count", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_querycache_hit_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_querycache_memory_size", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_querycache_memory_size_bytes", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_querycache_miss_count", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_querycache_total_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_fielddata_memory_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_fielddata_evictions", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_fielddata_memory_size_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_fielddata_evictions_count", "No Help provided for the moment", "node");
+
         this.catalog.registerGauge("indices_percolate_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_percolate_current", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_percolate_memory_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_percolate_queries", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_percolate_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_completion_size", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_percolate_current_number", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_percolate_memory_size_bytes", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_percolate_queries_count", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_percolate_time_seconds", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_completion_size_bytes", "No Help provided for the moment", "node");
+
         this.catalog.registerGauge("indices_segments_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_bitset", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_docvalues", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_indexwriter_max", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_indexwriter", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_norms", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_storefields", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_terms", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_termvectors", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_versionmap", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_suggest_time", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_suggest_current", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_segments_memory_bytes", "No Help provided for the moment", "node","type");
+
+        this.catalog.registerGauge("indices_suggest_current_number", "No Help provided for the moment", "node");
         this.catalog.registerGauge("indices_suggest_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_requestcache_evictions", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_requestcache_hit_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_requestcache_memory_size", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_requestcache_miss_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_recovery_current_as_source", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_recovery_current_as_target", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_recovery_throttle_time", "No Help provided for the moment", "node");
+        this.catalog.registerGauge("indices_suggest_time_seconds", "No Help provided for the moment", "node");
+
+        this.catalog.registerGauge("indices_requestcache_memory_size_bytes", "Memory used for request cache", "node");
+        this.catalog.registerGauge("indices_requestcache_hit_count", "Number of hits in request cache", "node");
+        this.catalog.registerGauge("indices_requestcache_miss_count", "Number of misses in request cache", "node");
+        this.catalog.registerGauge("indices_requestcache_evictions_count", "Number of evictions in request cache", "node");
+
+        this.catalog.registerGauge("indices_recovery_current_number", "Current number of recoveries", "node","type");
+        this.catalog.registerGauge("indices_recovery_throttle_time_seconds", "No Help provided for the moment", "node");
     }
 
     private void updateIndicesMetrics(String node, NodeIndicesStats idx) {
         if (idx != null) {
             this.catalog.setGauge("indices_doc_count", idx.getDocs().getCount(), node);
-            this.catalog.setGauge("indices_doc_deleted", idx.getDocs().getDeleted(), node);
-            this.catalog.setGauge("indices_store_size", idx.getStore().getSizeInBytes(), node);
-            this.catalog.setGauge("indices_store_throttle_time", idx.getStore().getThrottleTime().millis(), node);
+            this.catalog.setGauge("indices_doc_deleted_count", idx.getDocs().getDeleted(), node);
+
+            this.catalog.setGauge("indices_store_size_bytes", idx.getStore().getSizeInBytes(), node);
+            this.catalog.setGauge("indices_store_throttle_time_seconds", idx.getStore().getThrottleTime().millis()/1000.0, node);
+
             this.catalog.setGauge("indices_indexing_delete_count", idx.getIndexing().getTotal().getDeleteCount(), node);
-            this.catalog.setGauge("indices_indexing_delete_curent", idx.getIndexing().getTotal().getDeleteCurrent(), node);
-            this.catalog.setGauge("indices_indexing_delete_time", idx.getIndexing().getTotal().getDeleteTimeInMillis(), node);
+            this.catalog.setGauge("indices_indexing_delete_current_number", idx.getIndexing().getTotal().getDeleteCurrent(), node);
+            this.catalog.setGauge("indices_indexing_delete_time_seconds", idx.getIndexing().getTotal().getDeleteTimeInMillis()/1000.0, node);
             this.catalog.setGauge("indices_indexing_index_count", idx.getIndexing().getTotal().getIndexCount(), node);
-            this.catalog.setGauge("indices_indexing_index_current", idx.getIndexing().getTotal().getIndexCurrent(), node);
-            this.catalog.setGauge("indices_indexing_index_failed", idx.getIndexing().getTotal().getIndexFailedCount(), node);
-            this.catalog.setGauge("indices_indexing_index_time", idx.getIndexing().getTotal().getIndexTimeInMillis(), node);
+            this.catalog.setGauge("indices_indexing_index_current_number", idx.getIndexing().getTotal().getIndexCurrent(), node);
+            this.catalog.setGauge("indices_indexing_index_failed_count", idx.getIndexing().getTotal().getIndexFailedCount(), node);
+            this.catalog.setGauge("indices_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTimeInMillis()/1000.0, node);
             this.catalog.setGauge("indices_indexing_noop_update_count", idx.getIndexing().getTotal().getNoopUpdateCount(), node);
-            this.catalog.setGauge("indices_indexing_is_throttled", idx.getIndexing().getTotal().isThrottled() ? 1 : 0, node);
-            this.catalog.setGauge("indices_indexing_throttle_time", idx.getIndexing().getTotal().getThrottleTimeInMillis(), node);
+            this.catalog.setGauge("indices_indexing_is_throttled_bool", idx.getIndexing().getTotal().isThrottled() ? 1 : 0, node);
+            this.catalog.setGauge("indices_indexing_throttle_time_seconds", idx.getIndexing().getTotal().getThrottleTimeInMillis()/1000.0, node);
+
             this.catalog.setGauge("indices_get_count", idx.getGet().getCount(), node);
-            this.catalog.setGauge("indices_get_time", idx.getGet().getTimeInMillis(), node);
+            this.catalog.setGauge("indices_get_time_seconds", idx.getGet().getTimeInMillis()/1000.0, node);
             this.catalog.setGauge("indices_get_exists_count", idx.getGet().getExistsCount(), node);
-            this.catalog.setGauge("indices_get_exists_time", idx.getGet().getExistsTimeInMillis(), node);
+            this.catalog.setGauge("indices_get_exists_time_seconds", idx.getGet().getExistsTimeInMillis()/1000.0, node);
             this.catalog.setGauge("indices_get_missing_count", idx.getGet().getMissingCount(), node);
-            this.catalog.setGauge("indices_get_missing_time", idx.getGet().getMissingTimeInMillis(), node);
-            this.catalog.setGauge("indices_search_open_contexts", idx.getSearch().getOpenContexts(), node);
+            this.catalog.setGauge("indices_get_missing_time_seconds", idx.getGet().getMissingTimeInMillis()/1000.0, node);
+
+            this.catalog.setGauge("indices_search_open_contexts_number", idx.getSearch().getOpenContexts(), node);
             this.catalog.setGauge("indices_search_fetch_count", idx.getSearch().getTotal().getFetchCount(), node);
-            this.catalog.setGauge("indices_search_fetch_current", idx.getSearch().getTotal().getFetchCurrent(), node);
-            this.catalog.setGauge("indices_search_fetch_time", idx.getSearch().getTotal().getFetchTimeInMillis(), node);
+            this.catalog.setGauge("indices_search_fetch_current_number", idx.getSearch().getTotal().getFetchCurrent(), node);
+            this.catalog.setGauge("indices_search_fetch_time_seconds", idx.getSearch().getTotal().getFetchTimeInMillis()/1000.0, node);
             this.catalog.setGauge("indices_search_query_count", idx.getSearch().getTotal().getQueryCount(), node);
-            this.catalog.setGauge("indices_search_query_current", idx.getSearch().getTotal().getQueryCurrent(), node);
-            this.catalog.setGauge("indices_search_query_time", idx.getSearch().getTotal().getQueryTimeInMillis(), node);
+            this.catalog.setGauge("indices_search_query_current_number", idx.getSearch().getTotal().getQueryCurrent(), node);
+            this.catalog.setGauge("indices_search_query_time_seconds", idx.getSearch().getTotal().getQueryTimeInMillis()/1000.0, node);
             this.catalog.setGauge("indices_search_scroll_count", idx.getSearch().getTotal().getScrollCount(), node);
-            this.catalog.setGauge("indices_search_scroll_current", idx.getSearch().getTotal().getScrollCurrent(), node);
-            this.catalog.setGauge("indices_search_scroll_time", idx.getSearch().getTotal().getScrollTimeInMillis(), node);
-            this.catalog.setGauge("indices_merges_current", idx.getMerge().getCurrent(), node);
-            this.catalog.setGauge("indices_merges_current_docs", idx.getMerge().getCurrentNumDocs(), node);
-            this.catalog.setGauge("indices_merges_current_size", idx.getMerge().getCurrentSizeInBytes(), node);
-            this.catalog.setGauge("indices_merges_total", idx.getMerge().getTotal(), node);
-            this.catalog.setGauge("indices_merges_total_time", idx.getMerge().getTotalTimeInMillis(), node);
-            this.catalog.setGauge("indices_merges_total_docs", idx.getMerge().getTotalNumDocs(), node);
-            this.catalog.setGauge("indices_merges_total_size", idx.getMerge().getTotalSizeInBytes(), node);
-            this.catalog.setGauge("indices_merges_total_stop_time", idx.getMerge().getTotalStoppedTimeInMillis(), node);
-            this.catalog.setGauge("indices_merges_total_throttled_time", idx.getMerge().getTotalThrottledTimeInMillis(), node);
-            this.catalog.setGauge("indices_merges_total_auto_throttle", idx.getMerge().getTotalBytesPerSecAutoThrottle(), node);
-            this.catalog.setGauge("indices_refresh_total", idx.getRefresh().getTotal(), node);
-            this.catalog.setGauge("indices_refresh_total_time", idx.getRefresh().getTotalTimeInMillis(), node);
-            this.catalog.setGauge("indices_flush_total", idx.getFlush().getTotal(), node);
-            this.catalog.setGauge("indices_flush_total_time", idx.getFlush().getTotalTimeInMillis(), node);
+            this.catalog.setGauge("indices_search_scroll_current_number", idx.getSearch().getTotal().getScrollCurrent(), node);
+            this.catalog.setGauge("indices_search_scroll_time_seconds", idx.getSearch().getTotal().getScrollTimeInMillis()/1000.0, node);
+
+            this.catalog.setGauge("indices_merges_current_number", idx.getMerge().getCurrent(), node);
+            this.catalog.setGauge("indices_merges_current_docs_number", idx.getMerge().getCurrentNumDocs(), node);
+            this.catalog.setGauge("indices_merges_current_size_bytes", idx.getMerge().getCurrentSizeInBytes(), node);
+            this.catalog.setGauge("indices_merges_total_number", idx.getMerge().getTotal(), node);
+            this.catalog.setGauge("indices_merges_total_time_seconds", idx.getMerge().getTotalTimeInMillis()/1000.0, node);
+            this.catalog.setGauge("indices_merges_total_docs_count", idx.getMerge().getTotalNumDocs(), node);
+            this.catalog.setGauge("indices_merges_total_size_bytes", idx.getMerge().getTotalSizeInBytes(), node);
+            this.catalog.setGauge("indices_merges_total_stopped_time_seconds", idx.getMerge().getTotalStoppedTimeInMillis()/1000.0, node);
+            this.catalog.setGauge("indices_merges_total_throttled_time_seconds", idx.getMerge().getTotalThrottledTimeInMillis()/1000.0, node);
+            this.catalog.setGauge("indices_merges_total_auto_throttle_bytes", idx.getMerge().getTotalBytesPerSecAutoThrottle(), node);
+
+            this.catalog.setGauge("indices_refresh_total_count", idx.getRefresh().getTotal(), node);
+            this.catalog.setGauge("indices_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis()/1000.0, node);
+
+            this.catalog.setGauge("indices_flush_total_count", idx.getFlush().getTotal(), node);
+            this.catalog.setGauge("indices_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis()/1000.0, node);
+
             this.catalog.setGauge("indices_querycache_cache_count", idx.getQueryCache().getCacheCount(), node);
-            this.catalog.setGauge("indices_querycache_cache_size", idx.getQueryCache().getCacheSize(), node);
-            this.catalog.setGauge("indices_querycache_evictions", idx.getQueryCache().getEvictions(), node);
+            this.catalog.setGauge("indices_querycache_cache_size_bytes", idx.getQueryCache().getCacheSize(), node);
+            this.catalog.setGauge("indices_querycache_evictions_count", idx.getQueryCache().getEvictions(), node);
             this.catalog.setGauge("indices_querycache_hit_count", idx.getQueryCache().getHitCount(), node);
-            this.catalog.setGauge("indices_querycache_memory_size", idx.getQueryCache().getMemorySizeInBytes(), node);
+            this.catalog.setGauge("indices_querycache_memory_size_bytes", idx.getQueryCache().getMemorySizeInBytes(), node);
             this.catalog.setGauge("indices_querycache_miss_count", idx.getQueryCache().getMissCount(), node);
             this.catalog.setGauge("indices_querycache_total_count", idx.getQueryCache().getTotalCount(), node);
-            this.catalog.setGauge("indices_fielddata_memory_size", idx.getFieldData().getMemorySizeInBytes(), node);
-            this.catalog.setGauge("indices_fielddata_evictions", idx.getFieldData().getEvictions(), node);
+
+            this.catalog.setGauge("indices_fielddata_memory_size_bytes", idx.getFieldData().getMemorySizeInBytes(), node);
+            this.catalog.setGauge("indices_fielddata_evictions_count", idx.getFieldData().getEvictions(), node);
+
             this.catalog.setGauge("indices_percolate_count", idx.getPercolate().getCount(), node);
-            this.catalog.setGauge("indices_percolate_current", idx.getPercolate().getCurrent(), node);
-            this.catalog.setGauge("indices_percolate_memory_size", idx.getPercolate().getMemorySizeInBytes(), node);
-            this.catalog.setGauge("indices_percolate_queries", idx.getPercolate().getNumQueries(), node);
-            this.catalog.setGauge("indices_percolate_time", idx.getPercolate().getTimeInMillis(), node);
-            this.catalog.setGauge("indices_completion_size", idx.getCompletion().getSizeInBytes(), node);
+            this.catalog.setGauge("indices_percolate_current_number", idx.getPercolate().getCurrent(), node);
+            this.catalog.setGauge("indices_percolate_memory_size_bytes", idx.getPercolate().getMemorySizeInBytes(), node);
+            this.catalog.setGauge("indices_percolate_queries_count", idx.getPercolate().getNumQueries(), node);
+            this.catalog.setGauge("indices_percolate_time_seconds", idx.getPercolate().getTimeInMillis()/1000.0, node);
+
+            this.catalog.setGauge("indices_completion_size_bytes", idx.getCompletion().getSizeInBytes(), node);
+
             this.catalog.setGauge("indices_segments_count", idx.getSegments().getCount(), node);
-            this.catalog.setGauge("indices_segments_memory_bitset", idx.getSegments().getBitsetMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_docvalues", idx.getSegments().getDocValuesMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_indexwriter_max", idx.getSegments().getIndexWriterMaxMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_indexwriter", idx.getSegments().getIndexWriterMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory", idx.getSegments().getMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_norms", idx.getSegments().getNormsMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_storefields", idx.getSegments().getStoredFieldsMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_terms", idx.getSegments().getTermsMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_termvectors", idx.getSegments().getTermVectorsMemoryInBytes(), node);
-            this.catalog.setGauge("indices_segments_memory_versionmap", idx.getSegments().getVersionMapMemoryInBytes(), node);
-            this.catalog.setGauge("indices_suggest_time", idx.getSuggest().getTimeInMillis(), node);
-            this.catalog.setGauge("indices_suggest_current", idx.getSuggest().getCurrent(), node);
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getMemoryInBytes(), node, "all");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getBitsetMemoryInBytes(), node,"bitset");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getDocValuesMemoryInBytes(), node,"docvalues");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getIndexWriterMaxMemoryInBytes(), node,"indexwriter_max");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getIndexWriterMemoryInBytes(), node,"indexwriter");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getNormsMemoryInBytes(), node,"norms");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getStoredFieldsMemoryInBytes(), node,"storefields");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getTermsMemoryInBytes(), node,"terms");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getTermVectorsMemoryInBytes(), node,"termvectors");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getVersionMapMemoryInBytes(), node,"versionmap");
+
+            this.catalog.setGauge("indices_suggest_current_number", idx.getSuggest().getCurrent(), node);
             this.catalog.setGauge("indices_suggest_count", idx.getSuggest().getCount(), node);
-            this.catalog.setGauge("indices_requestcache_evictions", idx.getRequestCache().getEvictions(), node);
+            this.catalog.setGauge("indices_suggest_time_seconds", idx.getSuggest().getTimeInMillis()/1000.0, node);
+
+            this.catalog.setGauge("indices_requestcache_memory_size_bytes", idx.getRequestCache().getMemorySizeInBytes(), node);
             this.catalog.setGauge("indices_requestcache_hit_count", idx.getRequestCache().getHitCount(), node);
-            this.catalog.setGauge("indices_requestcache_memory_size", idx.getRequestCache().getMemorySizeInBytes(), node);
             this.catalog.setGauge("indices_requestcache_miss_count", idx.getRequestCache().getMissCount(), node);
-            this.catalog.setGauge("indices_recovery_current_as_source", idx.getRecoveryStats().currentAsSource(), node);
-            this.catalog.setGauge("indices_recovery_current_as_target", idx.getRecoveryStats().currentAsTarget(), node);
-            this.catalog.setGauge("indices_recovery_throttle_time", idx.getRecoveryStats().throttleTime().getSeconds(), node);
+            this.catalog.setGauge("indices_requestcache_evictions_count", idx.getRequestCache().getEvictions(), node);
+
+            this.catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsSource(), node,"source");
+            this.catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsTarget(), node,"target");
+            this.catalog.setGauge("indices_recovery_throttle_time_seconds", idx.getRecoveryStats().throttleTime().getSeconds(), node);
         }
     }
 
     private void registerTransportMetrics() {
-        this.catalog.registerGauge("transport_server_open_number", "Opened connections", "node");
+        this.catalog.registerGauge("transport_server_open_number", "Opened server connections", "node");
         this.catalog.registerGauge("transport_rx_count", "Received packets", "node");
         this.catalog.registerGauge("transport_tx_count", "Sent packets", "node");
         this.catalog.registerGauge("transport_rx_size_bytes", "Bytes received", "node");
@@ -341,25 +361,25 @@ public class PrometheusMetricsCollector {
 
     private void registerHTTPMetrics() {
         this.catalog.registerGauge("http_open_server_number", "Number of open server connections", "node");
-        this.catalog.registerGauge("http_open_total_number", "Number of open total connections", "node");
+        this.catalog.registerGauge("http_open_total_count", "Count of opened connections", "node");
     }
 
     private void updateHTTPMetrics(String node, HttpStats http) {
         if (http != null) {
             this.catalog.setGauge("http_open_server_number", http.getServerOpen(), node);
-            this.catalog.setGauge("http_open_total_number", http.getTotalOpen(), node);
+            this.catalog.setGauge("http_open_total_count", http.getTotalOpen(), node);
         }
     }
 
     private void registerScriptMetrics() {
-        this.catalog.registerGauge("script_cache_evictions_number", "Number of scripts cache evictions", "node");
-        this.catalog.registerGauge("script_compilations_number", "Number of scripts compilations", "node");
+        this.catalog.registerGauge("script_cache_evictions_count", "Number of evictions in scripts cache", "node");
+        this.catalog.registerGauge("script_compilations_count", "Number of scripts compilations", "node");
     }
 
     private void updateScriptMetrics(String node, ScriptStats sc) {
         if (sc != null) {
-            this.catalog.setGauge("script_cache_evictions_number", sc.getCacheEvictions(), node);
-            this.catalog.setGauge("script_compilations_number", sc.getCompilations(), node);
+            this.catalog.setGauge("script_cache_evictions_count", sc.getCacheEvictions(), node);
+            this.catalog.setGauge("script_compilations_count", sc.getCompilations(), node);
         }
     }
 
@@ -367,8 +387,8 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("process_cpu_percent", "CPU percentage used by ES process", "node");
         this.catalog.registerGauge("process_cpu_time_seconds", "CPU time used by ES process", "node");
         this.catalog.registerGauge("process_mem_total_virtual_bytes", "Memory used by ES process", "node");
-        this.catalog.registerGauge("process_open_file_descriptors_number", "Open file descriptors", "node");
-        this.catalog.registerGauge("process_max_file_descriptors_number", "Max file descriptors", "node");
+        this.catalog.registerGauge("process_file_descriptors_open_number", "Open file descriptors", "node");
+        this.catalog.registerGauge("process_file_descriptors_max_number", "Max file descriptors", "node");
     }
 
     private void updateProcessMetrics(String node, ProcessStats ps) {
@@ -376,8 +396,8 @@ public class PrometheusMetricsCollector {
             this.catalog.setGauge("process_cpu_percent", ps.getCpu().getPercent(), node);
             this.catalog.setGauge("process_cpu_time_seconds", ps.getCpu().getTotal().getSeconds(), node);
             this.catalog.setGauge("process_mem_total_virtual_bytes", ps.getMem().getTotalVirtual().bytes(), node);
-            this.catalog.setGauge("process_open_file_descriptors_number", ps.getOpenFileDescriptors(), node);
-            this.catalog.setGauge("process_max_file_descriptors_number", ps.getMaxFileDescriptors(), node);
+            this.catalog.setGauge("process_file_descriptors_open_number", ps.getOpenFileDescriptors(), node);
+            this.catalog.setGauge("process_file_descriptors_max_number", ps.getMaxFileDescriptors(), node);
         }
     }
 
@@ -429,28 +449,29 @@ public class PrometheusMetricsCollector {
     }
 
     private void registerThreadPoolMetrics() {
-        this.catalog.registerGauge("threadpool_threads_number", "Threads in threadpool", "node", "name", "type");
-        this.catalog.registerGauge("threadpool_tasks_number", "Tasks in threadpool", "node", "name", "type");
+        this.catalog.registerGauge("threadpool_threads_number", "Number of threads in thread pool", "node", "name", "type");
+        this.catalog.registerGauge("threadpool_threads_count", "Count of threads in thread pool", "node", "name", "type");
+        this.catalog.registerGauge("threadpool_tasks_number", "Number of tasks in thread pool", "node", "name", "type");
     }
 
     private void updateThreadPoolMetrics(String node, ThreadPoolStats tps) {
         if (tps != null) {
             for (ThreadPoolStats.Stats st : tps) {
                 String name = st.getName();
-                this.catalog.setGauge("threadpool_threads_number", st.getActive(), node, name, "active");
-                this.catalog.setGauge("threadpool_threads_number", st.getCompleted(), node, name, "completed");
-                this.catalog.setGauge("threadpool_threads_number", st.getLargest(), node, name, "largest");
-                this.catalog.setGauge("threadpool_threads_number", st.getRejected(), node, name, "rejected");
                 this.catalog.setGauge("threadpool_threads_number", st.getThreads(), node, name, "threads");
+                this.catalog.setGauge("threadpool_threads_number", st.getActive(), node, name, "active");
+                this.catalog.setGauge("threadpool_threads_number", st.getLargest(), node, name, "largest");
+                this.catalog.setGauge("threadpool_threads_count", st.getCompleted(), node, name, "completed");
+                this.catalog.setGauge("threadpool_threads_count", st.getRejected(), node, name, "rejected");
                 this.catalog.setGauge("threadpool_tasks_number", st.getQueue(), node, name, "queue");
             }
         }
     }
 
     private void registerFsMetrics() {
-        this.catalog.registerGauge("fs_total_total_bytes", "Total disk space for all mountpoints", "node");
-        this.catalog.registerGauge("fs_total_available_bytes", "Available disk space for all mountpoints", "node");
-        this.catalog.registerGauge("fs_total_free_bytes", "Total free disk space for all mountpoints", "node");
+        this.catalog.registerGauge("fs_total_total_bytes", "Total disk space for all mount points", "node");
+        this.catalog.registerGauge("fs_total_available_bytes", "Available disk space for all mount points", "node");
+        this.catalog.registerGauge("fs_total_free_bytes", "Free disk space for all mountpoints", "node");
         this.catalog.registerGauge("fs_total_is_spinning_bool", "Is it a spinning disk ?", "node");
 
         this.catalog.registerGauge("fs_path_total_bytes", "Total disk space", "node", "path", "mount", "type");
