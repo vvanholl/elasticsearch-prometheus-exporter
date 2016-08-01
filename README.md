@@ -26,7 +26,7 @@ Current available metrics are :
 
 ## Install
 
-    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.4.0/elasticsearch-prometheus-exporter-2.3.4.1.zip
+    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.4.1/elasticsearch-prometheus-exporter-2.3.4.1.zip
 
 Do not forget to restart the node after installation !
 
