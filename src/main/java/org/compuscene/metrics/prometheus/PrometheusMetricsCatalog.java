@@ -29,42 +29,57 @@ public class PrometheusMetricsCatalog {
         this.registry = new CollectorRegistry();
     }
 
-    public void registerGauge(String metric, String help, String... labels) {
-        String[] extended_labels = new String[labels.length + 1];
-        extended_labels[0] = "cluster";
-        for (int i = 0; i < labels.length; i++) extended_labels[i + 1] = labels[i];
+    private String[] getExtendedLabelNames(String... label_names) {
+        String[] extended = new String[label_names.length + 1];
+        extended[0] = "cluster";
 
-        Gauge gauge = Gauge.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
+        for (int i = 0; i < label_names.length; i++)
+            extended[i + 1] = label_names[i];
+
+        return extended;
+    }
+
+    private String[] getExtendedLabelValues(String... label_values) {
+        String[] extended = new String[label_values.length + 1];
+        extended[0] = this.cluster;
+
+        for (int i = 0; i < label_values.length; i++)
+            extended[i + 1] = label_values[i];
+
+        return extended;
+    }
+
+    public void registerGauge(String metric, String help, String... labels) {
+        Gauge gauge = Gauge.build().
+                name(this.metric_prefix + metric).
+                help(help).
+                labelNames(this.getExtendedLabelNames(labels)).
+                register(this.registry);
+
         this.metrics.put(metric, gauge);
 
         logger.debug(String.format("Registered new gauge %s", metric));
     }
 
     public void setGauge(String metric, double value, String... label_values) {
-        String[] extended_label_values = new String[label_values.length + 1];
-        extended_label_values[0] = this.cluster;
-        for (int i = 0; i < label_values.length; i++) extended_label_values[i + 1] = label_values[i];
-
         Gauge gauge = (Gauge) this.metrics.get(metric);
-        gauge.labels(extended_label_values).set(value);
+        gauge.labels(this.getExtendedLabelValues(label_values)).set(value);
     }
 
     public void registerCounter(String metric, String help, String... labels) {
-        String[] extended_labels = new String[labels.length + 1];
-        extended_labels[0] = "cluster";
-        for (int i = 0; i < labels.length; i++) extended_labels[i + 1] = labels[i];
+        Counter counter = Counter.build().
+                name(this.metric_prefix + metric).
+                help(help).
+                labelNames(this.getExtendedLabelNames(labels)).
+                register(this.registry);
 
-        Counter counter = Counter.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
         this.metrics.put(metric, counter);
 
         logger.debug(String.format("Registered new counter %s", metric));
     }
 
     public void setCounter(String metric, double value, String... label_values) {
-        String[] extended_label_values = new String[label_values.length + 1];
-        extended_label_values[0] = this.cluster;
-        for (int i = 0; i < label_values.length; i++) extended_label_values[i + 1] = label_values[i];
-
+        String[] extended_label_values = this.getExtendedLabelValues(label_values);
         Counter counter = (Counter) this.metrics.get(metric);
 
         double increment = value - counter.labels(extended_label_values).get();
@@ -72,28 +87,25 @@ public class PrometheusMetricsCatalog {
         if (increment >= 0) {
             counter.labels(extended_label_values).inc(increment);
         } else {
-            logger.error(String.format("Can not increment metric %s with value %f", metric, increment));
+            logger.error(String.format("Can not increment metric %s with value %f, skipping", metric, increment));
         }
     }
 
     public void registerSummaryTimer(String metric, String help, String... labels) {
-        String[] extended_labels = new String[labels.length + 1];
-        extended_labels[0] = "cluster";
-        for (int i = 0; i < labels.length; i++) extended_labels[i + 1] = labels[i];
+        Summary summary = Summary.build().
+                name(this.metric_prefix + metric).
+                help(help).
+                labelNames(this.getExtendedLabelNames(labels)).
+                register(this.registry);
 
-        Summary summary = Summary.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
         this.metrics.put(metric, summary);
 
         logger.debug(String.format("Registered new summary %s", metric));
     }
 
     public Summary.Timer startSummaryTimer(String metric, String... label_values) {
-        String[] extended_label_values = new String[label_values.length + 1];
-        extended_label_values[0] = this.cluster;
-        for (int i = 0; i < label_values.length; i++) extended_label_values[i + 1] = label_values[i];
-
         Summary summary = (Summary) this.metrics.get(metric);
-        return summary.labels(extended_label_values).startTimer();
+        return summary.labels(this.getExtendedLabelValues(label_values)).startTimer();
     }
 
     public String toTextFormat() throws IOException {
