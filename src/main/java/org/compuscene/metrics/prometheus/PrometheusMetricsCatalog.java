@@ -36,7 +36,7 @@ public class PrometheusMetricsCatalog {
         Gauge gauge = Gauge.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
         this.metrics.put(metric, gauge);
 
-        logger.debug(String.format("Registered new gauge %s",metric));
+        logger.debug(String.format("Registered new gauge %s", metric));
     }
 
     public void setGauge(String metric, double value, String... label_values) {
@@ -56,7 +56,7 @@ public class PrometheusMetricsCatalog {
         Counter counter = Counter.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
         this.metrics.put(metric, counter);
 
-        logger.debug(String.format("Registered new counter %s",metric));
+        logger.debug(String.format("Registered new counter %s", metric));
     }
 
     public void setCounter(String metric, double value, String... label_values) {
@@ -70,11 +70,11 @@ public class PrometheusMetricsCatalog {
 
         if (increment >= 0) {
             counter.labels(extended_label_values).inc(increment);
-        }
-        else{
-            logger.error(String.format("Can not increment metric %s with value %f",metric,increment));
+        } else {
+            logger.error(String.format("Can not increment metric %s with value %f", metric, increment));
         }
     }
+
     public String toTextFormat() throws IOException {
         try {
             Writer writer = new StringWriter();

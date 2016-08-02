@@ -97,7 +97,7 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("jvm_mem_pool_peak_used_bytes", "Used memory peak in memory pool", "node", "pool");
 
         this.catalog.registerGauge("jvm_threads_number", "Number of threads", "node");
-        this.catalog.registerGauge("jvm_threads_peak_number" , "Peak number of threads", "node");
+        this.catalog.registerGauge("jvm_threads_peak_number", "Peak number of threads", "node");
 
         this.catalog.registerCounter("jvm_gc_collection_count", "Count of GC collections", "node", "gc");
         this.catalog.registerCounter("jvm_gc_collection_time_seconds", "Time spent for GC collections", "node", "gc");
@@ -227,7 +227,7 @@ public class PrometheusMetricsCollector {
         this.catalog.registerGauge("indices_completion_size_bytes", "No Help provided for the moment", "node");
 
         this.catalog.registerCounter("indices_segments_count", "No Help provided for the moment", "node");
-        this.catalog.registerGauge("indices_segments_memory_bytes", "No Help provided for the moment", "node","type");
+        this.catalog.registerGauge("indices_segments_memory_bytes", "No Help provided for the moment", "node", "type");
 
         this.catalog.registerGauge("indices_suggest_current_number", "Current rate of suggests", "node");
         this.catalog.registerCounter("indices_suggest_count", "Count of suggests", "node");
@@ -238,7 +238,7 @@ public class PrometheusMetricsCollector {
         this.catalog.registerCounter("indices_requestcache_miss_count", "Number of misses in request cache", "node");
         this.catalog.registerCounter("indices_requestcache_evictions_count", "Number of evictions in request cache", "node");
 
-        this.catalog.registerGauge("indices_recovery_current_number", "Current number of recoveries", "node","type");
+        this.catalog.registerGauge("indices_recovery_current_number", "Current number of recoveries", "node", "type");
         this.catalog.registerCounter("indices_recovery_throttle_time_seconds", "Time spent while throttling recoveries", "node");
     }
 
@@ -248,53 +248,53 @@ public class PrometheusMetricsCollector {
             this.catalog.setCounter("indices_doc_deleted_count", idx.getDocs().getDeleted(), node);
 
             this.catalog.setGauge("indices_store_size_bytes", idx.getStore().getSizeInBytes(), node);
-            this.catalog.setCounter("indices_store_throttle_time_seconds", idx.getStore().getThrottleTime().millis()/1000.0, node);
+            this.catalog.setCounter("indices_store_throttle_time_seconds", idx.getStore().getThrottleTime().millis() / 1000.0, node);
 
             this.catalog.setCounter("indices_indexing_delete_count", idx.getIndexing().getTotal().getDeleteCount(), node);
             this.catalog.setGauge("indices_indexing_delete_current_number", idx.getIndexing().getTotal().getDeleteCurrent(), node);
-            this.catalog.setCounter("indices_indexing_delete_time_seconds", idx.getIndexing().getTotal().getDeleteTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_indexing_delete_time_seconds", idx.getIndexing().getTotal().getDeleteTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_indexing_index_count", idx.getIndexing().getTotal().getIndexCount(), node);
             this.catalog.setGauge("indices_indexing_index_current_number", idx.getIndexing().getTotal().getIndexCurrent(), node);
             this.catalog.setCounter("indices_indexing_index_failed_count", idx.getIndexing().getTotal().getIndexFailedCount(), node);
-            this.catalog.setCounter("indices_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_indexing_noop_update_count", idx.getIndexing().getTotal().getNoopUpdateCount(), node);
             this.catalog.setGauge("indices_indexing_is_throttled_bool", idx.getIndexing().getTotal().isThrottled() ? 1 : 0, node);
-            this.catalog.setCounter("indices_indexing_throttle_time_seconds", idx.getIndexing().getTotal().getThrottleTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_indexing_throttle_time_seconds", idx.getIndexing().getTotal().getThrottleTimeInMillis() / 1000.0, node);
 
             this.catalog.setCounter("indices_get_count", idx.getGet().getCount(), node);
-            this.catalog.setCounter("indices_get_time_seconds", idx.getGet().getTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_get_time_seconds", idx.getGet().getTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_get_exists_count", idx.getGet().getExistsCount(), node);
-            this.catalog.setCounter("indices_get_exists_time_seconds", idx.getGet().getExistsTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_get_exists_time_seconds", idx.getGet().getExistsTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_get_missing_count", idx.getGet().getMissingCount(), node);
-            this.catalog.setCounter("indices_get_missing_time_seconds", idx.getGet().getMissingTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_get_missing_time_seconds", idx.getGet().getMissingTimeInMillis() / 1000.0, node);
 
             this.catalog.setGauge("indices_search_open_contexts_number", idx.getSearch().getOpenContexts(), node);
             this.catalog.setCounter("indices_search_fetch_count", idx.getSearch().getTotal().getFetchCount(), node);
             this.catalog.setGauge("indices_search_fetch_current_number", idx.getSearch().getTotal().getFetchCurrent(), node);
-            this.catalog.setCounter("indices_search_fetch_time_seconds", idx.getSearch().getTotal().getFetchTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_search_fetch_time_seconds", idx.getSearch().getTotal().getFetchTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_search_query_count", idx.getSearch().getTotal().getQueryCount(), node);
             this.catalog.setGauge("indices_search_query_current_number", idx.getSearch().getTotal().getQueryCurrent(), node);
-            this.catalog.setCounter("indices_search_query_time_seconds", idx.getSearch().getTotal().getQueryTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_search_query_time_seconds", idx.getSearch().getTotal().getQueryTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_search_scroll_count", idx.getSearch().getTotal().getScrollCount(), node);
             this.catalog.setGauge("indices_search_scroll_current_number", idx.getSearch().getTotal().getScrollCurrent(), node);
-            this.catalog.setCounter("indices_search_scroll_time_seconds", idx.getSearch().getTotal().getScrollTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_search_scroll_time_seconds", idx.getSearch().getTotal().getScrollTimeInMillis() / 1000.0, node);
 
             this.catalog.setGauge("indices_merges_current_number", idx.getMerge().getCurrent(), node);
             this.catalog.setGauge("indices_merges_current_docs_number", idx.getMerge().getCurrentNumDocs(), node);
             this.catalog.setGauge("indices_merges_current_size_bytes", idx.getMerge().getCurrentSizeInBytes(), node);
             this.catalog.setCounter("indices_merges_total_number", idx.getMerge().getTotal(), node);
-            this.catalog.setCounter("indices_merges_total_time_seconds", idx.getMerge().getTotalTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_merges_total_time_seconds", idx.getMerge().getTotalTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_merges_total_docs_count", idx.getMerge().getTotalNumDocs(), node);
             this.catalog.setCounter("indices_merges_total_size_bytes", idx.getMerge().getTotalSizeInBytes(), node);
-            this.catalog.setCounter("indices_merges_total_stopped_time_seconds", idx.getMerge().getTotalStoppedTimeInMillis()/1000.0, node);
-            this.catalog.setCounter("indices_merges_total_throttled_time_seconds", idx.getMerge().getTotalThrottledTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_merges_total_stopped_time_seconds", idx.getMerge().getTotalStoppedTimeInMillis() / 1000.0, node);
+            this.catalog.setCounter("indices_merges_total_throttled_time_seconds", idx.getMerge().getTotalThrottledTimeInMillis() / 1000.0, node);
             this.catalog.setCounter("indices_merges_total_auto_throttle_bytes", idx.getMerge().getTotalBytesPerSecAutoThrottle(), node);
 
             this.catalog.setCounter("indices_refresh_total_count", idx.getRefresh().getTotal(), node);
-            this.catalog.setCounter("indices_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis() / 1000.0, node);
 
             this.catalog.setCounter("indices_flush_total_count", idx.getFlush().getTotal(), node);
-            this.catalog.setCounter("indices_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis() / 1000.0, node);
 
             this.catalog.setCounter("indices_querycache_cache_count", idx.getQueryCache().getCacheCount(), node);
             this.catalog.setGauge("indices_querycache_cache_size_bytes", idx.getQueryCache().getCacheSize(), node);
@@ -311,33 +311,33 @@ public class PrometheusMetricsCollector {
             this.catalog.setGauge("indices_percolate_current_number", idx.getPercolate().getCurrent(), node);
             this.catalog.setGauge("indices_percolate_memory_size_bytes", idx.getPercolate().getMemorySizeInBytes(), node);
             this.catalog.setCounter("indices_percolate_queries_count", idx.getPercolate().getNumQueries(), node);
-            this.catalog.setCounter("indices_percolate_time_seconds", idx.getPercolate().getTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_percolate_time_seconds", idx.getPercolate().getTimeInMillis() / 1000.0, node);
 
             this.catalog.setGauge("indices_completion_size_bytes", idx.getCompletion().getSizeInBytes(), node);
 
             this.catalog.setCounter("indices_segments_count", idx.getSegments().getCount(), node);
             this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getMemoryInBytes(), node, "all");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getBitsetMemoryInBytes(), node,"bitset");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getDocValuesMemoryInBytes(), node,"docvalues");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getIndexWriterMaxMemoryInBytes(), node,"indexwriter_max");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getIndexWriterMemoryInBytes(), node,"indexwriter");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getNormsMemoryInBytes(), node,"norms");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getStoredFieldsMemoryInBytes(), node,"storefields");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getTermsMemoryInBytes(), node,"terms");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getTermVectorsMemoryInBytes(), node,"termvectors");
-            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getVersionMapMemoryInBytes(), node,"versionmap");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getBitsetMemoryInBytes(), node, "bitset");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getDocValuesMemoryInBytes(), node, "docvalues");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getIndexWriterMaxMemoryInBytes(), node, "indexwriter_max");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getIndexWriterMemoryInBytes(), node, "indexwriter");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getNormsMemoryInBytes(), node, "norms");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getStoredFieldsMemoryInBytes(), node, "storefields");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getTermsMemoryInBytes(), node, "terms");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getTermVectorsMemoryInBytes(), node, "termvectors");
+            this.catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getVersionMapMemoryInBytes(), node, "versionmap");
 
             this.catalog.setGauge("indices_suggest_current_number", idx.getSuggest().getCurrent(), node);
             this.catalog.setCounter("indices_suggest_count", idx.getSuggest().getCount(), node);
-            this.catalog.setCounter("indices_suggest_time_seconds", idx.getSuggest().getTimeInMillis()/1000.0, node);
+            this.catalog.setCounter("indices_suggest_time_seconds", idx.getSuggest().getTimeInMillis() / 1000.0, node);
 
             this.catalog.setGauge("indices_requestcache_memory_size_bytes", idx.getRequestCache().getMemorySizeInBytes(), node);
             this.catalog.setCounter("indices_requestcache_hit_count", idx.getRequestCache().getHitCount(), node);
             this.catalog.setCounter("indices_requestcache_miss_count", idx.getRequestCache().getMissCount(), node);
             this.catalog.setCounter("indices_requestcache_evictions_count", idx.getRequestCache().getEvictions(), node);
 
-            this.catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsSource(), node,"source");
-            this.catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsTarget(), node,"target");
+            this.catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsSource(), node, "source");
+            this.catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsTarget(), node, "target");
             this.catalog.setCounter("indices_recovery_throttle_time_seconds", idx.getRecoveryStats().throttleTime().getSeconds(), node);
         }
     }
