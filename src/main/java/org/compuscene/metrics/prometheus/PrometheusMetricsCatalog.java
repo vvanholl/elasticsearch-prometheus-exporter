@@ -4,6 +4,9 @@ import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.exporter.common.TextFormat;
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,6 +14,7 @@ import java.io.Writer;
 import java.util.HashMap;
 
 public class PrometheusMetricsCatalog {
+    private final static ESLogger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
 
     private String cluster;
     private String metric_prefix;
@@ -31,6 +35,8 @@ public class PrometheusMetricsCatalog {
 
         Gauge gauge = Gauge.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
         this.metrics.put(metric, gauge);
+
+        logger.debug(String.format("Registered new gauge %s",metric));
     }
 
     public void setGauge(String metric, double value, String... label_values) {
@@ -49,6 +55,8 @@ public class PrometheusMetricsCatalog {
 
         Counter counter = Counter.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
         this.metrics.put(metric, counter);
+
+        logger.debug(String.format("Registered new counter %s",metric));
     }
 
     public void setCounter(String metric, double value, String... label_values) {
@@ -57,9 +65,16 @@ public class PrometheusMetricsCatalog {
         for (int i = 0; i < label_values.length; i++) extended_label_values[i + 1] = label_values[i];
 
         Counter counter = (Counter) this.metrics.get(metric);
-        counter.labels(extended_label_values).inc(value - counter.labels(extended_label_values).get());
-    }
 
+        double increment = value - counter.labels(extended_label_values).get();
+
+        if (increment >= 0) {
+            counter.labels(extended_label_values).inc(increment);
+        }
+        else{
+            logger.error(String.format("Can not increment metric %s with value %f",metric,increment));
+        }
+    }
     public String toTextFormat() throws IOException {
         try {
             Writer writer = new StringWriter();
