@@ -1,5 +1,6 @@
 package org.compuscene.metrics.prometheus;
 
+import io.prometheus.client.Summary;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
@@ -34,6 +35,7 @@ public class PrometheusMetricsCollector {
 
         this.catalog = new PrometheusMetricsCatalog(cluster, "es_");
 
+        this.catalog.registerSummaryTimer("metrics_generate_time_seconds", "Time needed to generate metrics");
         this.registerClusterMetrics();
         this.registerJVMMetrics();
         this.registerIndicesMetrics();
@@ -501,6 +503,8 @@ public class PrometheusMetricsCollector {
     }
 
     public void updateMetrics() {
+        Summary.Timer timer = this.catalog.startSummaryTimer("metrics_generate_time_seconds");
+
         ClusterHealthRequest clusterHealthRequest = new ClusterHealthRequest();
         ClusterHealthResponse clusterHealthResponse = client.admin().cluster().health(clusterHealthRequest).actionGet();
 
@@ -522,6 +526,8 @@ public class PrometheusMetricsCollector {
         this.updateCircuitBreakersMetrics(node, nodeStats.getBreaker());
         this.updateThreadPoolMetrics(node, nodeStats.getThreadPool());
         this.updateFsMetrics(node, nodeStats.getFs());
+
+        timer.observeDuration();
     }
 
     public PrometheusMetricsCatalog getCatalog() {

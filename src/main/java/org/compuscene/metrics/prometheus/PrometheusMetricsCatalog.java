@@ -3,6 +3,7 @@ package org.compuscene.metrics.prometheus;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
+import io.prometheus.client.Summary;
 import io.prometheus.client.exporter.common.TextFormat;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.ESLoggerFactory;
@@ -73,6 +74,26 @@ public class PrometheusMetricsCatalog {
         } else {
             logger.error(String.format("Can not increment metric %s with value %f", metric, increment));
         }
+    }
+
+    public void registerSummaryTimer(String metric, String help, String... labels) {
+        String[] extended_labels = new String[labels.length + 1];
+        extended_labels[0] = "cluster";
+        for (int i = 0; i < labels.length; i++) extended_labels[i + 1] = labels[i];
+
+        Summary summary = Summary.build().name(this.metric_prefix + metric).help(help).labelNames(extended_labels).register(this.registry);
+        this.metrics.put(metric, summary);
+
+        logger.debug(String.format("Registered new summary %s", metric));
+    }
+
+    public Summary.Timer startSummaryTimer(String metric, String... label_values) {
+        String[] extended_label_values = new String[label_values.length + 1];
+        extended_label_values[0] = this.cluster;
+        for (int i = 0; i < label_values.length; i++) extended_label_values[i + 1] = label_values[i];
+
+        Summary summary = (Summary) this.metrics.get(metric);
+        return summary.labels(extended_label_values).startTimer();
     }
 
     public String toTextFormat() throws IOException {
