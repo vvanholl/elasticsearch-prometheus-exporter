@@ -23,9 +23,6 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     @Inject
     public RestPrometheusMetricsAction(Settings settings, Client client, RestController controller, SettingsFilter settingsFilter) {
         super(settings, controller, client);
-
-        this.collector = new PrometheusMetricsCollector(client);
-
         controller.registerHandler(GET, "/_prometheus/metrics", this);
     }
 
@@ -33,10 +30,13 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     public void handleRequest(final RestRequest request, final RestChannel channel, final Client client) {
         logger.trace(String.format("Received request for Prometheus metrics from %s", request.getRemoteAddress().toString()));
 
-        this.collector.updateMetrics();
+        if (collector == null)
+            collector = new PrometheusMetricsCollector(client);
+
+        collector.updateMetrics();
 
         try {
-            channel.sendResponse(new BytesRestResponse(OK, this.collector.getCatalog().toTextFormat()));
+            channel.sendResponse(new BytesRestResponse(OK, collector.getCatalog().toTextFormat()));
         } catch (java.io.IOException e) {
             channel.sendResponse(new BytesRestResponse(INTERNAL_SERVER_ERROR, ""));
         }
