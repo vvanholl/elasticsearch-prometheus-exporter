@@ -168,8 +168,8 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_doc_count", "Total number of documents", "node");
         catalog.registerCounter("indices_doc_deleted_count", "Number of deleted documents", "node");
 
-        catalog.registerGauge("indices_store_size_bytes", "No Help provided for the moment", "node");
-        catalog.registerCounter("indices_store_throttle_time_seconds", "No Help provided for the moment", "node");
+        catalog.registerGauge("indices_store_size_bytes", "Store size of the indices in bytes", "node");
+        catalog.registerCounter("indices_store_throttle_time_seconds", "Time spent while storing into indices when throttling", "node");
 
         catalog.registerCounter("indices_indexing_delete_count", "Count of documents deleted", "node");
         catalog.registerGauge("indices_indexing_delete_current_number", "Current rate of documents deleted", "node");
@@ -208,7 +208,7 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_merges_total_time_seconds", "Time spent while merging", "node");
         catalog.registerCounter("indices_merges_total_docs_count", "Count of documents merged", "node");
         catalog.registerCounter("indices_merges_total_size_bytes", "Count of bytes of merged documents", "node");
-        catalog.registerCounter("indices_merges_total_stopped_time_seconds", "No Help provided for the moment", "node");
+        catalog.registerCounter("indices_merges_total_stopped_time_seconds", "Time spent while merge process stopped", "node");
         catalog.registerCounter("indices_merges_total_throttled_time_seconds", "Time spent while merging when throttling", "node");
         catalog.registerCounter("indices_merges_total_auto_throttle_bytes", "Bytes merged while throttling", "node");
 
@@ -218,13 +218,13 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_flush_total_count", "Count of flushes", "node");
         catalog.registerCounter("indices_flush_total_time_seconds", "Total time spent while flushes", "node");
 
-        catalog.registerCounter("indices_querycache_cache_count", "No Help provided for the moment", "node");
+        catalog.registerCounter("indices_querycache_cache_count", "Count of queries in cache", "node");
         catalog.registerGauge("indices_querycache_cache_size_bytes", "Query cache size", "node");
         catalog.registerCounter("indices_querycache_evictions_count", "Count of evictions in query cache", "node");
         catalog.registerCounter("indices_querycache_hit_count", "Count of hits in query cache", "node");
         catalog.registerGauge("indices_querycache_memory_size_bytes", "Memory usage of query cache", "node");
         catalog.registerCounter("indices_querycache_miss_count", "Count of misses in query cache", "node");
-        catalog.registerCounter("indices_querycache_total_count", "No Help provided for the moment", "node");
+        catalog.registerCounter("indices_querycache_total_count", "Count of usages of query cache", "node");
 
         catalog.registerGauge("indices_fielddata_memory_size_bytes", "Memory usage of field date cache", "node");
         catalog.registerCounter("indices_fielddata_evictions_count", "Count of evictions in field data cache", "node");
@@ -235,7 +235,7 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_percolate_queries_count", "Count of queries percolated", "node");
         catalog.registerCounter("indices_percolate_time_seconds", "Time spent while percolating", "node");
 
-        catalog.registerGauge("indices_completion_size_bytes", "No Help provided for the moment", "node");
+        catalog.registerGauge("indices_completion_size_bytes", "Size of completion suggest statistics", "node");
 
         catalog.registerCounter("indices_segments_number", "Current number of segments", "node");
         catalog.registerGauge("indices_segments_memory_bytes", "Memory used by segments", "node", "type");
