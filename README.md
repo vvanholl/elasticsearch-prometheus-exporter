@@ -7,27 +7,28 @@ Current available metrics are :
 
 - Cluster status
 - Node status :
-	- JVM
-	- Indices (global)
-	- Transport
-	- HTTP
-	- Scripts
-	- Process
-	- Operating System
-	- File System
-	- Circuit Breaker
+    - JVM
+    - Indices (global)
+    - Transport
+    - HTTP
+    - Scripts
+    - Process
+    - Operating System
+    - File System
+    - Circuit Breaker
 
 ## Compatibility matrix
 
 | Elasticsearch  | Plugin         | Release date | Prod ready ? |
 | -------------- | -------------- | ------------ | ------------ |
+| 2.3.5          | 2.3.5.0        | Aug 04, 2016 | NO           |
 | 2.3.4          | 2.3.4.2        | Aug 02, 2016 | NO           |
 | 2.3.4          | 2.3.4.1        | Aug 01, 2016 | NO           |
 | 2.3.4          | 2.3.4.0        | Jul 30, 2016 | NO           |
 
 ## Install
 
-    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.4.2/elasticsearch-prometheus-exporter-2.3.4.2.zip
+    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.5.0/elasticsearch-prometheus-exporter-2.3.5.0.zip
 
 Do not forget to restart the node after installation !
 
