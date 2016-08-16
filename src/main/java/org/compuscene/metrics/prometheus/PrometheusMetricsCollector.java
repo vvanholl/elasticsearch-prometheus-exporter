@@ -497,7 +497,8 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("fs_total_total_bytes", fs.getTotal().getTotal().bytes(), node);
             catalog.setGauge("fs_total_available_bytes", fs.getTotal().getAvailable().bytes(), node);
             catalog.setGauge("fs_total_free_bytes", fs.getTotal().getFree().bytes(), node);
-            catalog.setGauge("fs_total_is_spinning_bool", fs.getTotal().getSpins() ? 1 : 0, node);
+            if (fs.getTotal().getSpins() != null)
+                catalog.setGauge("fs_total_is_spinning_bool", fs.getTotal().getSpins() ? 1 : 0, node);
 
             for (FsInfo.Path fspath : fs) {
                 String path = fspath.getPath();
@@ -506,7 +507,8 @@ public class PrometheusMetricsCollector {
                 catalog.setGauge("fs_path_total_bytes", fspath.getTotal().bytes(), node, path, mount, type);
                 catalog.setGauge("fs_path_available_bytes", fspath.getAvailable().bytes(), node, path, mount, type);
                 catalog.setGauge("fs_path_free_bytes", fspath.getFree().bytes(), node, path, mount, type);
-                catalog.setGauge("fs_path_is_spinning_bool", fspath.getSpins() ? 1 : 0, node, path, mount, type);
+                if (fspath.getSpins() != null)
+                    catalog.setGauge("fs_path_is_spinning_bool", fspath.getSpins() ? 1 : 0, node, path, mount, type);
             }
         }
     }
