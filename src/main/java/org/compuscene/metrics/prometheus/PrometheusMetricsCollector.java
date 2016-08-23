@@ -223,8 +223,8 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_querycache_evictions_count", "Count of evictions in query cache", "node");
         catalog.registerCounter("indices_querycache_hit_count", "Count of hits in query cache", "node");
         catalog.registerGauge("indices_querycache_memory_size_bytes", "Memory usage of query cache", "node");
-        catalog.registerCounter("indices_querycache_miss_count", "Count of misses in query cache", "node");
-        catalog.registerCounter("indices_querycache_total_count", "Count of usages of query cache", "node");
+        catalog.registerGauge("indices_querycache_miss_count", "Count of misses in query cache", "node");
+        catalog.registerGauge("indices_querycache_total_count", "Count of usages of query cache", "node");
 
         catalog.registerGauge("indices_fielddata_memory_size_bytes", "Memory usage of field date cache", "node");
         catalog.registerCounter("indices_fielddata_evictions_count", "Count of evictions in field data cache", "node");
@@ -312,8 +312,8 @@ public class PrometheusMetricsCollector {
             catalog.setCounter("indices_querycache_evictions_count", idx.getQueryCache().getEvictions(), node);
             catalog.setCounter("indices_querycache_hit_count", idx.getQueryCache().getHitCount(), node);
             catalog.setGauge("indices_querycache_memory_size_bytes", idx.getQueryCache().getMemorySizeInBytes(), node);
-            catalog.setCounter("indices_querycache_miss_count", idx.getQueryCache().getMissCount(), node);
-            catalog.setCounter("indices_querycache_total_count", idx.getQueryCache().getTotalCount(), node);
+            catalog.setGauge("indices_querycache_miss_count", idx.getQueryCache().getMissCount(), node);
+            catalog.setGauge("indices_querycache_total_count", idx.getQueryCache().getTotalCount(), node);
 
             catalog.setGauge("indices_fielddata_memory_size_bytes", idx.getFieldData().getMemorySizeInBytes(), node);
             catalog.setCounter("indices_fielddata_evictions_count", idx.getFieldData().getEvictions(), node);
