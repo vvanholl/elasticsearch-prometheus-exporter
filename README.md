@@ -21,6 +21,7 @@ Current available metrics are :
 
 | Elasticsearch  | Plugin         | Release date | Prod ready ? |
 | -------------- | -------------- | ------------ | ------------ |
+| 2.3.5          | 2.3.5.2        | Aug 23, 2016 | NO           |
 | 2.3.5          | 2.3.5.1        | Aug 16, 2016 | NO           |
 | 2.3.5          | 2.3.5.0        | Aug 04, 2016 | NO           |
 | 2.3.4          | 2.3.4.2        | Aug 02, 2016 | NO           |
@@ -29,7 +30,7 @@ Current available metrics are :
 
 ## Install
 
-    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.5.1/elasticsearch-prometheus-exporter-2.3.5.1.zip
+    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.3.5.2/elasticsearch-prometheus-exporter-2.3.5.2.zip
 
 Do not forget to restart the node after installation !
 
