@@ -237,7 +237,7 @@ public class PrometheusMetricsCollector {
 
         catalog.registerGauge("indices_completion_size_bytes", "Size of completion suggest statistics", "node");
 
-        catalog.registerCounter("indices_segments_number", "Current number of segments", "node");
+        catalog.registerGauge("indices_segments_number", "Current number of segments", "node");
         catalog.registerGauge("indices_segments_memory_bytes", "Memory used by segments", "node", "type");
 
         catalog.registerGauge("indices_suggest_current_number", "Current rate of suggests", "node");
@@ -326,7 +326,7 @@ public class PrometheusMetricsCollector {
 
             catalog.setGauge("indices_completion_size_bytes", idx.getCompletion().getSizeInBytes(), node);
 
-            catalog.setCounter("indices_segments_number", idx.getSegments().getCount(), node);
+            catalog.setGauge("indices_segments_number", idx.getSegments().getCount(), node);
             catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getMemoryInBytes(), node, "all");
             catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getBitsetMemoryInBytes(), node, "bitset");
             catalog.setGauge("indices_segments_memory_bytes", idx.getSegments().getDocValuesMemoryInBytes(), node, "docvalues");
