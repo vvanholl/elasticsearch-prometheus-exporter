@@ -117,9 +117,9 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("jvm_bufferpool_total_capacity_bytes", "Total capacity provided by buffer pools", "node", "bufferpool");
         catalog.registerGauge("jvm_bufferpool_used_bytes", "Used memory in buffer pools", "node", "bufferpool");
 
-        catalog.registerCounter("jvm_classes_loaded_count", "Count of loaded classes", "node");
-        catalog.registerCounter("jvm_classes_total_loaded_count", "Total count of loaded classes", "node");
-        catalog.registerCounter("jvm_classes_unloaded_count", "Count of unloaded classes", "node");
+        catalog.registerGauge("jvm_classes_loaded_count", "Count of loaded classes", "node");
+        catalog.registerGauge("jvm_classes_total_loaded_count", "Total count of loaded classes", "node");
+        catalog.registerGauge("jvm_classes_unloaded_count", "Count of unloaded classes", "node");
     }
 
     private void updateJVMMetrics(JvmStats jvm) {
@@ -157,16 +157,16 @@ public class PrometheusMetricsCollector {
                 catalog.setGauge("jvm_bufferpool_used_bytes", bp.getUsed().bytes(), node, name);
             }
             if (jvm.getClasses() != null) {
-                catalog.setCounter("jvm_classes_loaded_count", jvm.getClasses().getLoadedClassCount(), node);
-                catalog.setCounter("jvm_classes_total_loaded_count", jvm.getClasses().getTotalLoadedClassCount(), node);
-                catalog.setCounter("jvm_classes_unloaded_count", jvm.getClasses().getUnloadedClassCount(), node);
+                catalog.setGauge("jvm_classes_loaded_count", jvm.getClasses().getLoadedClassCount(), node);
+                catalog.setGauge("jvm_classes_total_loaded_count", jvm.getClasses().getTotalLoadedClassCount(), node);
+                catalog.setGauge("jvm_classes_unloaded_count", jvm.getClasses().getUnloadedClassCount(), node);
             }
         }
     }
 
     private void registerIndicesMetrics() {
-        catalog.registerCounter("indices_doc_count", "Total number of documents", "node");
-        catalog.registerCounter("indices_doc_deleted_count", "Number of deleted documents", "node");
+        catalog.registerGauge("indices_doc_count", "Total number of documents", "node");
+        catalog.registerGauge("indices_doc_deleted_count", "Number of deleted documents", "node");
 
         catalog.registerGauge("indices_store_size_bytes", "Store size of the indices in bytes", "node");
         catalog.registerCounter("indices_store_throttle_time_seconds", "Time spent while storing into indices when throttling", "node");
@@ -255,8 +255,8 @@ public class PrometheusMetricsCollector {
 
     private void updateIndicesMetrics(NodeIndicesStats idx) {
         if (idx != null) {
-            catalog.setCounter("indices_doc_count", idx.getDocs().getCount(), node);
-            catalog.setCounter("indices_doc_deleted_count", idx.getDocs().getDeleted(), node);
+            catalog.setGauge("indices_doc_count", idx.getDocs().getCount(), node);
+            catalog.setGauge("indices_doc_deleted_count", idx.getDocs().getDeleted(), node);
 
             catalog.setGauge("indices_store_size_bytes", idx.getStore().getSizeInBytes(), node);
             catalog.setCounter("indices_store_throttle_time_seconds", idx.getStore().getThrottleTime().millis() / 1000.0, node);
