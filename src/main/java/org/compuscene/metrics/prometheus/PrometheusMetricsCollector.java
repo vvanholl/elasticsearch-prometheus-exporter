@@ -210,7 +210,7 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_merges_total_size_bytes", "Count of bytes of merged documents", "node");
         catalog.registerCounter("indices_merges_total_stopped_time_seconds", "Time spent while merge process stopped", "node");
         catalog.registerCounter("indices_merges_total_throttled_time_seconds", "Time spent while merging when throttling", "node");
-        catalog.registerCounter("indices_merges_total_auto_throttle_bytes", "Bytes merged while throttling", "node");
+        catalog.registerGauge("indices_merges_total_auto_throttle_bytes", "Bytes merged while throttling", "node");
 
         catalog.registerCounter("indices_refresh_total_count", "Count of refreshes", "node");
         catalog.registerCounter("indices_refresh_total_time_seconds", "Time spent while refreshes", "node");
@@ -299,7 +299,7 @@ public class PrometheusMetricsCollector {
             catalog.setCounter("indices_merges_total_size_bytes", idx.getMerge().getTotalSizeInBytes(), node);
             catalog.setCounter("indices_merges_total_stopped_time_seconds", idx.getMerge().getTotalStoppedTimeInMillis() / 1000.0, node);
             catalog.setCounter("indices_merges_total_throttled_time_seconds", idx.getMerge().getTotalThrottledTimeInMillis() / 1000.0, node);
-            catalog.setCounter("indices_merges_total_auto_throttle_bytes", idx.getMerge().getTotalBytesPerSecAutoThrottle(), node);
+            catalog.setGauge("indices_merges_total_auto_throttle_bytes", idx.getMerge().getTotalBytesPerSecAutoThrottle(), node);
 
             catalog.setCounter("indices_refresh_total_count", idx.getRefresh().getTotal(), node);
             catalog.setCounter("indices_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis() / 1000.0, node);
