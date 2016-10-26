@@ -497,7 +497,7 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("fs_total_total_bytes", fs.getTotal().getTotal().bytes(), node);
             catalog.setGauge("fs_total_available_bytes", fs.getTotal().getAvailable().bytes(), node);
             catalog.setGauge("fs_total_free_bytes", fs.getTotal().getFree().bytes(), node);
-            if (fs.getTotal().getSpins() != null)
+            if (fs.getTotal() != null && fs.getTotal().getSpins() != null)
                 catalog.setGauge("fs_total_is_spinning_bool", fs.getTotal().getSpins() ? 1 : 0, node);
 
             for (FsInfo.Path fspath : fs) {
