@@ -426,7 +426,7 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("os_cpu_percent", os.getCpu().getPercent(), node);
             catalog.setGauge("os_load_average_one_minute", os.getCpu().getLoadAverage()[0], node);
             catalog.setGauge("os_load_average_five_minutes", os.getCpu().getLoadAverage()[1], node);
-            catalog.setGauge("os_load_average_fifteen_minutes", os.getCpu().getLoadAverage()[3], node);
+            catalog.setGauge("os_load_average_fifteen_minutes", os.getCpu().getLoadAverage()[2], node);
             catalog.setGauge("os_mem_free_bytes", os.getMem().getFree().getBytes(), node);
             catalog.setGauge("os_mem_free_percent", os.getMem().getFreePercent(), node);
             catalog.setGauge("os_mem_used_bytes", os.getMem().getUsed().getBytes(), node);
