@@ -408,7 +408,9 @@ public class PrometheusMetricsCollector {
 
     private void registerOsMetrics() {
         catalog.registerGauge("os_cpu_percent", "CPU usage in percent", "node");
-        catalog.registerGauge("os_load_average", "CPU load", "node");
+        catalog.registerGauge("os_load_average_one_minute", "CPU load", "node");
+        catalog.registerGauge("os_load_average_five_minutes", "CPU load", "node");
+        catalog.registerGauge("os_load_average_fifteen_minutes", "CPU load", "node");
         catalog.registerGauge("os_mem_free_bytes", "Memory free", "node");
         catalog.registerGauge("os_mem_free_percent", "Memory free in percent", "node");
         catalog.registerGauge("os_mem_used_bytes", "Memory used", "node");
