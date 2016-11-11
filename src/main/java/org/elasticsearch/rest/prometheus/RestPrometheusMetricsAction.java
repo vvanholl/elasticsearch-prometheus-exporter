@@ -1,44 +1,48 @@
 package org.elasticsearch.rest.prometheus;
 
+import org.apache.logging.log4j.Logger;
 import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.SettingsFilter;
-import org.elasticsearch.rest.*;
+import org.elasticsearch.rest.BaseRestHandler;
+import org.elasticsearch.rest.BytesRestResponse;
+import org.elasticsearch.rest.RestController;
+import org.elasticsearch.rest.RestRequest;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.elasticsearch.rest.RestRequest.Method.GET;
-import static org.elasticsearch.rest.RestStatus.INTERNAL_SERVER_ERROR;
 import static org.elasticsearch.rest.RestStatus.OK;
 
+public class RestPrometheusMetricsAction extends BaseRestHandler
+{
 
-public class RestPrometheusMetricsAction extends BaseRestHandler {
+    private final static Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
 
-    private final static ESLogger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
-
-    private PrometheusMetricsCollector collector;
+    private AtomicReference<PrometheusMetricsCollector> collector = new AtomicReference<>();
 
     @Inject
-    public RestPrometheusMetricsAction(Settings settings, Client client, RestController controller, SettingsFilter settingsFilter) {
-        super(settings, controller, client);
+    public RestPrometheusMetricsAction(Settings settings, RestController controller)
+    {
+
+        super(settings);
+
         controller.registerHandler(GET, "/_prometheus/metrics", this);
     }
 
     @Override
-    public void handleRequest(final RestRequest request, final RestChannel channel, final Client client) {
+    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException
+    {
         logger.trace(String.format("Received request for Prometheus metrics from %s", request.getRemoteAddress().toString()));
 
-        if (collector == null)
-            collector = new PrometheusMetricsCollector(client);
+        collector.compareAndSet(null, new PrometheusMetricsCollector(client));
 
-        collector.updateMetrics();
+        collector.get().updateMetrics();
 
-        try {
-            channel.sendResponse(new BytesRestResponse(OK, collector.getCatalog().toTextFormat()));
-        } catch (java.io.IOException e) {
-            channel.sendResponse(new BytesRestResponse(INTERNAL_SERVER_ERROR, ""));
-        }
+        return channel -> channel.sendResponse(new BytesRestResponse(OK, collector.get().getCatalog().toTextFormat()));
+
     }
 }

@@ -1,35 +1,43 @@
 package org.elasticsearch.plugin.prometheus;
 
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.IndexModule;
+import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.Plugin;
-import org.elasticsearch.rest.RestModule;
+import org.elasticsearch.rest.RestHandler;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
 
-public class PrometheusExporterPlugin extends Plugin {
+import java.util.List;
 
-    private final ESLogger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
+import static java.util.Collections.singletonList;
+
+public class PrometheusExporterPlugin extends Plugin implements ActionPlugin
+{
+
+    private final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
+
     private Settings settings;
 
     @Inject
-    public PrometheusExporterPlugin(Settings settings) {
+    public PrometheusExporterPlugin(Settings settings)
+    {
         this.settings = settings;
         logger.info("starting Prometheus exporter plugin...");
     }
 
     @Override
-    public String name() {
-        return "prometheus-exporter";
+    public void onIndexModule(IndexModule indexModule)
+    {
+        super.onIndexModule(indexModule);
     }
 
     @Override
-    public String description() {
-        return "Prometheus Exporter Plugin";
+    public List<Class<? extends RestHandler>> getRestHandlers()
+    {
+        return singletonList(RestPrometheusMetricsAction.class);
     }
 
-    public void onModule(RestModule module) {
-        module.addRestAction(RestPrometheusMetricsAction.class);
-    }
 }
