@@ -21,6 +21,7 @@ Current available metrics are :
 
 | Elasticsearch  | Plugin         | Release date | Prod ready ? |
 | -------------- | -------------- | ------------ | ------------ |
+| 5.0.0          | 5.0.0.0        | Nov 14, 2016 | NO           |
 | 2.4.1          | 2.4.1.0        | Sep 29, 2016 | NO           |
 | 2.4.0          | 2.4.0.0        | Sep 01, 2016 | NO           |
 | 2.3.5          | 2.3.5.5        | Aug 29, 2016 | NO           |
@@ -35,6 +36,10 @@ Current available metrics are :
 
 ## Install
 
+- Since ElasticSearch 5.0.0 :
+    ./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.0.0.0/elasticsearch-prometheus-exporter-5.0.0.0.zip
+
+- On old 2.x.x versions :
     ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip
 
 Do not forget to restart the node after installation !
@@ -42,9 +47,15 @@ Do not forget to restart the node after installation !
 Note that the plugin needs special permissions :
 
 - java.lang.RuntimePermission accessClassInPackage.sun.misc
+- java.lang.RuntimePermission accessDeclaredMembers
 - java.lang.reflect.ReflectPermission suppressAccessChecks
 
 ## Uninstall
+
+- Since ElasticSearch 5.0.0 :
+    ./bin/elasticsearch-plugin remove prometheus-exporter
+
+- On old 2.x.x versions :
     ./bin/plugin remove prometheus-exporter
 
 Do not forget to restart the node after installation !
