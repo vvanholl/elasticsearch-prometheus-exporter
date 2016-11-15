@@ -21,6 +21,7 @@ Current available metrics are :
 
 | Elasticsearch  | Plugin         | Release date | Prod ready ? |
 | -------------- | -------------- | ------------ | ------------ |
+| 5.0.1          | 5.0.1.0        | Nov 15, 2016 | NO           |
 | 5.0.0          | 5.0.0.0        | Nov 14, 2016 | NO           |
 | 2.4.1          | 2.4.1.0        | Sep 29, 2016 | NO           |
 | 2.4.0          | 2.4.0.0        | Sep 01, 2016 | NO           |
@@ -37,7 +38,7 @@ Current available metrics are :
 ## Install
 
 - Since ElasticSearch 5.0.0 :
-    ./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.0.0.0/elasticsearch-prometheus-exporter-5.0.0.0.zip
+    ./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.0.0.1/elasticsearch-prometheus-exporter-5.0.0.1.zip
 
 - On old 2.x.x versions :
     ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip
