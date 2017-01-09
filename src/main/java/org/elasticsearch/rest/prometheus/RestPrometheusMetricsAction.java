@@ -17,16 +17,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.elasticsearch.rest.RestRequest.Method.GET;
 import static org.elasticsearch.rest.RestStatus.OK;
 
-public class RestPrometheusMetricsAction extends BaseRestHandler
-{
+public class RestPrometheusMetricsAction extends BaseRestHandler {
 
     private final static Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
 
     private AtomicReference<PrometheusMetricsCollector> collector = new AtomicReference<>();
 
     @Inject
-    public RestPrometheusMetricsAction(Settings settings, RestController controller)
-    {
+    public RestPrometheusMetricsAction(Settings settings, RestController controller) {
 
         super(settings);
 
@@ -34,8 +32,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler
     }
 
     @Override
-    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException
-    {
+    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException {
         logger.trace(String.format("Received request for Prometheus metrics from %s", request.getRemoteAddress().toString()));
 
         collector.compareAndSet(null, new PrometheusMetricsCollector(client));

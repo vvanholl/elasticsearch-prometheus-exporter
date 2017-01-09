@@ -14,29 +14,22 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 
-public class PrometheusExporterPlugin extends Plugin implements ActionPlugin
-{
+public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
 
     private final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
 
-    private Settings settings;
-
     @Inject
-    public PrometheusExporterPlugin(Settings settings)
-    {
-        this.settings = settings;
+    public PrometheusExporterPlugin(Settings settings) {
         logger.info("starting Prometheus exporter plugin...");
     }
 
     @Override
-    public void onIndexModule(IndexModule indexModule)
-    {
+    public void onIndexModule(IndexModule indexModule) {
         super.onIndexModule(indexModule);
     }
 
     @Override
-    public List<Class<? extends RestHandler>> getRestHandlers()
-    {
+    public List<Class<? extends RestHandler>> getRestHandlers() {
         return singletonList(RestPrometheusMetricsAction.class);
     }
 
