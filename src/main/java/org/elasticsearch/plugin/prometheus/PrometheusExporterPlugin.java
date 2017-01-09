@@ -11,11 +11,9 @@ import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
 public class PrometheusExporterPlugin extends Plugin {
 
     private final ESLogger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
-    private Settings settings;
 
     @Inject
     public PrometheusExporterPlugin(Settings settings) {
-        this.settings = settings;
         logger.info("starting Prometheus exporter plugin...");
     }
 
