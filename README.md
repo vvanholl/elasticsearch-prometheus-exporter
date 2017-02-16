@@ -21,6 +21,7 @@ Current available metrics are :
 
 | Elasticsearch  | Plugin         | Release date | Prod ready ? |
 | -------------- | -------------- | ------------ | ------------ |
+| 5.2.1          | 5.2.1.0        | Feb 16, 2017 | NO           |
 | 5.2.0          | 5.2.0.0        | Feb 03, 2017 | NO           |
 | 5.1.2          | 5.1.2.0        | Jan 12, 2017 | NO           |
 | 5.1.1          | 5.1.1.0        | Dev 29, 2016 | NO           |
