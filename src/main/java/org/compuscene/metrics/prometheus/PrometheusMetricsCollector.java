@@ -35,7 +35,7 @@ public class PrometheusMetricsCollector {
         NodesStatsResponse nodesStatsResponse = this.client.admin().cluster().nodesStats(nodesStatsRequest).actionGet();
 
         cluster = nodesStatsResponse.getClusterName().value();
-        node = nodesStatsResponse.getNodes().get(0).getHostname();
+        node = nodesStatsResponse.getNodes().get(0).getNode().getName();
         catalog = new PrometheusMetricsCatalog(cluster, "es_");
 
         registerMetrics();
