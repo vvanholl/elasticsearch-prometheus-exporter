@@ -526,93 +526,100 @@ public class PrometheusMetricsCollector {
     }
 
     private void registerPerIndexMetrics() {
-        catalog.registerGauge("indices_doc_number", "Total number of documents", "node");
-        catalog.registerGauge("indices_doc_deleted_number", "Number of deleted documents", "node");
+        catalog.registerGauge("index_doc_number", "Total number of documents", "node", "index");
+        catalog.registerGauge("index_doc_deleted_number", "Number of deleted documents", "node", "index");
 
-        catalog.registerGauge("indices_store_size_bytes", "Store size of the indices in bytes", "node");
-        catalog.registerCounter("indices_store_throttle_time_seconds", "Time spent while storing into indices when throttling", "node");
+        catalog.registerGauge("index_store_size_bytes", "Store size of the indices in bytes", "node", "index");
+        catalog.registerCounter("index_store_throttle_time_seconds", "Time spent while storing into indices when throttling", "node", "index");
 
-        catalog.registerCounter("indices_indexing_delete_count", "Count of documents deleted", "node");
-        catalog.registerGauge("indices_indexing_delete_current_number", "Current rate of documents deleted", "node");
-        catalog.registerCounter("indices_indexing_delete_time_seconds", "Time spent while deleting documents", "node");
-        catalog.registerCounter("indices_indexing_index_count", "Count of documents indexed", "node");
-        catalog.registerGauge("indices_indexing_index_current_number", "Current rate of documents indexed", "node");
-        catalog.registerCounter("indices_indexing_index_failed_count", "Count of failed to index documents", "node");
-        catalog.registerCounter("indices_indexing_index_time_seconds", "Time spent while indexing documents", "node");
-        catalog.registerCounter("indices_indexing_noop_update_count", "Count of noop document updates", "node");
-        catalog.registerGauge("indices_indexing_is_throttled_bool", "Is indexing throttling ?", "node");
-        catalog.registerCounter("indices_indexing_throttle_time_seconds", "Time spent while throttling", "node");
+        catalog.registerCounter("index_indexing_delete_count", "Count of documents deleted", "node", "index");
+        catalog.registerGauge("index_indexing_delete_current_number", "Current rate of documents deleted", "node", "index");
+        catalog.registerCounter("index_indexing_delete_time_seconds", "Time spent while deleting documents", "node", "index");
+        catalog.registerCounter("index_indexing_index_count", "Count of documents indexed", "node", "index");
+        catalog.registerGauge("index_indexing_index_current_number", "Current rate of documents indexed", "node", "index");
+        catalog.registerCounter("index_indexing_index_failed_count", "Count of failed to index documents", "node", "index");
+        catalog.registerCounter("index_indexing_index_time_seconds", "Time spent while indexing documents", "node", "index");
+        catalog.registerCounter("index_indexing_noop_update_count", "Count of noop document updates", "node", "index");
+        catalog.registerGauge("index_indexing_is_throttled_bool", "Is indexing throttling ?", "node", "index");
+        catalog.registerCounter("index_indexing_throttle_time_seconds", "Time spent while throttling", "node", "index");
 
-        catalog.registerCounter("indices_get_count", "Count of get commands", "node");
-        catalog.registerCounter("indices_get_time_seconds", "Time spent while get commands", "node");
-        catalog.registerCounter("indices_get_exists_count", "Count of existing documents when get command", "node");
-        catalog.registerCounter("indices_get_exists_time_seconds", "Time spent while existing documents get command", "node");
-        catalog.registerCounter("indices_get_missing_count", "Count of missing documents when get command", "node");
-        catalog.registerCounter("indices_get_missing_time_seconds", "Time spent while missing documents get command", "node");
-        catalog.registerCounter("indices_get_current_number", "Current rate of get commands", "node");
+        catalog.registerCounter("index_get_count", "Count of get commands", "node", "index");
+        catalog.registerCounter("index_get_time_seconds", "Time spent while get commands", "node", "index");
+        catalog.registerCounter("index_get_exists_count", "Count of existing documents when get command", "node", "index");
+        catalog.registerCounter("index_get_exists_time_seconds", "Time spent while existing documents get command", "node", "index");
+        catalog.registerCounter("index_get_missing_count", "Count of missing documents when get command", "node", "index");
+        catalog.registerCounter("index_get_missing_time_seconds", "Time spent while missing documents get command", "node", "index");
+        catalog.registerCounter("index_get_current_number", "Current rate of get commands", "node", "index");
 
-        catalog.registerGauge("indices_search_open_contexts_number", "Number of search open contexts", "node");
-        catalog.registerCounter("indices_search_fetch_count", "Count of search fetches", "node");
-        catalog.registerGauge("indices_search_fetch_current_number", "Current rate of search fetches", "node");
-        catalog.registerCounter("indices_search_fetch_time_seconds", "Time spent while search fetches", "node");
-        catalog.registerCounter("indices_search_query_count", "Count of search queries", "node");
-        catalog.registerGauge("indices_search_query_current_number", "Current rate of search queries", "node");
-        catalog.registerCounter("indices_search_query_time_seconds", "Time spent while search queries", "node");
-        catalog.registerCounter("indices_search_scroll_count", "Count of search scrolls", "node");
-        catalog.registerGauge("indices_search_scroll_current_number", "Current rate of search scrolls", "node");
-        catalog.registerCounter("indices_search_scroll_time_seconds", "Time spent while search scrolls", "node");
+        catalog.registerGauge("index_search_open_contexts_number", "Number of search open contexts", "node", "index");
+        catalog.registerCounter("index_search_fetch_count", "Count of search fetches", "node", "index");
+        catalog.registerGauge("index_search_fetch_current_number", "Current rate of search fetches", "node", "index");
+        catalog.registerCounter("index_search_fetch_time_seconds", "Time spent while search fetches", "node", "index");
+        catalog.registerCounter("index_search_query_count", "Count of search queries", "node", "index");
+        catalog.registerGauge("index_search_query_current_number", "Current rate of search queries", "node", "index");
+        catalog.registerCounter("index_search_query_time_seconds", "Time spent while search queries", "node", "index");
+        catalog.registerCounter("index_search_scroll_count", "Count of search scrolls", "node", "index");
+        catalog.registerGauge("index_search_scroll_current_number", "Current rate of search scrolls", "node", "index");
+        catalog.registerCounter("index_search_scroll_time_seconds", "Time spent while search scrolls", "node", "index");
 
-        catalog.registerGauge("indices_merges_current_number", "Current rate of merges", "node");
-        catalog.registerGauge("indices_merges_current_docs_number", "Current rate of documents merged", "node");
-        catalog.registerGauge("indices_merges_current_size_bytes", "Current rate of bytes merged", "node");
-        catalog.registerCounter("indices_merges_total_number", "Count of merges", "node");
-        catalog.registerCounter("indices_merges_total_time_seconds", "Time spent while merging", "node");
-        catalog.registerCounter("indices_merges_total_docs_count", "Count of documents merged", "node");
-        catalog.registerCounter("indices_merges_total_size_bytes", "Count of bytes of merged documents", "node");
-        catalog.registerCounter("indices_merges_total_stopped_time_seconds", "Time spent while merge process stopped", "node");
-        catalog.registerCounter("indices_merges_total_throttled_time_seconds", "Time spent while merging when throttling", "node");
-        catalog.registerGauge("indices_merges_total_auto_throttle_bytes", "Bytes merged while throttling", "node");
+        catalog.registerGauge("index_merges_current_number", "Current rate of merges", "node", "index");
+        catalog.registerGauge("index_merges_current_docs_number", "Current rate of documents merged", "node", "index");
+        catalog.registerGauge("index_merges_current_size_bytes", "Current rate of bytes merged", "node", "index");
+        catalog.registerCounter("index_merges_total_number", "Count of merges", "node", "index");
+        catalog.registerCounter("index_merges_total_time_seconds", "Time spent while merging", "node", "index");
+        catalog.registerCounter("index_merges_total_docs_count", "Count of documents merged", "node", "index");
+        catalog.registerCounter("index_merges_total_size_bytes", "Count of bytes of merged documents", "node", "index");
+        catalog.registerCounter("index_merges_total_stopped_time_seconds", "Time spent while merge process stopped", "node", "index");
+        catalog.registerCounter("index_merges_total_throttled_time_seconds", "Time spent while merging when throttling", "node", "index");
+        catalog.registerGauge("index_merges_total_auto_throttle_bytes", "Bytes merged while throttling", "node", "index");
 
-        catalog.registerCounter("indices_refresh_total_count", "Count of refreshes", "node");
-        catalog.registerCounter("indices_refresh_total_time_seconds", "Time spent while refreshes", "node");
-        catalog.registerGauge("indices_refresh_listeners_number", "Number of refresh listeners", "node");
+        catalog.registerCounter("index_refresh_total_count", "Count of refreshes", "node", "index");
+        catalog.registerCounter("index_refresh_total_time_seconds", "Time spent while refreshes", "node", "index");
+        catalog.registerGauge("index_refresh_listeners_number", "Number of refresh listeners", "node", "index");
 
-        catalog.registerCounter("indices_flush_total_count", "Count of flushes", "node");
-        catalog.registerCounter("indices_flush_total_time_seconds", "Total time spent while flushes", "node");
+        catalog.registerCounter("index_flush_total_count", "Count of flushes", "node", "index");
+        catalog.registerCounter("index_flush_total_time_seconds", "Total time spent while flushes", "node", "index");
 
-        catalog.registerCounter("indices_querycache_cache_count", "Count of queries in cache", "node");
-        catalog.registerGauge("indices_querycache_cache_size_bytes", "Query cache size", "node");
-        catalog.registerCounter("indices_querycache_evictions_count", "Count of evictions in query cache", "node");
-        catalog.registerCounter("indices_querycache_hit_count", "Count of hits in query cache", "node");
-        catalog.registerGauge("indices_querycache_memory_size_bytes", "Memory usage of query cache", "node");
-        catalog.registerGauge("indices_querycache_miss_number", "Count of misses in query cache", "node");
-        catalog.registerGauge("indices_querycache_total_number", "Count of usages of query cache", "node");
+        catalog.registerCounter("index_querycache_cache_count", "Count of queries in cache", "node", "index");
+        catalog.registerGauge("index_querycache_cache_size_bytes", "Query cache size", "node", "index");
+        catalog.registerCounter("index_querycache_evictions_count", "Count of evictions in query cache", "node", "index");
+        catalog.registerCounter("index_querycache_hit_count", "Count of hits in query cache", "node", "index");
+        catalog.registerGauge("index_querycache_memory_size_bytes", "Memory usage of query cache", "node", "index");
+        catalog.registerGauge("index_querycache_miss_number", "Count of misses in query cache", "node", "index");
+        catalog.registerGauge("index_querycache_total_number", "Count of usages of query cache", "node", "index");
 
-        catalog.registerGauge("indices_fielddata_memory_size_bytes", "Memory usage of field date cache", "node");
-        catalog.registerCounter("indices_fielddata_evictions_count", "Count of evictions in field data cache", "node");
+        catalog.registerGauge("index_fielddata_memory_size_bytes", "Memory usage of field date cache", "node", "index");
+        catalog.registerCounter("index_fielddata_evictions_count", "Count of evictions in field data cache", "node", "index");
 
-        catalog.registerCounter("indices_percolate_count", "Count of percolates", "node");
-        catalog.registerGauge("indices_percolate_current_number", "Rate of percolates", "node");
-        catalog.registerGauge("indices_percolate_memory_size_bytes", "Percolate memory size", "node");
-        catalog.registerCounter("indices_percolate_queries_count", "Count of queries percolated", "node");
-        catalog.registerCounter("indices_percolate_time_seconds", "Time spent while percolating", "node");
+        catalog.registerCounter("index_percolate_count", "Count of percolates", "node", "index");
+        catalog.registerGauge("index_percolate_current_number", "Rate of percolates", "node", "index");
+        catalog.registerGauge("index_percolate_memory_size_bytes", "Percolate memory size", "node", "index");
+        catalog.registerCounter("index_percolate_queries_count", "Count of queries percolated", "node", "index");
+        catalog.registerCounter("index_percolate_time_seconds", "Time spent while percolating", "node", "index");
 
-        catalog.registerGauge("indices_completion_size_bytes", "Size of completion suggest statistics", "node");
+        catalog.registerGauge("index_completion_size_bytes", "Size of completion suggest statistics", "node", "index");
 
-        catalog.registerGauge("indices_segments_number", "Current number of segments", "node");
-        catalog.registerGauge("indices_segments_memory_bytes", "Memory used by segments", "node", "type");
+        catalog.registerGauge("index_segments_number", "Current number of segments", "node", "index");
+        catalog.registerGauge("index_segments_memory_bytes", "Memory used by segments", "node", "type", "index");
 
-        catalog.registerGauge("indices_suggest_current_number", "Current rate of suggests", "node");
-        catalog.registerCounter("indices_suggest_count", "Count of suggests", "node");
-        catalog.registerCounter("indices_suggest_time_seconds", "Time spent while making suggests", "node");
+        catalog.registerGauge("index_suggest_current_number", "Current rate of suggests", "node", "index");
+        catalog.registerCounter("index_suggest_count", "Count of suggests", "node", "index");
+        catalog.registerCounter("index_suggest_time_seconds", "Time spent while making suggests", "node", "index");
 
-        catalog.registerGauge("indices_requestcache_memory_size_bytes", "Memory used for request cache", "node");
-        catalog.registerCounter("indices_requestcache_hit_count", "Number of hits in request cache", "node");
-        catalog.registerCounter("indices_requestcache_miss_count", "Number of misses in request cache", "node");
-        catalog.registerCounter("indices_requestcache_evictions_count", "Number of evictions in request cache", "node");
+        catalog.registerGauge("index_requestcache_memory_size_bytes", "Memory used for request cache", "node", "index");
+        catalog.registerCounter("index_requestcache_hit_count", "Number of hits in request cache", "node", "index");
+        catalog.registerCounter("index_requestcache_miss_count", "Number of misses in request cache", "node", "index");
+        catalog.registerCounter("index_requestcache_evictions_count", "Number of evictions in request cache", "node", "index");
 
-        catalog.registerGauge("indices_recovery_current_number", "Current number of recoveries", "node", "type");
-        catalog.registerCounter("indices_recovery_throttle_time_seconds", "Time spent while throttling recoveries", "node");
+        catalog.registerGauge("index_recovery_current_number", "Current number of recoveries", "node", "type", "index");
+        catalog.registerCounter("index_recovery_throttle_time_seconds", "Time spent while throttling recoveries", "node", "index");
+
+        catalog.registerGauge("index_translog_operations_number", "Current number of translog operations", "node", "index");
+        catalog.registerGauge("index_translog_size_bytes", "Translog size", "node", "index");
+
+        catalog.registerGauge("index_warmer_current_number", "Current number of warmer", "node", "index");
+        catalog.registerCounter("index_warmer_time_seconds", "Time spent during warmers", "node", "index");
+        catalog.registerCounter("index_warmer_count", "Counter of warmers", "node", "index");
     }
 
     private void updatePerIndexMetrics(IndicesStatsResponse indicesStatsResponse) {
