@@ -20,8 +20,11 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 
 ## Compatibility matrix
 
+### Version 5.X
+
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 5.3.1          | 5.3.1.0        | Apr 24, 2017 |
 | 5.3.0          | 5.3.0.0        | Mar 29, 2017 |
 | 5.2.2          | 5.2.2.0        | Mar 03, 2017 |
 | 5.2.1          | 5.2.1.0        | Feb 17, 2017 |
@@ -30,6 +33,11 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 | 5.1.1          | 5.1.1.0        | Dev 29, 2016 |
 | 5.0.1          | 5.0.1.0        | Nov 15, 2016 |
 | 5.0.0          | 5.0.0.0        | Nov 14, 2016 |
+
+### Version 2.X
+
+| Elasticsearch  | Plugin         | Release date |
+| -------------- | -------------- | ------------ |
 | 2.4.1          | 2.4.1.0        | Sep 29, 2016 |
 | 2.4.0          | 2.4.0.0        | Sep 01, 2016 |
 | 2.3.5          | 2.3.5.5        | Aug 29, 2016 |
@@ -45,7 +53,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 ## Install
 
 - Since ElasticSearch 5.0.0 :
-    ./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.3.0.0.zip
+    ./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.3.1.0.zip
 
 - On old 2.x.x versions :
     ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip

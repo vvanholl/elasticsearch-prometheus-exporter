@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-prometheus-exporter</artifactId>
-    <version>5.3.0.0</version>
+    <version>5.3.1.0</version>
     <packaging>jar</packaging>
     <name>Elasticsearch Prometheus Exporter Plugin</name>
     <description>Export ElasticSearch metrics to Prometheus</description>
