@@ -13,6 +13,7 @@ import org.elasticsearch.action.admin.indices.stats.IndexStats;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.health.ClusterIndexHealth;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.http.HttpStats;
 import org.elasticsearch.indices.NodeIndicesStats;
@@ -526,6 +527,10 @@ public class PrometheusMetricsCollector {
     }
 
     private void registerPerIndexMetrics() {
+        catalog.registerGauge("index_status", "Index status", "index");
+        catalog.registerGauge("index_replicas_number", "Number of replicas", "index");
+        catalog.registerGauge("index_shards_number", "Number of shards", "type", "index");
+
         catalog.registerGauge("index_doc_number", "Total number of documents", "node", "index");
         catalog.registerGauge("index_doc_deleted_number", "Number of deleted documents", "node", "index");
 
@@ -622,12 +627,21 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("index_warmer_count", "Counter of warmers", "node", "index");
     }
 
-    private void updatePerIndexMetrics(IndicesStatsResponse indicesStatsResponse) {
-        for (Map.Entry<String, IndexStats> entry : indicesStatsResponse.getIndices().entrySet()) {
+    private void updatePerIndexMetrics(ClusterHealthResponse chr, IndicesStatsResponse isr) {
+        for (Map.Entry<String, IndexStats> entry : isr.getIndices().entrySet()) {
             String index_name = entry.getKey();
             IndexStats index_stats = entry.getValue();
-
             CommonStats idx = index_stats.getTotal();
+            ClusterIndexHealth cih = chr.getIndices().get(index_name);
+
+            catalog.setGauge("index_status", cih.getStatus().value(), index_name);
+            catalog.setGauge("index_replicas_number", cih.getNumberOfReplicas(), index_name);
+            catalog.setGauge("index_shards_number", cih.getActiveShards(), "active", index_name);
+            catalog.setGauge("index_shards_number", cih.getNumberOfShards(), "shards", index_name);
+            catalog.setGauge("index_shards_number", cih.getActivePrimaryShards(), "active_primary", index_name);
+            catalog.setGauge("index_shards_number", cih.getInitializingShards(), "initializing", index_name);
+            catalog.setGauge("index_shards_number", cih.getRelocatingShards(), "relocating", index_name);
+            catalog.setGauge("index_shards_number", cih.getUnassignedShards(), "unassigned", index_name);
 
             catalog.setGauge("index_doc_number", idx.getDocs().getCount(), node, index_name);
             catalog.setGauge("index_doc_deleted_number", idx.getDocs().getDeleted(), node, index_name);
@@ -757,7 +771,7 @@ public class PrometheusMetricsCollector {
         IndicesStatsRequest indicesStatsRequest = new IndicesStatsRequest();
         ActionFuture<IndicesStatsResponse> f = client.admin().indices().stats(indicesStatsRequest);
         try {
-            updatePerIndexMetrics(f.get());
+            updatePerIndexMetrics(clusterHealthResponse, f.get());
         } catch (Exception e) {
             logger.warn("Could not get indices statistics");
         }
