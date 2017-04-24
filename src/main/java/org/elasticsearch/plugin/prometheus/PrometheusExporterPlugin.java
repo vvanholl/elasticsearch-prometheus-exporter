@@ -1,14 +1,12 @@
 package org.elasticsearch.plugin.prometheus;
 
 import org.apache.logging.log4j.Logger;
+import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.logging.Loggers;
-import org.elasticsearch.common.settings.ClusterSettings;
-import org.elasticsearch.common.settings.IndexScopedSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.SettingsFilter;
+import org.elasticsearch.common.settings.*;
 import org.elasticsearch.index.IndexModule;
 import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.Plugin;
@@ -24,9 +22,12 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
 
     private final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
 
+    private final Settings settings;
+
     @Inject
     public PrometheusExporterPlugin(Settings settings) {
-        logger.info("starting Prometheus exporter plugin...");
+        logger.info("starting Prometheus exporter plugin");
+        this.settings = settings;
     }
 
     @Override
@@ -41,4 +42,10 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
         );
     }
 
+    @Override
+    public List<Setting<?>> getSettings() {
+        return Arrays.asList(
+                PrometheusMetricsCollector.PROMETHEUS_INDICES
+        );
+    }
 }

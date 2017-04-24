@@ -35,7 +35,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException {
         logger.trace(String.format("Received request for Prometheus metrics from %s", request.getRemoteAddress().toString()));
 
-        collector.compareAndSet(null, new PrometheusMetricsCollector(client));
+        collector.compareAndSet(null, new PrometheusMetricsCollector(settings, client));
 
         collector.get().updateMetrics();
 

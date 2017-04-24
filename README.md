@@ -3,10 +3,10 @@
 This is a builtin exporter from ElasticSearch to Prometheus.
 It collects all relevant metrics and make them available to Prometheus via ElasticSearch REST API.
 
-Current available metrics are :
+**Current available metrics are :**
 
 - Cluster status
-- Node status :
+- Nodes status :
     - JVM
     - Indices (global)
     - Transport
@@ -16,6 +16,7 @@ Current available metrics are :
     - Operating System
     - File System
     - Circuit Breaker
+- Indices status
 
 ## Compatibility matrix
 
@@ -49,13 +50,19 @@ Current available metrics are :
 - On old 2.x.x versions :
     ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip
 
-Do not forget to restart the node after installation !
+**Do not forget to restart the node after installation !**
 
 Note that the plugin needs special permissions :
 
 - java.lang.RuntimePermission accessClassInPackage.sun.misc
 - java.lang.RuntimePermission accessDeclaredMembers
 - java.lang.reflect.ReflectPermission suppressAccessChecks
+
+If you have a lot of indices and think this data is irelevant, you can disable in the main configuration file:
+
+```
+prometheus.indices: false
+```
 
 ## Uninstall
 

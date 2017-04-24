@@ -15,6 +15,9 @@ import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.health.ClusterIndexHealth;
 import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.settings.Setting;
+import org.elasticsearch.common.settings.Setting.Property;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.http.HttpStats;
 import org.elasticsearch.indices.NodeIndicesStats;
 import org.elasticsearch.indices.breaker.AllCircuitBreakerStats;
@@ -31,8 +34,11 @@ import org.elasticsearch.transport.TransportStats;
 import java.util.Map;
 
 public class PrometheusMetricsCollector {
+    public static final Setting<Boolean> PROMETHEUS_INDICES = Setting.boolSetting("prometheus.indices", true, Property.NodeScope);
+
     private final static Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
 
+    private final Settings settings;
     private final Client client;
 
     private String cluster;
@@ -40,7 +46,8 @@ public class PrometheusMetricsCollector {
 
     private PrometheusMetricsCatalog catalog;
 
-    public PrometheusMetricsCollector(final Client client) {
+    public PrometheusMetricsCollector(Settings settings, final Client client) {
+        this.settings = settings;
         this.client = client;
 
         NodesStatsRequest nodesStatsRequest = new NodesStatsRequest("_local").all();
@@ -67,7 +74,7 @@ public class PrometheusMetricsCollector {
         registerCircuitBreakerMetrics();
         registerThreadPoolMetrics();
         registerFsMetrics();
-        registerPerIndexMetrics();
+        if (PROMETHEUS_INDICES.get(settings)) registerPerIndexMetrics();
     }
 
     private void registerClusterMetrics() {
@@ -768,14 +775,15 @@ public class PrometheusMetricsCollector {
         updateThreadPoolMetrics(nodeStats.getThreadPool());
         updateFsMetrics(nodeStats.getFs());
 
-        IndicesStatsRequest indicesStatsRequest = new IndicesStatsRequest();
-        ActionFuture<IndicesStatsResponse> f = client.admin().indices().stats(indicesStatsRequest);
-        try {
-            updatePerIndexMetrics(clusterHealthResponse, f.get());
-        } catch (Exception e) {
-            logger.warn("Could not get indices statistics");
+        if (PROMETHEUS_INDICES.get(settings)) {
+            IndicesStatsRequest indicesStatsRequest = new IndicesStatsRequest();
+            ActionFuture<IndicesStatsResponse> f = client.admin().indices().stats(indicesStatsRequest);
+            try {
+                updatePerIndexMetrics(clusterHealthResponse, f.get());
+            } catch (Exception e) {
+                logger.warn("Could not get indices statistics");
+            }
         }
-
         timer.observeDuration();
     }
 
