@@ -265,8 +265,8 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("indices_suggest_time_seconds", "Time spent while making suggests", "node");
 
         catalog.registerGauge("indices_requestcache_memory_size_bytes", "Memory used for request cache", "node");
-        catalog.registerCounter("indices_requestcache_hit_count", "Number of hits in request cache", "node");
-        catalog.registerCounter("indices_requestcache_miss_count", "Number of misses in request cache", "node");
+        catalog.registerGauge("indices_requestcache_hit_count", "Number of hits in request cache", "node");
+        catalog.registerGauge("indices_requestcache_miss_count", "Number of misses in request cache", "node");
         catalog.registerCounter("indices_requestcache_evictions_count", "Number of evictions in request cache", "node");
 
         catalog.registerGauge("indices_recovery_current_number", "Current number of recoveries", "node", "type");
@@ -359,8 +359,8 @@ public class PrometheusMetricsCollector {
             catalog.setCounter("indices_suggest_time_seconds", idx.getSearch().getTotal().getSuggestTimeInMillis() / 1000.0, node);
 
             catalog.setGauge("indices_requestcache_memory_size_bytes", idx.getRequestCache().getMemorySizeInBytes(), node);
-            catalog.setCounter("indices_requestcache_hit_count", idx.getRequestCache().getHitCount(), node);
-            catalog.setCounter("indices_requestcache_miss_count", idx.getRequestCache().getMissCount(), node);
+            catalog.setGauge("indices_requestcache_hit_count", idx.getRequestCache().getHitCount(), node);
+            catalog.setGauge("indices_requestcache_miss_count", idx.getRequestCache().getMissCount(), node);
             catalog.setCounter("indices_requestcache_evictions_count", idx.getRequestCache().getEvictions(), node);
 
             catalog.setGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsSource(), node, "source");
