@@ -547,10 +547,10 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("index_indexing_delete_count", "Count of documents deleted", "node", "index");
         catalog.registerGauge("index_indexing_delete_current_number", "Current rate of documents deleted", "node", "index");
         catalog.registerCounter("index_indexing_delete_time_seconds", "Time spent while deleting documents", "node", "index");
-        catalog.registerCounter("index_indexing_index_count", "Count of documents indexed", "node", "index");
+        catalog.registerGauge("index_indexing_index_count", "Count of documents indexed", "node", "index");
         catalog.registerGauge("index_indexing_index_current_number", "Current rate of documents indexed", "node", "index");
         catalog.registerCounter("index_indexing_index_failed_count", "Count of failed to index documents", "node", "index");
-        catalog.registerCounter("index_indexing_index_time_seconds", "Time spent while indexing documents", "node", "index");
+        catalog.registerGauge("index_indexing_index_time_seconds", "Time spent while indexing documents", "node", "index");
         catalog.registerCounter("index_indexing_noop_update_count", "Count of noop document updates", "node", "index");
         catalog.registerGauge("index_indexing_is_throttled_bool", "Is indexing throttling ?", "node", "index");
         catalog.registerCounter("index_indexing_throttle_time_seconds", "Time spent while throttling", "node", "index");
@@ -564,12 +564,12 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("index_get_current_number", "Current rate of get commands", "node", "index");
 
         catalog.registerGauge("index_search_open_contexts_number", "Number of search open contexts", "node", "index");
-        catalog.registerCounter("index_search_fetch_count", "Count of search fetches", "node", "index");
+        catalog.registerGauge("index_search_fetch_count", "Count of search fetches", "node", "index");
         catalog.registerGauge("index_search_fetch_current_number", "Current rate of search fetches", "node", "index");
-        catalog.registerCounter("index_search_fetch_time_seconds", "Time spent while search fetches", "node", "index");
+        catalog.registerGauge("index_search_fetch_time_seconds", "Time spent while search fetches", "node", "index");
         catalog.registerCounter("index_search_query_count", "Count of search queries", "node", "index");
         catalog.registerGauge("index_search_query_current_number", "Current rate of search queries", "node", "index");
-        catalog.registerCounter("index_search_query_time_seconds", "Time spent while search queries", "node", "index");
+        catalog.registerGauge("index_search_query_time_seconds", "Time spent while search queries", "node", "index");
         catalog.registerCounter("index_search_scroll_count", "Count of search scrolls", "node", "index");
         catalog.registerGauge("index_search_scroll_current_number", "Current rate of search scrolls", "node", "index");
         catalog.registerCounter("index_search_scroll_time_seconds", "Time spent while search scrolls", "node", "index");
@@ -577,20 +577,20 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("index_merges_current_number", "Current rate of merges", "node", "index");
         catalog.registerGauge("index_merges_current_docs_number", "Current rate of documents merged", "node", "index");
         catalog.registerGauge("index_merges_current_size_bytes", "Current rate of bytes merged", "node", "index");
-        catalog.registerCounter("index_merges_total_number", "Count of merges", "node", "index");
-        catalog.registerCounter("index_merges_total_time_seconds", "Time spent while merging", "node", "index");
-        catalog.registerCounter("index_merges_total_docs_count", "Count of documents merged", "node", "index");
-        catalog.registerCounter("index_merges_total_size_bytes", "Count of bytes of merged documents", "node", "index");
+        catalog.registerGauge("index_merges_total_number", "Count of merges", "node", "index");
+        catalog.registerGauge("index_merges_total_time_seconds", "Time spent while merging", "node", "index");
+        catalog.registerGauge("index_merges_total_docs_count", "Count of documents merged", "node", "index");
+        catalog.registerGauge("index_merges_total_size_bytes", "Count of bytes of merged documents", "node", "index");
         catalog.registerCounter("index_merges_total_stopped_time_seconds", "Time spent while merge process stopped", "node", "index");
         catalog.registerCounter("index_merges_total_throttled_time_seconds", "Time spent while merging when throttling", "node", "index");
         catalog.registerGauge("index_merges_total_auto_throttle_bytes", "Bytes merged while throttling", "node", "index");
 
-        catalog.registerCounter("index_refresh_total_count", "Count of refreshes", "node", "index");
-        catalog.registerCounter("index_refresh_total_time_seconds", "Time spent while refreshes", "node", "index");
+        catalog.registerGauge("index_refresh_total_count", "Count of refreshes", "node", "index");
+        catalog.registerGauge("index_refresh_total_time_seconds", "Time spent while refreshes", "node", "index");
         catalog.registerGauge("index_refresh_listeners_number", "Number of refresh listeners", "node", "index");
 
-        catalog.registerCounter("index_flush_total_count", "Count of flushes", "node", "index");
-        catalog.registerCounter("index_flush_total_time_seconds", "Total time spent while flushes", "node", "index");
+        catalog.registerGauge("index_flush_total_count", "Count of flushes", "node", "index");
+        catalog.registerGauge("index_flush_total_time_seconds", "Total time spent while flushes", "node", "index");
 
         catalog.registerCounter("index_querycache_cache_count", "Count of queries in cache", "node", "index");
         catalog.registerGauge("index_querycache_cache_size_bytes", "Query cache size", "node", "index");
@@ -630,8 +630,8 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("index_translog_size_bytes", "Translog size", "node", "index");
 
         catalog.registerGauge("index_warmer_current_number", "Current number of warmer", "node", "index");
-        catalog.registerCounter("index_warmer_time_seconds", "Time spent during warmers", "node", "index");
-        catalog.registerCounter("index_warmer_count", "Counter of warmers", "node", "index");
+        catalog.registerGauge("index_warmer_time_seconds", "Time spent during warmers", "node", "index");
+        catalog.registerGauge("index_warmer_count", "Counter of warmers", "node", "index");
     }
 
     private void updatePerIndexMetrics(ClusterHealthResponse chr, IndicesStatsResponse isr) {
@@ -659,10 +659,10 @@ public class PrometheusMetricsCollector {
             catalog.setCounter("index_indexing_delete_count", idx.getIndexing().getTotal().getDeleteCount(), node, index_name);
             catalog.setGauge("index_indexing_delete_current_number", idx.getIndexing().getTotal().getDeleteCurrent(), node, index_name);
             catalog.setCounter("index_indexing_delete_time_seconds", idx.getIndexing().getTotal().getDeleteTime().seconds(), node, index_name);
-            catalog.setCounter("index_indexing_index_count", idx.getIndexing().getTotal().getIndexCount(), node, index_name);
+            catalog.setGauge("index_indexing_index_count", idx.getIndexing().getTotal().getIndexCount(), node, index_name);
             catalog.setGauge("index_indexing_index_current_number", idx.getIndexing().getTotal().getIndexCurrent(), node, index_name);
             catalog.setCounter("index_indexing_index_failed_count", idx.getIndexing().getTotal().getIndexFailedCount(), node, index_name);
-            catalog.setCounter("index_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTime().seconds(), node, index_name);
+            catalog.setGauge("index_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTime().seconds(), node, index_name);
             catalog.setCounter("index_indexing_noop_update_count", idx.getIndexing().getTotal().getNoopUpdateCount(), node, index_name);
             catalog.setGauge("index_indexing_is_throttled_bool", idx.getIndexing().getTotal().isThrottled() ? 1 : 0, node, index_name);
             catalog.setCounter("index_indexing_throttle_time_seconds", idx.getIndexing().getTotal().getThrottleTime().seconds(), node, index_name);
@@ -676,12 +676,12 @@ public class PrometheusMetricsCollector {
             catalog.setCounter("index_get_current_number", idx.getGet().current(), node, index_name);
 
             catalog.setGauge("index_search_open_contexts_number", idx.getSearch().getOpenContexts(), node, index_name);
-            catalog.setCounter("index_search_fetch_count", idx.getSearch().getTotal().getFetchCount(), node, index_name);
+            catalog.setGauge("index_search_fetch_count", idx.getSearch().getTotal().getFetchCount(), node, index_name);
             catalog.setGauge("index_search_fetch_current_number", idx.getSearch().getTotal().getFetchCurrent(), node, index_name);
-            catalog.setCounter("index_search_fetch_time_seconds", idx.getSearch().getTotal().getFetchTimeInMillis() / 1000.0, node, index_name);
+            catalog.setGauge("index_search_fetch_time_seconds", idx.getSearch().getTotal().getFetchTimeInMillis() / 1000.0, node, index_name);
             catalog.setCounter("index_search_query_count", idx.getSearch().getTotal().getQueryCount(), node, index_name);
             catalog.setGauge("index_search_query_current_number", idx.getSearch().getTotal().getQueryCurrent(), node, index_name);
-            catalog.setCounter("index_search_query_time_seconds", idx.getSearch().getTotal().getQueryTimeInMillis() / 1000.0, node, index_name);
+            catalog.setGauge("index_search_query_time_seconds", idx.getSearch().getTotal().getQueryTimeInMillis() / 1000.0, node, index_name);
             catalog.setCounter("index_search_scroll_count", idx.getSearch().getTotal().getScrollCount(), node, index_name);
             catalog.setGauge("index_search_scroll_current_number", idx.getSearch().getTotal().getScrollCurrent(), node, index_name);
             catalog.setCounter("index_search_scroll_time_seconds", idx.getSearch().getTotal().getScrollTimeInMillis() / 1000.0, node, index_name);
@@ -689,20 +689,20 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("index_merges_current_number", idx.getMerge().getCurrent(), node, index_name);
             catalog.setGauge("index_merges_current_docs_number", idx.getMerge().getCurrentNumDocs(), node, index_name);
             catalog.setGauge("index_merges_current_size_bytes", idx.getMerge().getCurrentSizeInBytes(), node, index_name);
-            catalog.setCounter("index_merges_total_number", idx.getMerge().getTotal(), node, index_name);
-            catalog.setCounter("index_merges_total_time_seconds", idx.getMerge().getTotalTimeInMillis() / 1000.0, node, index_name);
-            catalog.setCounter("index_merges_total_docs_count", idx.getMerge().getTotalNumDocs(), node, index_name);
-            catalog.setCounter("index_merges_total_size_bytes", idx.getMerge().getTotalSizeInBytes(), node, index_name);
+            catalog.setGauge("index_merges_total_number", idx.getMerge().getTotal(), node, index_name);
+            catalog.setGauge("index_merges_total_time_seconds", idx.getMerge().getTotalTimeInMillis() / 1000.0, node, index_name);
+            catalog.setGauge("index_merges_total_docs_count", idx.getMerge().getTotalNumDocs(), node, index_name);
+            catalog.setGauge("index_merges_total_size_bytes", idx.getMerge().getTotalSizeInBytes(), node, index_name);
             catalog.setCounter("index_merges_total_stopped_time_seconds", idx.getMerge().getTotalStoppedTimeInMillis() / 1000.0, node, index_name);
             catalog.setCounter("index_merges_total_throttled_time_seconds", idx.getMerge().getTotalThrottledTimeInMillis() / 1000.0, node, index_name);
             catalog.setGauge("index_merges_total_auto_throttle_bytes", idx.getMerge().getTotalBytesPerSecAutoThrottle(), node, index_name);
 
-            catalog.setCounter("index_refresh_total_count", idx.getRefresh().getTotal(), node, index_name);
-            catalog.setCounter("index_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis() / 1000.0, node, index_name);
+            catalog.setGauge("index_refresh_total_count", idx.getRefresh().getTotal(), node, index_name);
+            catalog.setGauge("index_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis() / 1000.0, node, index_name);
             catalog.setGauge("index_refresh_listeners_number", idx.getRefresh().getListeners(), node, index_name);
 
-            catalog.setCounter("index_flush_total_count", idx.getFlush().getTotal(), node, index_name);
-            catalog.setCounter("index_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis() / 1000.0, node, index_name);
+            catalog.setGauge("index_flush_total_count", idx.getFlush().getTotal(), node, index_name);
+            catalog.setGauge("index_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis() / 1000.0, node, index_name);
 
             catalog.setCounter("index_querycache_cache_count", idx.getQueryCache().getCacheCount(), node, index_name);
             catalog.setGauge("index_querycache_cache_size_bytes", idx.getQueryCache().getCacheSize(), node, index_name);
@@ -746,8 +746,8 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("index_translog_size_bytes", idx.getTranslog().getTranslogSizeInBytes(), node, index_name);
 
             catalog.setGauge("index_warmer_current_number", idx.getWarmer().current(), node, index_name);
-            catalog.setCounter("index_warmer_time_seconds", idx.getWarmer().totalTimeInMillis(), node, index_name);
-            catalog.setCounter("index_warmer_count", idx.getWarmer().total(), node, index_name);
+            catalog.setGauge("index_warmer_time_seconds", idx.getWarmer().totalTimeInMillis(), node, index_name);
+            catalog.setGauge("index_warmer_count", idx.getWarmer().total(), node, index_name);
         }
     }
 
