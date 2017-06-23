@@ -559,7 +559,7 @@ public class PrometheusMetricsCollector {
         catalog.registerCounter("index_get_time_seconds", "Time spent while get commands", "node", "index");
         catalog.registerCounter("index_get_exists_count", "Count of existing documents when get command", "node", "index");
         catalog.registerCounter("index_get_exists_time_seconds", "Time spent while existing documents get command", "node", "index");
-        catalog.registerCounter("index_get_missing_count", "Count of missing documents when get command", "node", "index");
+        catalog.registerGauge("index_get_missing_count", "Count of missing documents when get command", "node", "index");
         catalog.registerCounter("index_get_missing_time_seconds", "Time spent while missing documents get command", "node", "index");
         catalog.registerCounter("index_get_current_number", "Current rate of get commands", "node", "index");
 
@@ -567,7 +567,7 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("index_search_fetch_count", "Count of search fetches", "node", "index");
         catalog.registerGauge("index_search_fetch_current_number", "Current rate of search fetches", "node", "index");
         catalog.registerGauge("index_search_fetch_time_seconds", "Time spent while search fetches", "node", "index");
-        catalog.registerCounter("index_search_query_count", "Count of search queries", "node", "index");
+        catalog.registerGauge("index_search_query_count", "Count of search queries", "node", "index");
         catalog.registerGauge("index_search_query_current_number", "Current rate of search queries", "node", "index");
         catalog.registerGauge("index_search_query_time_seconds", "Time spent while search queries", "node", "index");
         catalog.registerCounter("index_search_scroll_count", "Count of search scrolls", "node", "index");
@@ -594,7 +594,7 @@ public class PrometheusMetricsCollector {
 
         catalog.registerCounter("index_querycache_cache_count", "Count of queries in cache", "node", "index");
         catalog.registerGauge("index_querycache_cache_size_bytes", "Query cache size", "node", "index");
-        catalog.registerCounter("index_querycache_evictions_count", "Count of evictions in query cache", "node", "index");
+        catalog.registerGauge("index_querycache_evictions_count", "Count of evictions in query cache", "node", "index");
         catalog.registerCounter("index_querycache_hit_count", "Count of hits in query cache", "node", "index");
         catalog.registerGauge("index_querycache_memory_size_bytes", "Memory usage of query cache", "node", "index");
         catalog.registerGauge("index_querycache_miss_number", "Count of misses in query cache", "node", "index");
@@ -620,7 +620,7 @@ public class PrometheusMetricsCollector {
 
         catalog.registerGauge("index_requestcache_memory_size_bytes", "Memory used for request cache", "node", "index");
         catalog.registerCounter("index_requestcache_hit_count", "Number of hits in request cache", "node", "index");
-        catalog.registerCounter("index_requestcache_miss_count", "Number of misses in request cache", "node", "index");
+        catalog.registerGauge("index_requestcache_miss_count", "Number of misses in request cache", "node", "index");
         catalog.registerCounter("index_requestcache_evictions_count", "Number of evictions in request cache", "node", "index");
 
         catalog.registerGauge("index_recovery_current_number", "Current number of recoveries", "node", "type", "index");
@@ -704,7 +704,7 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("index_flush_total_count", idx.getFlush().getTotal(), node, index_name);
             catalog.setGauge("index_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis() / 1000.0, node, index_name);
 
-            catalog.setCounter("index_querycache_cache_count", idx.getQueryCache().getCacheCount(), node, index_name);
+            catalog.setGauge("index_querycache_cache_count", idx.getQueryCache().getCacheCount(), node, index_name);
             catalog.setGauge("index_querycache_cache_size_bytes", idx.getQueryCache().getCacheSize(), node, index_name);
             catalog.setCounter("index_querycache_evictions_count", idx.getQueryCache().getEvictions(), node, index_name);
             catalog.setCounter("index_querycache_hit_count", idx.getQueryCache().getHitCount(), node, index_name);
@@ -734,7 +734,7 @@ public class PrometheusMetricsCollector {
             catalog.setCounter("index_suggest_time_seconds", idx.getSearch().getTotal().getSuggestTimeInMillis() / 1000.0, node, index_name);
 
             catalog.setGauge("index_requestcache_memory_size_bytes", idx.getRequestCache().getMemorySizeInBytes(), node, index_name);
-            catalog.setCounter("index_requestcache_hit_count", idx.getRequestCache().getHitCount(), node, index_name);
+            catalog.setGauge("index_requestcache_hit_count", idx.getRequestCache().getHitCount(), node, index_name);
             catalog.setCounter("index_requestcache_miss_count", idx.getRequestCache().getMissCount(), node, index_name);
             catalog.setCounter("index_requestcache_evictions_count", idx.getRequestCache().getEvictions(), node, index_name);
 
