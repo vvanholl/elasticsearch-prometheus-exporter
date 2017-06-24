@@ -510,6 +510,12 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("fs_path_available_bytes", "Available disk space", "node", "path", "mount", "type");
         catalog.registerGauge("fs_path_free_bytes", "Free disk space", "node", "path", "mount", "type");
         catalog.registerGauge("fs_path_is_spinning_bool", "Is it a spinning disk ?", "node", "path", "mount", "type");
+
+        catalog.registerGauge("fs_io_total_operations", "Total IO operations", "node");
+        catalog.registerGauge("fs_io_total_read_operations", "Total IO read operations", "node");
+        catalog.registerGauge("fs_io_total_write_operations", "Total IO write operations", "node");
+        catalog.registerGauge("fs_io_total_read_bytes", "Total IO read bytes", "node");
+        catalog.registerGauge("fs_io_total_write_bytes", "Total IO write bytes", "node");
     }
 
     private void updateFsMetrics(FsInfo fs) {
@@ -530,6 +536,12 @@ public class PrometheusMetricsCollector {
                 if (fspath.getSpins() != null)
                     catalog.setGauge("fs_path_is_spinning_bool", fspath.getSpins() ? 1 : 0, node, path, mount, type);
             }
+
+            catalog.setGauge("fs_io_total_operations", fs.getIoStats().getTotalOperations(), node);
+            catalog.setGauge("fs_io_total_read_operations", fs.getIoStats().getTotalReadOperations(), node);
+            catalog.setGauge("fs_io_total_write_operations", fs.getIoStats().getTotalWriteOperations(), node);
+            catalog.setGauge("fs_io_total_read_bytes", fs.getIoStats().getTotalReadKilobytes() * 1024, node);
+            catalog.setGauge("fs_io_total_write_bytes", fs.getIoStats().getTotalWriteKilobytes() * 1024, node);
         }
     }
 
