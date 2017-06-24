@@ -1,0 +1,78 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+println "Host: " + java.net.InetAddress.getLocalHost()
+println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
+println "Build: group: '${project.group}', name: '${project.name}', version: '${project.version}'"
+println "Timestamp: " + java.time.Instant.now().atZone(java.time.ZoneId.systemDefault()).toString()
+
+ext {
+	versions = [
+		'elasticsearch' : "${version}".replaceAll(/\.[0-9]+$/, ""),
+		'prometheus' : '0.0.23',
+		'log4j': '2.6.2',
+	]
+}
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}
+
+configurations {
+	releaseJars {
+		extendsFrom runtime
+		exclude group: 'org.elasticsearch'
+		exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+		exclude group: 'org.apache.logging.log4j'
+	}
+}
+
+dependencies {
+	compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
+	compile "io.prometheus:simpleclient:${versions.prometheus}"
+	compile "io.prometheus:simpleclient_common:${versions.prometheus}"
+	compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+	releaseJars "${project.group}:${project.name}:${project.version}"
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-Xlint:unchecked,deprecation'
+}
+
+task javadocJar(type: Jar, dependsOn: classes) {
+	from javadoc
+	into 'build/tmp'
+	classifier 'javadoc'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	from sourceSets.main.allSource
+	into 'build/tmp/sources'
+	classifier 'sources'
+}
+
+task makePluginDescriptor(type: Copy) {
+	from 'src/main/templates'
+	into 'build/tmp/plugin'
+	expand([
+		'descriptor': [
+			'name': pluginName,
+			'classname': pluginClassname,
+			'description': pluginDescription,
+			'version': project.property('version'),
+			'javaVersion': project.property('targetCompatibility'),
+			'elasticsearchVersion' : versions.elasticsearch
+		]
+	])
+}
+
+task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
+	from configurations.releaseJars
+	from 'build/tmp/plugin'
+	into 'elasticsearch'
+}
+
+artifacts {
+	archives javadocJar, sourcesJar, buildPluginZip
+}

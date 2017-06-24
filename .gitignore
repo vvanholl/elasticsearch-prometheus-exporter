@@ -8,12 +8,8 @@
 *.iml
 *.iws
 
+# Gradle
+.gradle
+
 # Mac
 .DS_Store
-
-# Maven
-log/
-target/
-
-# Vagrant
-.vagrant/
