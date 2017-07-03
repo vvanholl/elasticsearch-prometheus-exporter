@@ -1,15 +1,18 @@
 buildscript {
 	repositories {
 		jcenter()
+		mavenCentral()
 	}
 	dependencies {
 		classpath 'co.riiid:gradle-github-plugin:0.4.2'
+		classpath 'com.github.skhatri:gradle-s3-plugin:1.0.4'
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'co.riiid.gradle'
+apply plugin: 's3'
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
@@ -18,7 +21,7 @@ println "Timestamp: " + java.time.Instant.now().atZone(java.time.ZoneId.systemDe
 
 ext {
 	versions = [
-		'elasticsearch' : version.replaceAll(/\.[0-9]+$/, ""),
+		'elasticsearch' : version.replaceAll(/\.[0-9]+$/, ''),
 		'prometheus' : '0.0.23',
 		'log4j': '2.6.2',
 	]
@@ -100,5 +103,14 @@ github {
 	]
 }
 
-task release (dependsOn: ['buildPluginZip', 'githubRelease']) {
+s3 {
+	bucket = s3_bucket
+	awsProfile = 'default'
+	upload {
+		key = "elasticsearch/${project.name}-${version}.zip"
+		file = "build/distributions/${project.name}-${version}.zip"
+	}
+}
+
+task release (dependsOn: ['buildPluginZip', 'githubRelease', 's3Upload']) {
 }
