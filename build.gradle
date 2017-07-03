@@ -75,6 +75,7 @@ task copyPluginFiles(type: Copy) {
 			'elasticsearchVersion' : versions.elasticsearch
 		]
 	])
+	outputs.upToDateWhen { false }
 }
 
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':copyPluginFiles']) {
