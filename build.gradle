@@ -1,5 +1,15 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'co.riiid:gradle-github-plugin:0.4.2'
+	}
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'co.riiid.gradle'
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
@@ -8,7 +18,7 @@ println "Timestamp: " + java.time.Instant.now().atZone(java.time.ZoneId.systemDe
 
 ext {
 	versions = [
-		'elasticsearch' : "${version}".replaceAll(/\.[0-9]+$/, ""),
+		'elasticsearch' : version.replaceAll(/\.[0-9]+$/, ""),
 		'prometheus' : '0.0.23',
 		'log4j': '2.6.2',
 	]
@@ -52,7 +62,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier 'sources'
 }
 
-task makePluginDescriptor(type: Copy) {
+task copyPluginFiles(type: Copy) {
 	from 'src/main/templates'
 	into 'build/tmp/plugin'
 	expand([
@@ -67,7 +77,7 @@ task makePluginDescriptor(type: Copy) {
 	])
 }
 
-task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
+task buildPluginZip(type: Zip, dependsOn: [':jar', ':copyPluginFiles']) {
 	from configurations.releaseJars
 	from 'build/tmp/plugin'
 	into 'elasticsearch'
@@ -75,4 +85,19 @@ task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
 
 artifacts {
 	archives javadocJar, sourcesJar, buildPluginZip
+}
+
+github {
+	owner = github_owner
+	repo = project.name
+	token = System.getenv('GRADLE_GITHUB_TOKEN')
+	tagName = version
+	targetCommitish = 'master'
+	name = version
+	assets = [
+			"build/distributions/${project.name}-${version}.zip"
+	]
+}
+
+task release (dependsOn: ['buildPluginZip', 'githubRelease']) {
 }
