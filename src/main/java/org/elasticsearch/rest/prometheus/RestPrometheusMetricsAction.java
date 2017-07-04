@@ -31,7 +31,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
         logger.trace(String.format("Received request for Prometheus metrics from %s", request.getRemoteAddress().toString()));
 
         if (collector == null)
-            collector = new PrometheusMetricsCollector(client);
+            collector = new PrometheusMetricsCollector(settings, client);
 
         collector.updateMetrics();
 
