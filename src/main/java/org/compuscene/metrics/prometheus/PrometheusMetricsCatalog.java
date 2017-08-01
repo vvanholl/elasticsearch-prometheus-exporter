@@ -19,13 +19,13 @@ public class PrometheusMetricsCatalog {
 
     private String cluster;
     private String metric_prefix;
-    private HashMap metrics;
+    private HashMap<String,Object> metrics;
     private CollectorRegistry registry;
 
     public PrometheusMetricsCatalog(String cluster, String metric_prefix) {
         this.cluster = cluster;
         this.metric_prefix = metric_prefix;
-        metrics = new HashMap();
+        metrics = new HashMap<>();
         registry = new CollectorRegistry();
     }
 
