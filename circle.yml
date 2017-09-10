@@ -1,8 +1,0 @@
-machine:
-  environment:
-    GRADLE_VERSION: 4.0
-    PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-$GRADLE_VERSION/bin:$PATH"
-
-dependencies:
-  pre:
-    - wget "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-all.zip"; unzip gradle-$GRADLE_VERSION-all.zip

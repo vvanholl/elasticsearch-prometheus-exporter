@@ -1,116 +1,125 @@
-buildscript {
-	repositories {
-		jcenter()
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'co.riiid:gradle-github-plugin:0.4.2'
-		classpath 'com.github.skhatri:gradle-s3-plugin:1.0.4'
-	}
-}
+import com.github.mgk.gradle.*
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'co.riiid.gradle'
-apply plugin: 's3'
+plugins {
+    id "java"
+    id "checkstyle"
+    id "co.riiid.gradle" version "0.4.2"
+    id "com.github.mgk.gradle.s3" version "1.4.0"
+}
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
 println "Build: group: '${project.group}', name: '${project.name}', version: '${project.version}'"
 println "Timestamp: " + java.time.Instant.now().atZone(java.time.ZoneId.systemDefault()).toString()
 
-ext {
-	versions = [
-		'elasticsearch' : version.replaceAll(/\.[0-9]+$/, ''),
-		'prometheus' : '0.0.26',
-		'log4j': '2.6.2',
-	]
+repositories {
+    mavenCentral()
+    mavenLocal()
 }
 
-repositories {
-	mavenCentral()
-	mavenLocal()
+ext {
+    versions = [
+        "elasticsearch": version.replaceAll(/\.[0-9]+(|-SNAPSHOT)$/, ""),
+        "prometheus"   : "0.0.26",
+        "log4j"        : "2.6.2",
+        "junit"        : "4.12"
+    ]
 }
 
 configurations {
-	releaseJars {
-		extendsFrom runtime
-		exclude group: 'org.elasticsearch'
-		exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
-		exclude group: 'org.apache.logging.log4j'
-	}
+    releaseJars {
+        extendsFrom runtime
+        exclude group: "org.elasticsearch"
+        exclude group: "com.fasterxml.jackson.core", module: "jackson-core"
+        exclude group: "org.apache.logging.log4j"
+    }
 }
 
 dependencies {
-	compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-	compile "io.prometheus:simpleclient:${versions.prometheus}"
-	compile "io.prometheus:simpleclient_common:${versions.prometheus}"
-	compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
-	releaseJars "${project.group}:${project.name}:${project.version}"
+    compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
+    compile "io.prometheus:simpleclient:${versions.prometheus}"
+    compile "io.prometheus:simpleclient_common:${versions.prometheus}"
+    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    testCompile "junit:junit:${versions.junit}"
+    releaseJars "${project.group}:${project.name}:${project.version}"
 }
 
 tasks.withType(JavaCompile) {
-	options.compilerArgs << '-Xlint:unchecked,deprecation'
+    options.compilerArgs << "-Xlint:unchecked,deprecation"
 }
 
 task javadocJar(type: Jar, dependsOn: classes) {
-	from javadoc
-	into 'build/tmp'
-	classifier 'javadoc'
+    from javadoc
+    into "build/tmp"
+    classifier "javadoc"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-	from sourceSets.main.allSource
-	into 'build/tmp/sources'
-	classifier 'sources'
+    from sourceSets.main.allSource
+    into "build/tmp/sources"
+    classifier "sources"
 }
 
 task copyPluginFiles(type: Copy) {
-	from 'src/main/templates'
-	into 'build/tmp/plugin'
-	expand([
-		'descriptor': [
-			'name': pluginName,
-			'classname': pluginClassname,
-			'description': pluginDescription,
-			'version': project.property('version'),
-			'javaVersion': project.property('targetCompatibility'),
-			'elasticsearchVersion' : versions.elasticsearch
-		]
-	])
-	outputs.upToDateWhen { false }
+    from "src/main/templates"
+    into "build/tmp/plugin"
+    expand([
+        "descriptor": [
+            "name"                : pluginName,
+            "classname"           : pluginClassname,
+            "description"         : pluginDescription,
+            "version"             : project.property("version"),
+            "javaVersion"         : project.property("targetCompatibility"),
+            "elasticsearchVersion": versions.elasticsearch
+        ]
+    ])
+    outputs.upToDateWhen { false }
 }
 
-task buildPluginZip(type: Zip, dependsOn: [':jar', ':copyPluginFiles']) {
-	from configurations.releaseJars
-	from 'build/tmp/plugin'
-	into 'elasticsearch'
+task buildPluginZip(type: Zip, dependsOn: [":jar", "copyPluginFiles"]) {
+    from configurations.releaseJars
+    from "build/tmp/plugin"
+    into "elasticsearch"
 }
 
 artifacts {
-	archives javadocJar, sourcesJar, buildPluginZip
+    archives javadocJar, sourcesJar, buildPluginZip
+}
+
+checkstyle {
+    configFile = new File(rootDir, "checkstyle.xml")
+    toolVersion = "8.2"
+}
+
+task S3Upload(type: S3Upload, dependsOn: buildPluginZip) {
+    bucket = s3_bucket
+    key = "elasticsearch/${project.name}-${version}.zip"
+    file = "build/distributions/${project.name}-${version}.zip"
 }
 
 github {
-	owner = github_owner
-	repo = project.name
-	token = System.getenv('GRADLE_GITHUB_TOKEN')
-	tagName = version
-	targetCommitish = 'master'
-	name = version
-	assets = [
-			"build/distributions/${project.name}-${version}.zip"
-	]
+    owner = github_owner
+    repo = github_repo
+    token = github_token
+    tagName = version
+    targetCommitish = "master"
+    name = version
+    assets = [
+        "build/distributions/${project.name}-${version}.zip"
+    ]
 }
 
-s3 {
-	bucket = s3_bucket
-	awsProfile = 'default'
-	upload {
-		key = "elasticsearch/${project.name}-${version}.zip"
-		file = "build/distributions/${project.name}-${version}.zip"
-	}
+githubRelease {
+    dependsOn("buildPluginZip")
+    mustRunAfter("S3Upload")
 }
 
-task release (dependsOn: ['buildPluginZip', 'githubRelease', 's3Upload']) {
+task release() {
+    if (version.endsWith("-SNAPSHOT")) {
+        doLast {
+            println("SNAPSHOT: Nothing to release !")
+        }
+    } else {
+        dependsOn(["S3Upload", "githubRelease"])
+    }
 }
