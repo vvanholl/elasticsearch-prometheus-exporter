@@ -446,18 +446,29 @@ public class PrometheusMetricsCollector {
 
     private void updateOsMetrics(OsStats os) {
         if (os != null) {
-            catalog.setGauge("os_cpu_percent", os.getCpu().getPercent(), node);
-            catalog.setGauge("os_load_average_one_minute", os.getCpu().getLoadAverage()[0], node);
-            catalog.setGauge("os_load_average_five_minutes", os.getCpu().getLoadAverage()[1], node);
-            catalog.setGauge("os_load_average_fifteen_minutes", os.getCpu().getLoadAverage()[2], node);
-            catalog.setGauge("os_mem_free_bytes", os.getMem().getFree().getBytes(), node);
-            catalog.setGauge("os_mem_free_percent", os.getMem().getFreePercent(), node);
-            catalog.setGauge("os_mem_used_bytes", os.getMem().getUsed().getBytes(), node);
-            catalog.setGauge("os_mem_used_percent", os.getMem().getUsedPercent(), node);
-            catalog.setGauge("os_mem_total_bytes", os.getMem().getTotal().getBytes(), node);
-            catalog.setGauge("os_swap_free_bytes", os.getSwap().getFree().getBytes(), node);
-            catalog.setGauge("os_swap_used_bytes", os.getSwap().getUsed().getBytes(), node);
-            catalog.setGauge("os_swap_total_bytes", os.getSwap().getTotal().getBytes(), node);
+            if (os.getCpu() != null) {
+                catalog.setGauge("os_cpu_percent", os.getCpu().getPercent(), node);
+                double[] loadAverage = os.getCpu().getLoadAverage();
+                if(loadAverage !=  null && loadAverage.length == 3) {
+                    catalog.setGauge("os_load_average_one_minute", os.getCpu().getLoadAverage()[0], node);
+                    catalog.setGauge("os_load_average_five_minutes", os.getCpu().getLoadAverage()[1], node);
+                    catalog.setGauge("os_load_average_fifteen_minutes", os.getCpu().getLoadAverage()[2], node);
+                }
+            }
+
+            if (os.getMem() != null) {
+                catalog.setGauge("os_mem_free_bytes", os.getMem().getFree().getBytes(), node);
+                catalog.setGauge("os_mem_free_percent", os.getMem().getFreePercent(), node);
+                catalog.setGauge("os_mem_used_bytes", os.getMem().getUsed().getBytes(), node);
+                catalog.setGauge("os_mem_used_percent", os.getMem().getUsedPercent(), node);
+                catalog.setGauge("os_mem_total_bytes", os.getMem().getTotal().getBytes(), node);
+            }
+
+            if (os.getSwap() != null) {
+                catalog.setGauge("os_swap_free_bytes", os.getSwap().getFree().getBytes(), node);
+                catalog.setGauge("os_swap_used_bytes", os.getSwap().getUsed().getBytes(), node);
+                catalog.setGauge("os_swap_total_bytes", os.getSwap().getTotal().getBytes(), node);
+            }
         }
     }
 
@@ -537,11 +548,14 @@ public class PrometheusMetricsCollector {
                     catalog.setGauge("fs_path_is_spinning_bool", fspath.getSpins() ? 1 : 0, node, path, mount, type);
             }
 
-            catalog.setGauge("fs_io_total_operations", fs.getIoStats().getTotalOperations(), node);
-            catalog.setGauge("fs_io_total_read_operations", fs.getIoStats().getTotalReadOperations(), node);
-            catalog.setGauge("fs_io_total_write_operations", fs.getIoStats().getTotalWriteOperations(), node);
-            catalog.setGauge("fs_io_total_read_bytes", fs.getIoStats().getTotalReadKilobytes() * 1024, node);
-            catalog.setGauge("fs_io_total_write_bytes", fs.getIoStats().getTotalWriteKilobytes() * 1024, node);
+            FsInfo.IoStats ioStats = fs.getIoStats();
+            if (ioStats != null){
+                catalog.setGauge("fs_io_total_operations", fs.getIoStats().getTotalOperations(), node);
+                catalog.setGauge("fs_io_total_read_operations", fs.getIoStats().getTotalReadOperations(), node);
+                catalog.setGauge("fs_io_total_write_operations", fs.getIoStats().getTotalWriteOperations(), node);
+                catalog.setGauge("fs_io_total_read_bytes", fs.getIoStats().getTotalReadKilobytes() * 1024, node);
+                catalog.setGauge("fs_io_total_write_bytes", fs.getIoStats().getTotalWriteKilobytes() * 1024, node);
+            }
         }
     }
 
