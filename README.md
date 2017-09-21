@@ -63,7 +63,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 ## Install
 
 - Since ElasticSearch 5.0.0 :
-    ./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.0.0.zip
+    ./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.1.0.zip
 
 - On old 2.x.x versions :
     ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip
