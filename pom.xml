@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-prometheus-exporter</artifactId>
-    <version>2.4.5.1</version>
+    <version>2.4.6.0</version>
     <packaging>jar</packaging>
     <name>Elasticsearch Prometheus Exporter Plugin</name>
     <description>Export ElasticSearch metrics to Prometheus</description>
@@ -28,7 +28,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <elasticsearch.version>2.4.5</elasticsearch.version>
+        <elasticsearch.version>2.4.6</elasticsearch.version>
         <!--
           Whenever you change Elasticsearch version verify and update Lucene version as well.
           Why? Because ES integration test support is based on Lucene randomized testing framework.
