@@ -1,16 +1,21 @@
 package org.elasticsearch.plugin.prometheus;
 
+import org.elasticsearch.action.ActionModule;
+import org.elasticsearch.action.NodePrometheusMetricsAction;
+import org.elasticsearch.action.TransportNodePrometheusMetricsAction;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.rest.RestModule;
-import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
+import org.elasticsearch.rest.action.prometheus.RestPrometheusMetricsAction;
 
 public class PrometheusExporterPlugin extends Plugin {
 
     private final ESLogger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
+
+    public static final String NAME = "prometheus-exporter";
 
     @Inject
     public PrometheusExporterPlugin(Settings settings) {
@@ -19,7 +24,7 @@ public class PrometheusExporterPlugin extends Plugin {
 
     @Override
     public String name() {
-        return "prometheus-exporter";
+        return NAME;
     }
 
     @Override
@@ -27,7 +32,12 @@ public class PrometheusExporterPlugin extends Plugin {
         return "Prometheus Exporter Plugin";
     }
 
-    public void onModule(RestModule module) {
-        module.addRestAction(RestPrometheusMetricsAction.class);
+    public void onModule(ActionModule actionModule) {
+        actionModule.registerAction(NodePrometheusMetricsAction.INSTANCE, TransportNodePrometheusMetricsAction.class);
     }
+
+    public void onModule(RestModule restModule) {
+        restModule.addRestAction(RestPrometheusMetricsAction.class);
+    }
+
 }

@@ -1,13 +1,10 @@
 package org.compuscene.metrics.prometheus;
 
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.Counter;
-import io.prometheus.client.Gauge;
-import io.prometheus.client.Summary;
+import io.prometheus.client.*;
 import io.prometheus.client.exporter.common.TextFormat;
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.ESLoggerFactory;
-import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
+import org.elasticsearch.rest.action.prometheus.RestPrometheusMetricsAction;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -19,13 +16,13 @@ public class PrometheusMetricsCatalog {
 
     private String cluster;
     private String metric_prefix;
-    private HashMap metrics;
+    private HashMap<String, SimpleCollector> metrics;
     private CollectorRegistry registry;
 
     public PrometheusMetricsCatalog(String cluster, String metric_prefix) {
         this.cluster = cluster;
         this.metric_prefix = metric_prefix;
-        metrics = new HashMap();
+        metrics = new HashMap<>();
         registry = new CollectorRegistry();
     }
 
@@ -56,7 +53,8 @@ public class PrometheusMetricsCatalog {
 
         metrics.put(metric, gauge);
 
-        logger.debug(String.format("Registered new gauge %s", metric));
+        if (logger.isDebugEnabled())
+            logger.debug("Registered new gauge [{}]", metric);
     }
 
     public void setGauge(String metric, double value, String... label_values) {
@@ -73,7 +71,8 @@ public class PrometheusMetricsCatalog {
 
         metrics.put(metric, counter);
 
-        logger.debug(String.format("Registered new counter %s", metric));
+        if (logger.isDebugEnabled())
+            logger.debug("Registered new counter [{}]", metric);
     }
 
     public void setCounter(String metric, double value, String... label_values) {
@@ -85,7 +84,7 @@ public class PrometheusMetricsCatalog {
         if (increment >= 0) {
             counter.labels(extended_label_values).inc(increment);
         } else {
-            logger.error(String.format("Can not increment metric %s with value %f, skipping", metric, increment));
+            logger.error("Can not increment metric [{}] with value [{}], skipping", metric, increment);
         }
     }
 
@@ -98,7 +97,8 @@ public class PrometheusMetricsCatalog {
 
         metrics.put(metric, summary);
 
-        logger.debug(String.format("Registered new summary %s", metric));
+        if (logger.isDebugEnabled())
+            logger.debug("Registered new summary [{}]", metric);
     }
 
     public Summary.Timer startSummaryTimer(String metric, String... label_values) {
@@ -107,12 +107,8 @@ public class PrometheusMetricsCatalog {
     }
 
     public String toTextFormat() throws IOException {
-        try {
-            Writer writer = new StringWriter();
-            TextFormat.write004(writer, registry.metricFamilySamples());
-            return writer.toString();
-        } catch (IOException e) {
-            throw e;
-        }
+        Writer writer = new StringWriter();
+        TextFormat.write004(writer, registry.metricFamilySamples());
+        return writer.toString();
     }
 }
