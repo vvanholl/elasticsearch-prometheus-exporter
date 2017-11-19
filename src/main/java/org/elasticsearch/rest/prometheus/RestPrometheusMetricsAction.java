@@ -32,6 +32,11 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     }
 
     @Override
+    public String getName() {
+        return "prometheus_metrics_action";
+    }
+
+    @Override
     protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) throws IOException {
         logger.trace(String.format("Received request for Prometheus metrics from %s", request.getRemoteAddress().toString()));
 
