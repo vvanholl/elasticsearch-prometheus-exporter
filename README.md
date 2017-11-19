@@ -20,6 +20,11 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 
 ## Compatibility matrix
 
+### Version 6.X
+
+| Elasticsearch  | Plugin         | Release date |
+| 6.0.0          | 6.0.0.0        | Nov 17, 2017 |
+
 ### Version 5.X
 
 | Elasticsearch  | Plugin         | Release date |
@@ -64,6 +69,9 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 | 2.3.4          | 2.3.4.0        | Jul 30, 2016 |
 
 ## Install
+
+- Since ElasticSearch 6.0.0 :
+    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.0.0.zip`
 
 - Since ElasticSearch 5.0.0 :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.4.0.zip`
