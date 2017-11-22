@@ -137,7 +137,7 @@ public class PrometheusMetricsCollector {
         }
 
         for (String k : roles.keySet()) {
-            catalog.setGauge("node_role" roles.get(k), node, k);
+            catalog.setGauge("node_role", roles.get(k), node, k);
         }
     }
 
