@@ -14,6 +14,9 @@ import org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.health.ClusterIndexHealth;
+import org.elasticsearch.cluster.node.DiscoveryNode;
+import org.elasticsearch.cluster.node.DiscoveryNode.Role;
+import org.elasticsearch.common.collect.HppcMaps;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Setting.Property;
@@ -22,6 +25,7 @@ import org.elasticsearch.http.HttpStats;
 import org.elasticsearch.indices.NodeIndicesStats;
 import org.elasticsearch.indices.breaker.AllCircuitBreakerStats;
 import org.elasticsearch.indices.breaker.CircuitBreakerStats;
+import org.elasticsearch.ingest.IngestStats;
 import org.elasticsearch.monitor.fs.FsInfo;
 import org.elasticsearch.monitor.jvm.JvmStats;
 import org.elasticsearch.monitor.os.OsStats;
@@ -31,6 +35,7 @@ import org.elasticsearch.script.ScriptStats;
 import org.elasticsearch.threadpool.ThreadPoolStats;
 import org.elasticsearch.transport.TransportStats;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PrometheusMetricsCollector {
@@ -64,8 +69,10 @@ public class PrometheusMetricsCollector {
         catalog.registerSummaryTimer("metrics_generate_time_seconds", "Time spent while generating metrics", "node");
 
         registerClusterMetrics();
+        registerNodeMetrics();
         registerJVMMetrics();
         registerIndicesMetrics();
+        registerIngestMetrics();
         registerTransportMetrics();
         registerHTTPMetrics();
         registerScriptMetrics();
@@ -112,6 +119,26 @@ public class PrometheusMetricsCollector {
         catalog.setGauge("cluster_is_timedout_bool", res.isTimedOut() ? 1 : 0);
 
         catalog.setGauge("cluster_inflight_fetch_number", res.getNumberOfInFlightFetch());
+    }
+
+    private void registerNodeMetrics() {
+        catalog.registerGauge("node_role", "Node role", "node", "role");
+    }
+
+    private void updateNodeMetrics(NodeStats ns) {
+        Map<String, Integer> roles = new HashMap<>();
+
+        roles.put("master", 0);
+        roles.put("data", 0);
+        roles.put("ingest", 0);
+
+        for (Role r : ns.getNode().getRoles()) {
+            roles.put(r.getRoleName(), 1);
+        }
+
+        for (String k : roles.keySet()) {
+            catalog.setGauge("node_role" roles.get(k), node, k);
+        }
     }
 
     private void registerJVMMetrics() {
@@ -369,6 +396,33 @@ public class PrometheusMetricsCollector {
         }
     }
 
+    private void registerIngestMetrics() {
+        catalog.registerGauge("ingest_total_count", "Ingestion total number", "node");
+        catalog.registerGauge("ingest_total_time_seconds", "Ingestion total time in seconds", "node");
+        catalog.registerGauge("ingest_total_current", "Ingestion total current", "node");
+        catalog.registerGauge("ingest_total_failed_count", "Ingestion total failed", "node");
+
+        catalog.registerGauge("ingest_pipeline_total_count", "Ingestion total number", "node", "pipeline");
+        catalog.registerGauge("ingest_pipeline_total_time_seconds", "Ingestion total time in seconds", "node", "pipeline");
+        catalog.registerGauge("ingest_pipeline_total_current", "Ingestion total current", "node", "pipeline");
+        catalog.registerGauge("ingest_pipeline_total_failed_count", "Ingestion total failed", "node", "pipeline");
+    }
+
+    private void updateIngestMetrics(IngestStats is) {
+        catalog.setGauge("ingest_total_count", is.getTotalStats().getIngestCount(), node);
+        catalog.setGauge("ingest_total_time_seconds", is.getTotalStats().getIngestTimeInMillis() / 1000.0, node);
+        catalog.setGauge("ingest_total_current", is.getTotalStats().getIngestCurrent(), node);
+        catalog.setGauge("ingest_total_failed_count", is.getTotalStats().getIngestFailedCount(), node);
+
+        for (Map.Entry<String, IngestStats.Stats> entry : is.getStatsPerPipeline().entrySet()) {
+            String pipeline = entry.getKey();
+            catalog.setGauge("ingest_pipeline_total_count", entry.getValue().getIngestCount(), node, pipeline);
+            catalog.setGauge("ingest_pipeline_total_time_seconds", entry.getValue().getIngestTimeInMillis() / 1000.0, node, pipeline);
+            catalog.setGauge("ingest_pipeline_total_current", entry.getValue().getIngestCurrent(), node, pipeline);
+            catalog.setGauge("ingest_pipeline_total_failed_count", entry.getValue().getIngestFailedCount(), node, pipeline);
+        }
+    }
+
     private void registerTransportMetrics() {
         catalog.registerGauge("transport_server_open_number", "Opened server connections", "node");
         catalog.registerGauge("transport_rx_packets_count", "Received packets", "node");
@@ -516,6 +570,12 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("fs_total_available_bytes", "Available disk space for all mount points", "node");
         catalog.registerGauge("fs_total_free_bytes", "Free disk space for all mountpoints", "node");
 
+        catalog.registerGauge("fs_most_usage_free_bytes", "Free disk space for most used mountpoint", "node", "path");
+        catalog.registerGauge("fs_most_usage_total_bytes", "Total disk space for most used mountpoint", "node", "path");
+
+        catalog.registerGauge("fs_least_usage_free_bytes", "Free disk space for least used mountpoint", "node", "path");
+        catalog.registerGauge("fs_least_usage_total_bytes", "Total disk space for least used mountpoint", "node", "path");
+
         catalog.registerGauge("fs_path_total_bytes", "Total disk space", "node", "path", "mount", "type");
         catalog.registerGauge("fs_path_available_bytes", "Available disk space", "node", "path", "mount", "type");
         catalog.registerGauge("fs_path_free_bytes", "Free disk space", "node", "path", "mount", "type");
@@ -532,6 +592,16 @@ public class PrometheusMetricsCollector {
             catalog.setGauge("fs_total_total_bytes", fs.getTotal().getTotal().getBytes(), node);
             catalog.setGauge("fs_total_available_bytes", fs.getTotal().getAvailable().getBytes(), node);
             catalog.setGauge("fs_total_free_bytes", fs.getTotal().getFree().getBytes(), node);
+
+            if (fs.getMostDiskEstimate() != null) {
+                catalog.setGauge("fs_most_usage_free_bytes", fs.getMostDiskEstimate().getFreeBytes(), node, fs.getMostDiskEstimate().getPath());
+                catalog.setGauge("fs_most_usage_total_bytes", fs.getMostDiskEstimate().getTotalBytes(), node, fs.getMostDiskEstimate().getPath());
+            }
+
+            if (fs.getLeastDiskEstimate() != null) {
+                catalog.setGauge("fs_least_usage_free_bytes", fs.getLeastDiskEstimate().getFreeBytes(), node, fs.getLeastDiskEstimate().getPath());
+                catalog.setGauge("fs_least_usage_total_bytes", fs.getLeastDiskEstimate().getTotalBytes(), node, fs.getLeastDiskEstimate().getPath());
+            }
 
             for (FsInfo.Path fspath : fs) {
                 String path = fspath.getPath();
@@ -647,6 +717,8 @@ public class PrometheusMetricsCollector {
 
         catalog.registerGauge("index_translog_operations_number", "Current number of translog operations", "node", "index", "context");
         catalog.registerGauge("index_translog_size_bytes", "Translog size", "node", "index", "context");
+        catalog.registerGauge("index_translog_uncommited_operations_number", "Current number of uncommited translog operations", "node", "index", "context");
+        catalog.registerGauge("index_translog_uncommited_size_bytes", "Translog uncommited size", "node", "index", "context");
 
         catalog.registerGauge("index_warmer_current_number", "Current number of warmer", "node", "index", "context");
         catalog.registerGauge("index_warmer_time_seconds", "Time spent during warmers", "node", "index", "context");
@@ -747,6 +819,8 @@ public class PrometheusMetricsCollector {
 
         catalog.setGauge("index_translog_operations_number", idx.getTranslog().estimatedNumberOfOperations(), node, index_name, context);
         catalog.setGauge("index_translog_size_bytes", idx.getTranslog().getTranslogSizeInBytes(), node, index_name, context);
+        catalog.setGauge("index_translog_uncommited_operations_number", idx.getTranslog().getUncommittedOperations(), node, index_name, context);
+        catalog.setGauge("index_translog_uncommited_size_bytes", idx.getTranslog().getUncommittedSizeInBytes(), node, index_name, context);
 
         catalog.setGauge("index_warmer_current_number", idx.getWarmer().current(), node, index_name, context);
         catalog.setGauge("index_warmer_time_seconds", idx.getWarmer().totalTimeInMillis(), node, index_name, context);
@@ -787,8 +861,10 @@ public class PrometheusMetricsCollector {
 
         NodeStats nodeStats = nodesStatsResponse.getNodes().get(0);
 
+        updateNodeMetrics(nodeStats);
         updateJVMMetrics(nodeStats.getJvm());
         updateIndicesMetrics(nodeStats.getIndices());
+        updateIngestMetrics(nodeStats.getIngestStats());
         updateTransportMetrics(nodeStats.getTransport());
         updateHTTPMetrics(nodeStats.getHttp());
         updateScriptMetrics(nodeStats.getScriptStats());
@@ -815,4 +891,3 @@ public class PrometheusMetricsCollector {
         return catalog;
     }
 }
-
