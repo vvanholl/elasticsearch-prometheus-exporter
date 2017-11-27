@@ -6,6 +6,9 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import java.io.IOException;
 
+/**
+ * Action response class for Prometheus Exporter plugin.
+ */
 public class NodePrometheusMetricsResponse extends ActionResponse {
     private ClusterHealthResponse clusterHealth;
     private NodeStats nodeStats;

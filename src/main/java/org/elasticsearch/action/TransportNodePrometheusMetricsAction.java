@@ -14,12 +14,19 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
 
-public class TransportNodePrometheusMetricsAction extends HandledTransportAction<NodePrometheusMetricsRequest, NodePrometheusMetricsResponse> {
+/**
+ * Transport action class for Prometheus Exporter plugin.
+ */
+public class TransportNodePrometheusMetricsAction extends HandledTransportAction<NodePrometheusMetricsRequest,
+        NodePrometheusMetricsResponse> {
     private final Client client;
 
     @Inject
-    public TransportNodePrometheusMetricsAction(Settings settings, ThreadPool threadPool, Client client, TransportService transportService, ActionFilters actionFilters, IndexNameExpressionResolver indexNameExpressionResolver) {
-        super(settings, NodePrometheusMetricsAction.NAME, threadPool, transportService, actionFilters, indexNameExpressionResolver, NodePrometheusMetricsRequest::new);
+    public TransportNodePrometheusMetricsAction(Settings settings, ThreadPool threadPool, Client client,
+                                                TransportService transportService, ActionFilters actionFilters,
+                                                IndexNameExpressionResolver indexNameExpressionResolver) {
+        super(settings, NodePrometheusMetricsAction.NAME, threadPool, transportService, actionFilters,
+                indexNameExpressionResolver, NodePrometheusMetricsRequest::new);
         this.client = client;
     }
 
@@ -46,7 +53,8 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
             }
         };
 
-        private ActionListener<ClusterHealthResponse> clusterHealthResponseActionListener = new ActionListener<ClusterHealthResponse>() {
+        private ActionListener<ClusterHealthResponse> clusterHealthResponseActionListener =
+                new ActionListener<ClusterHealthResponse>() {
             @Override
             public void onResponse(ClusterHealthResponse response) {
                 clusterHealthResponse = response;
@@ -69,8 +77,10 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
             client.admin().cluster().health(healthRequest, clusterHealthResponseActionListener);
         }
 
-        protected NodePrometheusMetricsResponse buildResponse(ClusterHealthResponse clusterHealth, NodesStatsResponse nodesStats) {
-            NodePrometheusMetricsResponse response = new NodePrometheusMetricsResponse(clusterHealth, nodesStats.getNodes().get(0));
+        protected NodePrometheusMetricsResponse buildResponse(ClusterHealthResponse clusterHealth,
+                                                              NodesStatsResponse nodesStats) {
+            NodePrometheusMetricsResponse response = new NodePrometheusMetricsResponse(clusterHealth,
+                    nodesStats.getNodes().get(0));
             if (logger.isTraceEnabled()) {
                 logger.trace("Return response: [{}]", response);
             }

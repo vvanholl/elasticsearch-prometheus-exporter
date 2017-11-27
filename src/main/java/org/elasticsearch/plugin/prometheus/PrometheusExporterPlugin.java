@@ -21,8 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Prometheus Exporter plugin main class.
+ */
 public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
-    private final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
+    private static final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
 
     @Inject
     public PrometheusExporterPlugin() {
@@ -42,7 +45,10 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
     }
 
     @Override
-    public List<RestHandler> getRestHandlers(Settings settings, RestController restController, ClusterSettings clusterSettings, IndexScopedSettings indexScopedSettings, SettingsFilter settingsFilter, IndexNameExpressionResolver indexNameExpressionResolver, Supplier<DiscoveryNodes> nodesInCluster) {
+    public List<RestHandler> getRestHandlers(Settings settings, RestController restController, ClusterSettings clusterSettings,
+                                             IndexScopedSettings indexScopedSettings, SettingsFilter settingsFilter,
+                                             IndexNameExpressionResolver indexNameExpressionResolver,
+                                             Supplier<DiscoveryNodes> nodesInCluster) {
         return Arrays.asList(
                 new RestPrometheusMetricsAction(settings, restController)
         );

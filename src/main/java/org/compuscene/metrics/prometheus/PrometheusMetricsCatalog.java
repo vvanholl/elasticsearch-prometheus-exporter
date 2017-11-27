@@ -12,61 +12,111 @@ import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
 import io.prometheus.client.exporter.common.TextFormat;
 
+/**
+ * A class that describes a Prometheus metrics catalog.
+ */
 public class PrometheusMetricsCatalog {
-    private final static Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
+    private static final Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
 
     private String cluster;
-    private String metric_prefix;
+    private String node;
+    private String nodeid;
+
+    private String metricPrefix;
+
     private HashMap<String, Object> metrics;
     private CollectorRegistry registry;
 
-    public PrometheusMetricsCatalog(String cluster, String metric_prefix) {
+    public PrometheusMetricsCatalog(String cluster, String node, String nodeid, String metricPrefix) {
         this.cluster = cluster;
-        this.metric_prefix = metric_prefix;
+        this.node = node;
+        this.nodeid = nodeid;
+
+        this.metricPrefix = metricPrefix;
+
         metrics = new HashMap<>();
         registry = new CollectorRegistry();
     }
 
-    private String[] getExtendedLabelNames(String... label_names) {
-        String[] extended = new String[label_names.length + 1];
+    private String[] getExtendedClusterLabelNames(String... labelNames) {
+        String[] extended = new String[labelNames.length + 1];
         extended[0] = "cluster";
 
-        System.arraycopy(label_names, 0, extended, 1, label_names.length);
+        System.arraycopy(labelNames, 0, extended, 1, labelNames.length);
 
         return extended;
     }
 
-    private String[] getExtendedLabelValues(String... label_values) {
-        String[] extended = new String[label_values.length + 1];
+    private String[] getExtendedClusterLabelValues(String... labelValues) {
+        String[] extended = new String[labelValues.length + 1];
         extended[0] = cluster;
 
-        System.arraycopy(label_values, 0, extended, 1, label_values.length);
+        System.arraycopy(labelValues, 0, extended, 1, labelValues.length);
 
         return extended;
     }
 
-    public void registerGauge(String metric, String help, String... labels) {
+    private String[] getExtendedNodeLabelNames(String... labelNames) {
+        String[] extended = new String[labelNames.length + 3];
+        extended[0] = "cluster";
+        extended[1] = "node";
+        extended[2] = "nodeid";
+
+        System.arraycopy(labelNames, 0, extended, 3, labelNames.length);
+
+        return extended;
+    }
+
+    private String[] getExtendedNodeLabelValues(String... labelValues) {
+        String[] extended = new String[labelValues.length + 3];
+        extended[0] = cluster;
+        extended[1] = node;
+        extended[2] = nodeid;
+
+        System.arraycopy(labelValues, 0, extended, 3, labelValues.length);
+
+        return extended;
+    }
+
+    public void registerClusterGauge(String metric, String help, String... labels) {
         Gauge gauge = Gauge.build().
-                name(metric_prefix + metric).
+                name(metricPrefix + metric).
                 help(help).
-                labelNames(getExtendedLabelNames(labels)).
+                labelNames(getExtendedClusterLabelNames(labels)).
                 register(registry);
 
         metrics.put(metric, gauge);
 
-        logger.debug(String.format("Registered new gauge %s", metric));
+        logger.debug(String.format("Registered new cluster gauge %s", metric));
     }
 
-    public void setGauge(String metric, double value, String... label_values) {
+    public void setClusterGauge(String metric, double value, String... labelValues) {
         Gauge gauge = (Gauge) metrics.get(metric);
-        gauge.labels(getExtendedLabelValues(label_values)).set(value);
+        gauge.labels(getExtendedClusterLabelValues(labelValues)).set(value);
+    }
+
+    public void registerNodeGauge(String metric, String help, String... labels) {
+        Gauge gauge = Gauge.build().
+                name(metricPrefix + metric).
+                help(help).
+                labelNames(getExtendedNodeLabelNames(labels)).
+                register(registry);
+
+        metrics.put(metric, gauge);
+
+        logger.debug(String.format("Registered new node gauge %s", metric));
+    }
+
+    public void setNodeGauge(String metric, double value, String... labelValues) {
+        Gauge gauge = (Gauge) metrics.get(metric);
+        gauge.labels(getExtendedNodeLabelValues(labelValues)).set(value);
     }
 
     public void registerSummaryTimer(String metric, String help, String... labels) {
         Summary summary = Summary.build().
-                name(metric_prefix + metric).
+                name(metricPrefix + metric).
                 help(help).
-                labelNames(getExtendedLabelNames(labels)).
+                labelNames(getExtendedNodeLabelNames(labels)).
                 register(registry);
 
         metrics.put(metric, summary);
@@ -74,18 +124,14 @@ public class PrometheusMetricsCatalog {
         logger.debug(String.format("Registered new summary %s", metric));
     }
 
-    public Summary.Timer startSummaryTimer(String metric, String... label_values) {
+    public Summary.Timer startSummaryTimer(String metric, String... labelValues) {
         Summary summary = (Summary) metrics.get(metric);
-        return summary.labels(getExtendedLabelValues(label_values)).startTimer();
+        return summary.labels(getExtendedNodeLabelValues(labelValues)).startTimer();
     }
 
     public String toTextFormat() throws IOException {
-        try {
-            Writer writer = new StringWriter();
-            TextFormat.write004(writer, registry.metricFamilySamples());
-            return writer.toString();
-        } catch (IOException e) {
-            throw e;
-        }
+        Writer writer = new StringWriter();
+        TextFormat.write004(writer, registry.metricFamilySamples());
+        return writer.toString();
     }
 }
