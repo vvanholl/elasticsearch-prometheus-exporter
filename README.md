@@ -23,6 +23,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 ### Version 6.X
 
 | Elasticsearch  | Plugin         | Release date |
+| -------------- | -------------- | ------------ |
 | 6.0.0          | 6.0.0.0        | Nov 27, 2017 |
 
 ### Version 5.X
