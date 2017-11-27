@@ -18,19 +18,19 @@ import io.prometheus.client.exporter.common.TextFormat;
 public class PrometheusMetricsCatalog {
     private static final Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
 
-    private String cluster;
-    private String node;
-    private String nodeid;
+    private String clusterName;
+    private String nodeName;
+    private String nodeId;
 
     private String metricPrefix;
 
     private HashMap<String, Object> metrics;
     private CollectorRegistry registry;
 
-    public PrometheusMetricsCatalog(String cluster, String node, String nodeid, String metricPrefix) {
-        this.cluster = cluster;
-        this.node = node;
-        this.nodeid = nodeid;
+    public PrometheusMetricsCatalog(String clusterName, String nodeName, String nodeId, String metricPrefix) {
+        this.clusterName = clusterName;
+        this.nodeName = nodeName;
+        this.nodeId = nodeId;
 
         this.metricPrefix = metricPrefix;
 
@@ -49,7 +49,7 @@ public class PrometheusMetricsCatalog {
 
     private String[] getExtendedClusterLabelValues(String... labelValues) {
         String[] extended = new String[labelValues.length + 1];
-        extended[0] = cluster;
+        extended[0] = clusterName;
 
         System.arraycopy(labelValues, 0, extended, 1, labelValues.length);
 
@@ -69,9 +69,9 @@ public class PrometheusMetricsCatalog {
 
     private String[] getExtendedNodeLabelValues(String... labelValues) {
         String[] extended = new String[labelValues.length + 3];
-        extended[0] = cluster;
-        extended[1] = node;
-        extended[2] = nodeid;
+        extended[0] = clusterName;
+        extended[1] = nodeName;
+        extended[2] = nodeId;
 
         System.arraycopy(labelValues, 0, extended, 3, labelValues.length);
 

@@ -4,6 +4,7 @@ import static org.elasticsearch.action.NodePrometheusMetricsAction.INSTANCE;
 import static org.elasticsearch.rest.RestRequest.Method.GET;
 
 import org.apache.logging.log4j.Logger;
+import org.compuscene.metrics.prometheus.PrometheusMetricsCatalog;
 import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
 import org.elasticsearch.action.NodePrometheusMetricsRequest;
 import org.elasticsearch.action.NodePrometheusMetricsResponse;
@@ -53,7 +54,9 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
                     logger.trace("Prepare new Prometheus metric collector for: [{}], [{}], [{}]", clusterName, nodeId,
                             nodeName);
                 }
-                PrometheusMetricsCollector collector = new PrometheusMetricsCollector(settings, clusterName, nodeName, nodeId);
+                PrometheusMetricsCatalog catalog = new PrometheusMetricsCatalog(clusterName, nodeName, nodeId, "es_");
+                PrometheusMetricsCollector collector = new PrometheusMetricsCollector(settings, catalog);
+                collector.registerMetrics();
                 collector.updateMetrics(response.getClusterHealth(), response.getNodeStats());
                 return new BytesRestResponse(RestStatus.OK, collector.getCatalog().toTextFormat());
             }

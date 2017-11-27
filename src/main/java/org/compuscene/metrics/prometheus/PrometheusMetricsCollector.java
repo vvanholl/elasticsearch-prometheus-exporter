@@ -34,15 +34,12 @@ public class PrometheusMetricsCollector {
 
     private PrometheusMetricsCatalog catalog;
 
-    public PrometheusMetricsCollector(Settings settings, String cluster, String node, String nodeid) {
+    public PrometheusMetricsCollector(Settings settings, PrometheusMetricsCatalog catalog) {
         this.settings = settings;
-
-        catalog = new PrometheusMetricsCatalog(cluster, node, nodeid, "es_");
-
-        registerMetrics();
+        this.catalog = catalog;
     }
 
-    private void registerMetrics() {
+    public void registerMetrics() {
         catalog.registerSummaryTimer("metrics_generate_time_seconds", "Time spent while generating metrics");
 
         registerClusterMetrics();
