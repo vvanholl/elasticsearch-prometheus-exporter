@@ -23,7 +23,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 ### Version 6.X
 
 | Elasticsearch  | Plugin         | Release date |
-| 6.0.0          | 6.0.0.0        | Nov 17, 2017 |
+| 6.0.0          | 6.0.0.0        | Nov 27, 2017 |
 
 ### Version 5.X
 
@@ -31,7 +31,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 | -------------- | -------------- | ------------ |
 | 5.6.4          | 5.6.4.0        | Nov 08, 2017 |
 | 5.6.3          | 5.6.3.0        | Oct 10, 2017 |
-| 5.6.2          | 5.6.2.0        | Sep 26, 2017 |
+| 5.6.2          | 5.6.2.0        | Sep 26, 2017 |
 | 5.6.1          | 5.6.1.0        | Sep 19, 2017 |
 | 5.6.0          | 5.6.0.0        | Sep 13, 2017 |
 | 5.5.2          | 5.5.2.0        | Aug 18, 2017 |
@@ -71,9 +71,9 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 ## Install
 
 - Since ElasticSearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.0.0.zip`
+    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.0.0.0.zip`
 
-- Since ElasticSearch 5.0.0 :
+- On ElasticSearch 5.x.x :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.4.0.zip`
 
 - On old 2.x.x versions :
@@ -95,7 +95,10 @@ prometheus.indices: false
 
 ## Uninstall
 
-- Since ElasticSearch 5.0.0 :
+- Since ElasticSearch 6.0.0 :
+    `./bin/elasticsearch-plugin remove prometheus-exporter`
+
+- On ElasticSearch 5.x.x :
     `./bin/elasticsearch-plugin remove prometheus-exporter`
 
 - On old 2.x.x versions :
