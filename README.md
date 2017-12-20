@@ -24,6 +24,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 6.1.1          | 6.1.1.0        | Dec 20, 2017 |
 | 6.1.0          | 6.1.0.0        | Dec 14, 2017 |
 | 6.0.1          | 6.0.1.0        | Dec 08, 2017 |
 | 6.0.0          | 6.0.0.0        | Nov 27, 2017 |
@@ -73,8 +74,8 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 
 ## Install
 
-- Since ElasticSearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.1.0.0.zip`
+- Since ElasticSearch 6.x.x :
+    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.1.1.0.zip`
 
 - On ElasticSearch 5.x.x :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.4.0.zip`
