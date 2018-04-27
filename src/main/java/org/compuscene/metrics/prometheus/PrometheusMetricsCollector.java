@@ -600,12 +600,6 @@ public class PrometheusMetricsCollector {
         catalog.registerNodeGauge("fs_total_available_bytes", "Available disk space for all mount points");
         catalog.registerNodeGauge("fs_total_free_bytes", "Free disk space for all mountpoints");
 
-        catalog.registerNodeGauge("fs_most_usage_free_bytes", "Free disk space for most used mountpoint", "path");
-        catalog.registerNodeGauge("fs_most_usage_total_bytes", "Total disk space for most used mountpoint", "path");
-
-        catalog.registerNodeGauge("fs_least_usage_free_bytes", "Free disk space for least used mountpoint", "path");
-        catalog.registerNodeGauge("fs_least_usage_total_bytes", "Total disk space for least used mountpoint", "path");
-
         catalog.registerNodeGauge("fs_path_total_bytes", "Total disk space", "path", "mount", "type");
         catalog.registerNodeGauge("fs_path_available_bytes", "Available disk space", "path", "mount", "type");
         catalog.registerNodeGauge("fs_path_free_bytes", "Free disk space", "path", "mount", "type");
@@ -622,20 +616,6 @@ public class PrometheusMetricsCollector {
             catalog.setNodeGauge("fs_total_total_bytes", fs.getTotal().getTotal().getBytes());
             catalog.setNodeGauge("fs_total_available_bytes", fs.getTotal().getAvailable().getBytes());
             catalog.setNodeGauge("fs_total_free_bytes", fs.getTotal().getFree().getBytes());
-
-            if (fs.getMostDiskEstimate() != null) {
-                catalog.setNodeGauge("fs_most_usage_free_bytes", fs.getMostDiskEstimate().getFreeBytes(),
-                        fs.getMostDiskEstimate().getPath());
-                catalog.setNodeGauge("fs_most_usage_total_bytes", fs.getMostDiskEstimate().getTotalBytes(),
-                        fs.getMostDiskEstimate().getPath());
-            }
-
-            if (fs.getLeastDiskEstimate() != null) {
-                catalog.setNodeGauge("fs_least_usage_free_bytes", fs.getLeastDiskEstimate().getFreeBytes(),
-                        fs.getLeastDiskEstimate().getPath());
-                catalog.setNodeGauge("fs_least_usage_total_bytes", fs.getLeastDiskEstimate().getTotalBytes(),
-                        fs.getLeastDiskEstimate().getPath());
-            }
 
             for (FsInfo.Path fspath : fs) {
                 String path = fspath.getPath();
