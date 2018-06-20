@@ -79,7 +79,6 @@ task copyPluginFiles(type: Copy) {
 task buildPluginZip(type: Zip, dependsOn: [":jar", "copyPluginFiles"]) {
     from configurations.releaseJars
     from "build/tmp/plugin"
-    into "elasticsearch"
 }
 
 artifacts {
