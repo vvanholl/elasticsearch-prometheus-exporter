@@ -84,10 +84,10 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 ## Install
 
-- Since ElasticSearch 6.0.0 :
+- Since Elasticsearch 6.0.0 :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.3.1.0.zip`
 
-- On ElasticSearch 5.x.x :
+- On Elasticsearch 5.x.x :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.4.0.zip`
 
 - On old 2.x.x versions :
@@ -109,10 +109,10 @@ prometheus.indices: false
 
 ## Uninstall
 
-- Since ElasticSearch 6.0.0:
+- Since Elasticsearch 6.0.0:
     `./bin/elasticsearch-plugin remove prometheus-exporter`
 
-- On ElasticSearch 5.x.x:
+- On Elasticsearch 5.x.x:
     `./bin/elasticsearch-plugin remove prometheus-exporter`
 
 - On old 2.x.x versions:
@@ -171,11 +171,11 @@ For example, if you have a cluster of 3 nodes:
 
 Of course, you could use the service discovery service instead of a static config.
 
-Just keep in mind that metrics_path must be `/_prometheus/metrics`, otherwise Prometheus will find no metric.
+Just keep in mind that `metrics_path` must be `/_prometheus/metrics`, otherwise Prometheus will find no metric.
 
 ## Project sources
 
-The Maven project site is available at [Github](https://github.com/vvanholl/elasticsearch-prometheus-exporter).
+The Maven project site is available at [GitHub](https://github.com/vvanholl/elasticsearch-prometheus-exporter).
 
 ## Credits
 
