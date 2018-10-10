@@ -1,11 +1,14 @@
 import com.github.mgk.gradle.*
 
 buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
     dependencies {
-        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-        classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
+        classpath "org.elasticsearch.gradle:build-tools:5.6.14" // How can we use ${versions.elasticsearch} here ???
     }
 }
 
@@ -16,8 +19,32 @@ plugins {
     id "com.github.mgk.gradle.s3" version "1.4.0"
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+// This temp hack should be needed only for ES 5.6.x it should go awa in ES 6.x or 5.5.x
+// https://discuss.elastic.co/t/if-your-plugin-build-breaks-when-upgrading-to-5-6/101752
+// https://github.com/spinscale/cookiecutter-elasticsearch-ingest-processor/commit/c94205436debb561549b722ea1badedd7a875f7a#diff-16fb65d09b6dcec31a0103baf74c1335R21
+ext.projectSubstitutions = [:]
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'elasticsearch.esplugin'
+
+// license of this project
+licenseFile = rootProject.file('LICENSE.txt')
+// copyright notices
+noticeFile = rootProject.file('NOTICE.txt')
+
+// dependency license check needs can be enabled
+dependencyLicenses.enabled = false
+
+// thirdparty audit needs can be enabled
+thirdPartyAudit.enabled = false
+
+// license header checks can be disabled
+licenseHeaders.enabled = true
+
+// There are only integration tests
+integTestRunner.enabled = true
+test.enabled = false
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
@@ -33,7 +60,7 @@ ext {
     versions = [
         "elasticsearch": version.replaceAll(/\.[0-9]+(|-SNAPSHOT)$/, ""),
         "prometheus"   : "0.4.0",
-        "log4j"        : "2.9.1",
+        "log4j"        : "2.11.1",
         "junit"        : "4.12"
     ]
 }
@@ -60,42 +87,17 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked,deprecation"
 }
 
-task javadocJar(type: Jar, dependsOn: classes) {
-    from javadoc
-    into "build/tmp"
-    classifier "javadoc"
+esplugin {
+    licenseFile rootProject.file('LICENSE.txt')
+    noticeFile rootProject.file('NOTICE.txt')
+    name pluginName
+    description pluginDescription
+    classname pluginClassname
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-    into "build/tmp/sources"
-    classifier "sources"
-}
-
-task copyPluginFiles(type: Copy) {
-    from "src/main/templates"
-    into "build/tmp/plugin"
-    expand([
-        "descriptor": [
-            "name"                : pluginName,
-            "classname"           : pluginClassname,
-            "description"         : pluginDescription,
-            "version"             : project.property("version"),
-            "javaVersion"         : project.property("targetCompatibility"),
-            "elasticsearchVersion": versions.elasticsearch
-        ]
-    ])
-    outputs.upToDateWhen { false }
-}
-
-task buildPluginZip(type: Zip, dependsOn: [":jar", "copyPluginFiles"]) {
-    from configurations.releaseJars
-    from "build/tmp/plugin"
-    into "elasticsearch"
-}
-
-artifacts {
-    archives javadocJar, sourcesJar, buildPluginZip
+integTestCluster {
+    numNodes = 2
+    clusterName = "PrometheusExporterITCluster"
 }
 
 checkstyle {
@@ -103,7 +105,7 @@ checkstyle {
     toolVersion = "8.2"
 }
 
-task S3Upload(type: S3Upload, dependsOn: buildPluginZip) {
+task S3Upload(type: S3Upload /*, dependsOn: buildPluginZip*/) {
     bucket = s3_bucket
     key = "elasticsearch/${project.name}-${version}.zip"
     file = "build/distributions/${project.name}-${version}.zip"
@@ -122,7 +124,7 @@ github {
 }
 
 githubRelease {
-    dependsOn("buildPluginZip")
+    //dependsOn("buildPluginZip")
     mustRunAfter("S3Upload")
 }
 
@@ -132,6 +134,7 @@ task release() {
             println("SNAPSHOT: Nothing to release !")
         }
     } else {
-        dependsOn(["S3Upload", "githubRelease"])
+//        dependsOn(["S3Upload", "githubRelease"])
+        dependsOn("S3Upload")
     }
 }
