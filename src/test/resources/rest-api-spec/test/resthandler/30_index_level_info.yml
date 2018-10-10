@@ -1,0 +1,62 @@
+---
+"Index level statistics":
+
+  # -----------------------------------
+  # We expect no indices in the cluster
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  # -----------------------------------
+  # We expect index level stats present now (by default)
+
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_shards_number \s Number \s of \s shards \n
+        \# \s TYPE \s es_index_shards_number \s gauge \n
+        (
+          es_index_shards_number\{
+              cluster="PrometheusExporterITCluster",
+              type="(active_primary|initializing|relocating|shards|active|unassigned)",
+              index="twitter"
+          ,\} \s+ \d+\.\d+ \n?
+        ){6}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_status \s Index \s status \n
+        \# \s TYPE \s es_index_status \s gauge \n
+        es_index_status\{
+            cluster="PrometheusExporterITCluster",index="twitter"
+        \,} \s \d+\.\d+ \n?
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_replicas_number \s Number \s of \s replicas \n
+        \# \s TYPE \s es_index_replicas_number \s gauge \n
+        es_index_replicas_number\{
+            cluster="PrometheusExporterITCluster",index="twitter"
+        ,\} \s+ \d+\.\d+ \n?
+        .*/

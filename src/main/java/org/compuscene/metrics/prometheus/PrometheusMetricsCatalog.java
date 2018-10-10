@@ -1,3 +1,20 @@
+/*
+ * Copyright [2016] [Vincent VAN HOLLEBEKE]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.compuscene.metrics.prometheus;
 
 import org.apache.logging.log4j.Logger;
@@ -7,6 +24,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Locale;
+
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
@@ -87,7 +106,7 @@ public class PrometheusMetricsCatalog {
 
         metrics.put(metric, gauge);
 
-        logger.debug(String.format("Registered new cluster gauge %s", metric));
+        logger.debug(String.format(Locale.ENGLISH, "Registered new cluster gauge %s", metric));
     }
 
     public void setClusterGauge(String metric, double value, String... labelValues) {
@@ -104,7 +123,7 @@ public class PrometheusMetricsCatalog {
 
         metrics.put(metric, gauge);
 
-        logger.debug(String.format("Registered new node gauge %s", metric));
+        logger.debug(String.format(Locale.ENGLISH, "Registered new node gauge %s", metric));
     }
 
     public void setNodeGauge(String metric, double value, String... labelValues) {
@@ -121,7 +140,7 @@ public class PrometheusMetricsCatalog {
 
         metrics.put(metric, summary);
 
-        logger.debug(String.format("Registered new summary %s", metric));
+        logger.debug(String.format(Locale.ENGLISH, "Registered new summary %s", metric));
     }
 
     public Summary.Timer startSummaryTimer(String metric, String... labelValues) {
