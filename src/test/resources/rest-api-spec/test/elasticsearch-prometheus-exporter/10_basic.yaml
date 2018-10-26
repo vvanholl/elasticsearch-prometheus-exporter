@@ -1,6 +1,6 @@
 ---
-# We sent number of cluster nodes in build.gradle file. See `integTestCluster.numNodes`
-"Verify we have cluster with 2 nodes":
+# We set number of cluster nodes in build.gradle file. See `integTestCluster.numNodes`
+"Verify we have cluster with expectd number of nodes":
   - do:
       cluster.health:
         wait_for_nodes: 2

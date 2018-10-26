@@ -1,0 +1,52 @@
+---
+"Index level statistics (index_fieldata_*)":
+
+  # -----------------------------------
+  # We expect no indices in the cluster
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  # -----------------------------------
+  # We expect index level stats present now (by default)
+
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_fielddata_memory_size_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_fielddata_memory_size_bytes \s gauge \n
+        (
+          es_index_fielddata_memory_size_bytes\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_fielddata_evictions_count (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_fielddata_evictions_count \s gauge \n
+        (
+          es_index_fielddata_evictions_count\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/

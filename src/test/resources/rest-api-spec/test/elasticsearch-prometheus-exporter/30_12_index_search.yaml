@@ -1,0 +1,148 @@
+---
+"Index level statistics (index_search_*)":
+
+  # -----------------------------------
+  # We expect no indices in the cluster
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  # -----------------------------------
+  # We expect index level stats present now (by default)
+
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_open_contexts_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_open_contexts_number \s gauge \n
+        (
+          es_index_search_open_contexts_number\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_fetch_count (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_fetch_count \s gauge \n
+        (
+          es_index_search_fetch_count\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_fetch_current_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_fetch_current_number \s gauge \n
+        (
+          es_index_search_fetch_current_number\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_fetch_time_seconds (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_fetch_time_seconds \s gauge \n
+        (
+          es_index_search_fetch_time_seconds\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_query_count (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_query_count \s gauge \n
+        (
+          es_index_search_query_count\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_query_current_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_query_current_number \s gauge \n
+        (
+          es_index_search_query_current_number\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_query_time_seconds (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_query_time_seconds \s gauge \n
+        (
+          es_index_search_query_time_seconds\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_scroll_count (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_scroll_count \s gauge \n
+        (
+          es_index_search_scroll_count\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_scroll_current_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_scroll_current_number \s gauge \n
+        (
+          es_index_search_scroll_current_number\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_search_scroll_time_seconds (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_search_scroll_time_seconds \s gauge \n
+        (
+          es_index_search_scroll_time_seconds\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
