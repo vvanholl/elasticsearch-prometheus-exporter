@@ -1,6 +1,5 @@
-# I do not know why this file is left in the <ROOT> after `gradle build` or `gradle check`
-# and why `gradle clean` does not delete it.
-# See https://discuss.elastic.co/t/leftovers-after-integtestrunner-in-root/152610
+# There is a file left in the <ROOT> after `gradle build` or `gradle check`. This is expected.
+# https://discuss.elastic.co/t/leftovers-after-integtestrunner-in-root/152610
 \.local*-integTestRunner-execution-times.log
 
 # Eclipse

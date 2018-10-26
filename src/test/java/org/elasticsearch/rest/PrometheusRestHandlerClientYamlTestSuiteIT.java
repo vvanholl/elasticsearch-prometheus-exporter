@@ -23,7 +23,7 @@ import org.elasticsearch.test.rest.yaml.ClientYamlTestCandidate;
 import org.elasticsearch.test.rest.yaml.ESClientYamlSuiteTestCase;
 
 /**
- * Needed class to enable esplugin rest api tests
+ * Needed class to enable esplugin rest api tests.
  */
 public class PrometheusRestHandlerClientYamlTestSuiteIT extends ESClientYamlSuiteTestCase {
 

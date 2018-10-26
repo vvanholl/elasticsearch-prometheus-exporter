@@ -1,6 +1,6 @@
 # At this moment this is mostly smoke test only. The goal is the have a test to verify
 # that metrics are relevant to specific ES node only but it seems that
-# current esplugin support does not easily allow for communication with specific ES nodes
+# current esplugin does not support for communication with specific ES nodes
 # only (see below for more details).
 #
 # Going forward one possible solution would be to implement this in Java similarly

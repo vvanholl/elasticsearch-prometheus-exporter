@@ -1,0 +1,158 @@
+---
+"Index level statistics (from ClusterHealth)":
+
+  # -----------------------------------
+  # We expect no indices in the cluster
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  # -----------------------------------
+  # We expect index level stats present now (by default)
+
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_shards_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_shards_number \s gauge \n
+        (
+          es_index_shards_number\{
+              cluster="PrometheusExporterITCluster",
+              type="(active_primary|initializing|relocating|shards|active|unassigned)",
+              index="twitter"
+          ,\} \s+ \d+\.\d+ \n?
+        ){6}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_status (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_status \s gauge \n
+        es_index_status\{
+            cluster="PrometheusExporterITCluster",index="twitter"
+        \,} \s \d+\.\d+ \n?
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_replicas_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_replicas_number \s gauge \n
+        es_index_replicas_number\{
+            cluster="PrometheusExporterITCluster",index="twitter"
+        ,\} \s+ \d+\.\d+ \n?
+        .*/
+
+---
+"Index level statistics (general)":
+
+  # -----------------------------------
+  # We expect no indices in the cluster
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  # -----------------------------------
+  # We expect index level stats present now (by default)
+
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_doc_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_doc_number \s gauge \n
+        (
+          es_index_doc_number\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_doc_deleted_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_doc_deleted_number \s gauge \n
+        (
+          es_index_doc_deleted_number\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_index_store_size_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_store_size_bytes \s gauge \n
+        (
+          es_index_store_size_bytes\{
+              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+          ,\} \s+ \d+\.\d+ \n?
+        ){2}
+        .*/
+
+  # -----------------------------------
+  # Delete the index and check index stats are not exposed anymore
+
+  # Make sure the following regex matches because later we are using just negative version of it to prove otherwise
+  - match:
+      $body: /.*[t][w][i][t][t][e][r].*/
+
+  - do:
+      indices.get:
+        index: twitter
+
+  - is_true: twitter
+
+  - do:
+      indices.delete:
+        index: twitter
+
+  - do:
+      indices.get:
+        index: twitter
+        ignore_unavailable: true
+
+  - is_false: twitter
+
+  # twitter index should not be present in the prometheus stats now
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[^t][^w][^i][^t][^t][^e][^r].*/

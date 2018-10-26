@@ -25,10 +25,8 @@ import org.elasticsearch.action.NodePrometheusMetricsAction;
 import org.elasticsearch.action.TransportNodePrometheusMetricsAction;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
-import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.*;
-import org.elasticsearch.index.IndexModule;
 import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.rest.RestController;
@@ -44,14 +42,8 @@ import java.util.function.Supplier;
 public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
     private static final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
 
-    @Inject
     public PrometheusExporterPlugin() {
         logger.info("starting Prometheus exporter plugin");
-    }
-
-    @Override
-    public void onIndexModule(IndexModule indexModule) {
-        super.onIndexModule(indexModule);
     }
 
     @Override
