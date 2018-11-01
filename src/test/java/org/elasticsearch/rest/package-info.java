@@ -1,5 +1,5 @@
 /*
- * Copyright [2016] [Vincent VAN HOLLEBEKE]
+ * Copyright [2016] [Lukas Vlcek]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,7 @@
  *
  */
 
-package org.elasticsearch.action;
-
-import org.elasticsearch.action.support.master.MasterNodeReadRequest;
-
 /**
- * Action request class for Prometheus Exporter plugin.
+ * Classes used for testing.
  */
-public class NodePrometheusMetricsRequest extends MasterNodeReadRequest<NodePrometheusMetricsRequest> {
-    @Override
-    public ActionRequestValidationException validate() {
-        return null;
-    }
-}
+package org.elasticsearch.rest;

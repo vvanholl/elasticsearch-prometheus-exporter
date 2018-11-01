@@ -15,16 +15,7 @@
  *
  */
 
-package org.elasticsearch.action;
-
-import org.elasticsearch.action.support.master.MasterNodeReadRequest;
-
 /**
- * Action request class for Prometheus Exporter plugin.
+ * Utility classes.
  */
-public class NodePrometheusMetricsRequest extends MasterNodeReadRequest<NodePrometheusMetricsRequest> {
-    @Override
-    public ActionRequestValidationException validate() {
-        return null;
-    }
-}
+package org.elasticsearch.action.admin.indices.stats;

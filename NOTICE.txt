@@ -1,0 +1,2 @@
+This product includes software developed by Prometheus.io
+and contributors (https://github.com/prometheus/client_java).

@@ -1,0 +1,30 @@
+---
+# We set number of cluster nodes in build.gradle file. See `integTestCluster.numNodes`
+"Verify we have cluster with expectd number of nodes":
+  - do:
+      cluster.health:
+        wait_for_nodes: 2
+
+  - is_false:  timed_out
+  - gte:       { number_of_nodes:      2 }
+  - gte:       { number_of_data_nodes: 2 }
+
+
+---
+"Prometheus exporter plugin installed on every node":
+  - do:
+      cat.nodes:
+          h: name,id
+          full_id: true
+          format: json
+
+  # we know there are 2 nodes, keep id of all nodes so that we can iterate over them later...
+  - set: { 0.id: node0 }
+  - set: { 1.id: node1 }
+
+  - do:
+      nodes.info: { }
+
+  # ...now, check that every node had this plugin installed
+  - match: { nodes.$node0.plugins.0.name: prometheus-exporter }
+  - match: { nodes.$node1.plugins.0.name: prometheus-exporter }
