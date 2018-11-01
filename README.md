@@ -24,6 +24,8 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 6.4.2          | 6.4.2.0        | Oct 08, 2018 |
+| 6.4.1          | 6.4.1.0        | Sep 24, 2018 |
 | 6.4.0          | 6.4.0.0        | Aug 28, 2018 |
 | 6.3.2          | 6.3.2.0        | Jul 28, 2018 |
 | 6.3.1          | 6.3.1.0        | Jul 05, 2018 |
@@ -45,6 +47,15 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 5.6.12         | 5.6.9.12       | Sep 24, 2018 |
+| 5.6.11         | 5.6.9.11       | Sep 24, 2018 |
+| 5.6.10          |5.6.9.10       | Jun 20, 2018 |
+| 5.6.9          | 5.6.9.1        | Apr 30, 2018 |
+| 5.6.9          | 5.6.9.0        | Apr 18, 2018 |
+| 5.6.8          | 5.6.8.0        | Feb 21, 2018 |
+| 5.6.7          | 5.6.7.0        | Jan 30, 2018 |
+| 5.6.6          | 5.6.6.0        | Jan 16, 2018 |
+| 5.6.5          | 5.6.5.0        | Dec 19, 2017 |
 | 5.6.4          | 5.6.4.0        | Nov 08, 2017 |
 | 5.6.3          | 5.6.3.0        | Oct 10, 2017 |
 | 5.6.2          | 5.6.2.0        | Sep 26, 2017 |
@@ -87,10 +98,10 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 ## Install
 
 - Since Elasticsearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.4.0.0.zip`
+    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.4.2.0.zip`
 
 - On Elasticsearch 5.x.x :
-    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.4.0.zip`
+    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.12.0.zip`
 
 - On old 2.x.x versions :
     `./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip`
