@@ -1,4 +1,4 @@
-image: gradle:alpine
+image: gradle:4.10.2-jdk10
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
