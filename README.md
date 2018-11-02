@@ -1,4 +1,5 @@
-[![pipeline status](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/badges/master/pipeline.svg)](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/commits/master)[![coverage report](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/badges/master/coverage.svg)](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/commits/master)
+[![pipeline status](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/badges/master/pipeline.svg)](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/commits/master) [![coverage report](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/badges/master/coverage.svg)](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/commits/master)
+
 # Prometheus Exporter Plugin for Elasticsearch
 
 This is a builtin exporter from Elasticsearch to Prometheus.
