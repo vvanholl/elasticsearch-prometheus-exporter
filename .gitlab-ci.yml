@@ -21,7 +21,7 @@ test:
   script: gradle check
   artifacts:
     reports:
-      junit: build/test-results/test/TEST-*.xml
+      junit: build/reports/integTestRunnerJunit/TEST-*.xml
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
