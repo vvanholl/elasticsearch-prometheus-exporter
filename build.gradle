@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.elasticsearch.gradle:build-tools:6.4.2" // How can we use ${versions.elasticsearch} here ???
+        classpath "org.elasticsearch.gradle:build-tools:6.4.3" // How can we use ${versions.elasticsearch} here ???
     }
 }
 

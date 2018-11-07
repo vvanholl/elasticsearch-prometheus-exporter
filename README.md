@@ -26,6 +26,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 6.4.3          | 6.4.3.0        | Nov 07, 2018 |
 | 6.4.2          | 6.4.2.0        | Oct 08, 2018 |
 | 6.4.1          | 6.4.1.0        | Sep 24, 2018 |
 | 6.4.0          | 6.4.0.0        | Aug 28, 2018 |
@@ -49,9 +50,10 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
-| 5.6.12         | 5.6.9.12       | Sep 24, 2018 |
-| 5.6.11         | 5.6.9.11       | Sep 24, 2018 |
-| 5.6.10          |5.6.9.10       | Jun 20, 2018 |
+| 5.6.13         | 5.6.13.0       | Nov 07, 2018 |
+| 5.6.12         | 5.6.13.0       | Sep 24, 2018 |
+| 5.6.11         | 5.6.11.0       | Sep 24, 2018 |
+| 5.6.10         | 5.6.10.0       | Jun 20, 2018 |
 | 5.6.9          | 5.6.9.1        | Apr 30, 2018 |
 | 5.6.9          | 5.6.9.0        | Apr 18, 2018 |
 | 5.6.8          | 5.6.8.0        | Feb 21, 2018 |
@@ -100,7 +102,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 ## Install
 
 - Since Elasticsearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.4.2.0.zip`
+    `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-6.4.3.0.zip`
 
 - On Elasticsearch 5.x.x :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.12.0.zip`
