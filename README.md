@@ -17,6 +17,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
     - File System
     - Circuit Breaker
 - Indices status
+- Cluster settings (selected [disk allocation settings](https://www.elastic.co/guide/en/elasticsearch/reference/master/disk-allocator.html) only)
 
 ## Compatibility matrix
 
@@ -97,6 +98,11 @@ If you have a lot of indices and think this data is irrelevant, you can disable 
 prometheus.indices: false
 ```
 
+To disable exporting cluster settings use:
+```
+prometheus.cluster.settings: false
+```
+
 ## Uninstall
 
 - On Elasticsearch 5.x.x:
@@ -163,6 +169,24 @@ Just keep in mind that `metrics_path` must be `/_prometheus/metrics`, otherwise 
 ## Project sources
 
 The Maven project site is available at [GitHub](https://github.com/vvanholl/elasticsearch-prometheus-exporter).
+
+## Testing
+
+Project contains [integration tests](src/test/resources/rest-api-spec) implemented using
+[rest layer](https://github.com/elastic/elasticsearch/blob/master/TESTING.asciidoc#testing-the-rest-layer)
+framework.
+
+Complete test suite is run using:
+```
+gradle clean check
+```
+
+To run individual test file use:
+```
+gradle :integTest \
+  -Dtests.class=org.elasticsearch.rest.PrometheusRestHandlerClientYamlTestSuiteIT \
+  -Dtests.method="test {yaml=resthandler/20_metrics/Prometheus metrics can be pulled}"
+```
 
 ## Credits
 

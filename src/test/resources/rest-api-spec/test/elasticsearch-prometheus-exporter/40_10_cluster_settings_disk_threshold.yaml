@@ -1,0 +1,189 @@
+---
+"Cluster settings statistics: disk threshold":
+
+  # -----------------------------------
+  # By default cluster.routing.allocation.disk.threshold_enabled is set to true.
+  # https://www.elastic.co/guide/en/elasticsearch/reference/master/disk-allocator.html
+  # OOTB there are no transient or persistent settings in the cluster:
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
+
+  # "Disk allocation threshold" is enabled (by default)
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  # -----------------------------------
+  # Disable the "Disk allocation threshold" at the PERSISTENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            cluster.routing.allocation.disk.threshold_enabled: false
+        flat_settings: true
+
+  - match: {persistent: {cluster.routing.allocation.disk.threshold_enabled: "false"}}
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {}}
+  - match: {persistent: {cluster.routing.allocation.disk.threshold_enabled: "false"}}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 0\.0 \n?
+        .*/
+
+  # -----------------------------------
+  # Enable the "Disk allocation threshold" at the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            cluster.routing.allocation.disk.threshold_enabled: true
+        flat_settings: true
+
+  - match: {transient: {cluster.routing.allocation.disk.threshold_enabled: "true"}}
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {cluster.routing.allocation.disk.threshold_enabled: "true"}}
+  - match: {persistent: {cluster.routing.allocation.disk.threshold_enabled: "false"}}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  # -----------------------------------
+  # Wipe out the "Disk allocation threshold" setting at the PERSISTENT level.
+  # There is still override at the TRANSIENT (ie. higher) level:
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            cluster.routing.allocation.disk.threshold_enabled: null
+        flat_settings: true
+
+  - match: {persistent: {}}
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {cluster.routing.allocation.disk.threshold_enabled: "true"}}
+  - match: {persistent: {}}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  # -----------------------------------
+  # Change the "Disk allocation threshold" setting at the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            cluster.routing.allocation.disk.threshold_enabled: null
+        flat_settings: true
+
+  - match: {persistent: {}}
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {cluster.routing.allocation.disk.threshold_enabled: "true"}}
+  - match: {persistent: {}}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  # -----------------------------------
+  # Finally, wipe out the "Disk allocation threshold" setting from the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            cluster.routing.allocation.disk.threshold_enabled: null
+        flat_settings: true
+
+  - match: {transient: {}}
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {}}
+  - match: {persistent: {}}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
