@@ -66,6 +66,7 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
     @Override
     public List<Setting<?>> getSettings() {
         return Arrays.asList(
+                PrometheusMetricsCollector.PROMETHEUS_CLUSTER_SETTINGS,
                 PrometheusMetricsCollector.PROMETHEUS_INDICES
         );
     }
