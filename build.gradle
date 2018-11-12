@@ -16,6 +16,9 @@ plugins {
     id "com.github.mgk.gradle.s3" version "1.4.0"
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
 println "Build: group: '${project.group}', name: '${project.name}', version: '${project.version}'"
