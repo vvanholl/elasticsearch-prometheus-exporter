@@ -39,8 +39,10 @@ import org.elasticsearch.monitor.process.ProcessStats;
 import org.elasticsearch.script.ScriptStats;
 import org.elasticsearch.threadpool.ThreadPoolStats;
 import org.elasticsearch.transport.TransportStats;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import io.prometheus.client.Summary;
 
 /**
@@ -629,6 +631,11 @@ public class PrometheusMetricsCollector {
         catalog.registerNodeGauge("ingest_pipeline_total_time_seconds", "Ingestion total time in seconds", "pipeline");
         catalog.registerNodeGauge("ingest_pipeline_total_current", "Ingestion total current", "pipeline");
         catalog.registerNodeGauge("ingest_pipeline_total_failed_count", "Ingestion total failed", "pipeline");
+
+        catalog.registerNodeGauge("ingest_pipeline_processor_total_count", "Ingestion total number", "pipeline", "processor");
+        catalog.registerNodeGauge("ingest_pipeline_processor_total_time_seconds", "Ingestion total time in seconds", "pipeline", "processor");
+        catalog.registerNodeGauge("ingest_pipeline_processor_total_current", "Ingestion total current", "pipeline", "processor");
+        catalog.registerNodeGauge("ingest_pipeline_processor_total_failed_count", "Ingestion total failed", "pipeline", "processor");
     }
 
     private void updateIngestMetrics(IngestStats is) {
@@ -638,13 +645,22 @@ public class PrometheusMetricsCollector {
             catalog.setNodeGauge("ingest_total_current", is.getTotalStats().getIngestCurrent());
             catalog.setNodeGauge("ingest_total_failed_count", is.getTotalStats().getIngestFailedCount());
 
-            for (Map.Entry<String, IngestStats.Stats> entry : is.getStatsPerPipeline().entrySet()) {
-                String pipeline = entry.getKey();
-                catalog.setNodeGauge("ingest_pipeline_total_count", entry.getValue().getIngestCount(), pipeline);
-                catalog.setNodeGauge("ingest_pipeline_total_time_seconds", entry.getValue().getIngestTimeInMillis() / 1000.0,
+            for (IngestStats.PipelineStat st : is.getPipelineStats()) {
+                String pipeline = st.getPipelineId();
+                catalog.setNodeGauge("ingest_pipeline_total_count", st.getStats().getIngestCount(), pipeline);
+                catalog.setNodeGauge("ingest_pipeline_total_time_seconds", st.getStats().getIngestTimeInMillis() / 1000.0,
                         pipeline);
-                catalog.setNodeGauge("ingest_pipeline_total_current", entry.getValue().getIngestCurrent(), pipeline);
-                catalog.setNodeGauge("ingest_pipeline_total_failed_count", entry.getValue().getIngestFailedCount(), pipeline);
+                catalog.setNodeGauge("ingest_pipeline_total_current", st.getStats().getIngestCurrent(), pipeline);
+                catalog.setNodeGauge("ingest_pipeline_total_failed_count", st.getStats().getIngestFailedCount(), pipeline);
+
+                for (IngestStats.ProcessorStat ps : is.getProcessorStats().get(pipeline)) {
+                    String processor = ps.getName();
+                    catalog.setNodeGauge("ingest_pipeline_processor_total_count", ps.getStats().getIngestCount(), pipeline, processor);
+                    catalog.setNodeGauge("ingest_pipeline_processor_total_time_seconds", ps.getStats().getIngestTimeInMillis() / 1000.0,
+                            pipeline, processor);
+                    catalog.setNodeGauge("ingest_pipeline_processor_total_current", ps.getStats().getIngestCurrent(), pipeline, processor);
+                    catalog.setNodeGauge("ingest_pipeline_processor_total_failed_count", ps.getStats().getIngestFailedCount(), pipeline, processor);
+                }
             }
         }
     }

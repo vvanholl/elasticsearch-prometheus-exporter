@@ -17,6 +17,7 @@
 
 package org.elasticsearch.plugin.prometheus;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
 import org.elasticsearch.action.ActionRequest;
@@ -25,13 +26,13 @@ import org.elasticsearch.action.NodePrometheusMetricsAction;
 import org.elasticsearch.action.TransportNodePrometheusMetricsAction;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.*;
 import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestHandler;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
@@ -40,7 +41,7 @@ import java.util.function.Supplier;
  * Prometheus Exporter plugin main class.
  */
 public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
-    private static final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
+    private static final Logger logger = LogManager.getLogger(PrometheusExporterPlugin.class);
 
     public PrometheusExporterPlugin() {
         logger.info("starting Prometheus exporter plugin");

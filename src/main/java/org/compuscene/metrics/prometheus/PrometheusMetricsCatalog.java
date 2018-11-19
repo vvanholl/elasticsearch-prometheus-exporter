@@ -17,9 +17,10 @@
 
 package org.compuscene.metrics.prometheus;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -35,7 +36,7 @@ import io.prometheus.client.exporter.common.TextFormat;
  * A class that describes a Prometheus metrics catalog.
  */
 public class PrometheusMetricsCatalog {
-    private static final Logger logger = ESLoggerFactory.getLogger(RestPrometheusMetricsAction.class.getSimpleName());
+    private static final Logger logger = LogManager.getLogger(RestPrometheusMetricsAction.class);
 
     private String clusterName;
     private String nodeName;
