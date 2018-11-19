@@ -41,6 +41,7 @@ import org.elasticsearch.threadpool.ThreadPoolStats;
 import org.elasticsearch.transport.TransportStats;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.prometheus.client.Summary;
@@ -653,13 +654,16 @@ public class PrometheusMetricsCollector {
                 catalog.setNodeGauge("ingest_pipeline_total_current", st.getStats().getIngestCurrent(), pipeline);
                 catalog.setNodeGauge("ingest_pipeline_total_failed_count", st.getStats().getIngestFailedCount(), pipeline);
 
-                for (IngestStats.ProcessorStat ps : is.getProcessorStats().get(pipeline)) {
-                    String processor = ps.getName();
-                    catalog.setNodeGauge("ingest_pipeline_processor_total_count", ps.getStats().getIngestCount(), pipeline, processor);
-                    catalog.setNodeGauge("ingest_pipeline_processor_total_time_seconds", ps.getStats().getIngestTimeInMillis() / 1000.0,
-                            pipeline, processor);
-                    catalog.setNodeGauge("ingest_pipeline_processor_total_current", ps.getStats().getIngestCurrent(), pipeline, processor);
-                    catalog.setNodeGauge("ingest_pipeline_processor_total_failed_count", ps.getStats().getIngestFailedCount(), pipeline, processor);
+                List<IngestStats.ProcessorStat> pss = is.getProcessorStats().get(pipeline);
+                if (pss != null) {
+                    for (IngestStats.ProcessorStat ps : pss) {
+                        String processor = ps.getName();
+                        catalog.setNodeGauge("ingest_pipeline_processor_total_count", ps.getStats().getIngestCount(), pipeline, processor);
+                        catalog.setNodeGauge("ingest_pipeline_processor_total_time_seconds", ps.getStats().getIngestTimeInMillis() / 1000.0,
+                                pipeline, processor);
+                        catalog.setNodeGauge("ingest_pipeline_processor_total_current", ps.getStats().getIngestCurrent(), pipeline, processor);
+                        catalog.setNodeGauge("ingest_pipeline_processor_total_failed_count", ps.getStats().getIngestFailedCount(), pipeline, processor);
+                    }
                 }
             }
         }
