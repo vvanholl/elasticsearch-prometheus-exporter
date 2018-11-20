@@ -622,6 +622,7 @@ public class PrometheusMetricsCollector {
         }
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private void registerIngestMetrics() {
         catalog.registerNodeGauge("ingest_total_count", "Ingestion total number");
         catalog.registerNodeGauge("ingest_total_time_seconds", "Ingestion total time in seconds");
@@ -639,6 +640,7 @@ public class PrometheusMetricsCollector {
         catalog.registerNodeGauge("ingest_pipeline_processor_total_failed_count", "Ingestion total failed", "pipeline", "processor");
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private void updateIngestMetrics(IngestStats is) {
         if (is != null) {
             catalog.setNodeGauge("ingest_total_count", is.getTotalStats().getIngestCount());
