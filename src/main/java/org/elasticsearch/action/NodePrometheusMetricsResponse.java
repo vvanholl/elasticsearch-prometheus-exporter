@@ -19,6 +19,7 @@ package org.elasticsearch.action;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.admin.indices.stats.PackageAccessHelper;
 import org.elasticsearch.action.admin.indices.stats.ShardStats;
@@ -26,6 +27,9 @@ import org.elasticsearch.action.support.broadcast.BroadcastResponse;
 import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
+import org.elasticsearch.common.settings.ClusterSettings;
+import org.elasticsearch.common.settings.Settings;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -35,23 +39,23 @@ import java.util.Arrays;
 public class NodePrometheusMetricsResponse extends ActionResponse {
     private ClusterHealthResponse clusterHealth;
     private NodeStats nodeStats;
-    @Nullable
-    private IndicesStatsResponse indicesStats;
+    @Nullable private IndicesStatsResponse indicesStats;
+    private ClusterStatsData clusterStatsData = null;
 
     public NodePrometheusMetricsResponse() {
     }
 
     public NodePrometheusMetricsResponse(ClusterHealthResponse clusterHealth, NodeStats nodesStats,
-                                         @Nullable IndicesStatsResponse indicesStats) {
+                                         @Nullable IndicesStatsResponse indicesStats,
+                                         @Nullable ClusterStateResponse clusterStateResponse,
+                                         Settings settings,
+                                         ClusterSettings clusterSettings) {
         this.clusterHealth = clusterHealth;
         this.nodeStats = nodesStats;
         this.indicesStats = indicesStats;
-    }
-
-    public  NodePrometheusMetricsResponse readNodePrometheusMetrics(StreamInput in) throws IOException {
-        NodePrometheusMetricsResponse metrics = new NodePrometheusMetricsResponse();
-        metrics.readFrom(in);
-        return metrics;
+        if (clusterStateResponse != null) {
+            this.clusterStatsData = new ClusterStatsData(clusterStateResponse, settings, clusterSettings);
+        }
     }
 
     public ClusterHealthResponse getClusterHealth() {
@@ -67,6 +71,11 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
         return this.indicesStats;
     }
 
+    @Nullable
+    public ClusterStatsData getClusterStatsData() {
+        return this.clusterStatsData;
+    }
+
     @Override
     public void readFrom(StreamInput in) throws IOException {
         super.readFrom(in);
@@ -79,6 +88,7 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
                 ss, br.getTotalShards(), br.getSuccessfulShards(), br.getFailedShards(),
                 Arrays.asList(br.getShardFailures())
         );
+        clusterStatsData.readFrom(in);
     }
 
     @Override
@@ -91,5 +101,6 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
             ((BroadcastResponse) indicesStats).writeTo(out);
             out.writeArray(indicesStats.getShards());
         }
+        clusterStatsData.writeTo(out);
     }
 }

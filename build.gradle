@@ -27,6 +27,12 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
 
+// Uncomment if you want to use: System.out.println("Emergency!");
+// Logs are found in build/cluster/integTestCluster*/cwd/run.log
+//forbiddenApis {
+//    ignoreFailures = true
+//}
+
 // license of this project
 licenseFile = rootProject.file('LICENSE.txt')
 // copyright notices

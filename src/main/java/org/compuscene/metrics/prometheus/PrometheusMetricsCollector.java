@@ -17,6 +17,7 @@
 
 package org.compuscene.metrics.prometheus;
 
+import org.elasticsearch.action.ClusterStatsData;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
 import org.elasticsearch.action.admin.indices.stats.CommonStats;
@@ -50,8 +51,15 @@ import io.prometheus.client.Summary;
  * A class that describes a Prometheus metrics collector.
  */
 public class PrometheusMetricsCollector {
-    public static final Setting<Boolean> PROMETHEUS_INDICES = Setting.boolSetting("prometheus.indices", true,
-            Property.NodeScope);
+    // These settings become part of cluster state, it is avail via HTTP at
+    // curl <elasticsearch>/_cluster/settings?include_defaults=true&filter_path=defaults.prometheus
+    // It is thus important to keep them under reasonable namespace to avoid collision with
+    // other plugins or future/commercial parts of Elastic Stack itself.
+    // Namespace "prometheus" sounds like safe bet for now.
+    public static final Setting<Boolean> PROMETHEUS_CLUSTER_SETTINGS = Setting.boolSetting("prometheus.cluster.settings",
+            true, Property.NodeScope);
+    public static final Setting<Boolean> PROMETHEUS_INDICES = Setting.boolSetting("prometheus.indices",
+            true, Property.NodeScope);
 
     private final Settings settings;
 
@@ -81,6 +89,9 @@ public class PrometheusMetricsCollector {
         registerJVMMetrics();
         registerOsMetrics();
         registerFsMetrics();
+        if (PROMETHEUS_CLUSTER_SETTINGS.get(settings)) {
+            registerESSettings();
+        }
     }
 
     private void registerClusterMetrics() {
@@ -904,8 +915,39 @@ public class PrometheusMetricsCollector {
         }
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
+    private void registerESSettings() {
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_threshold_enabled", "Disk allocation decider is enabled");
+        //
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_watermark_low_bytes", "Low watermark for disk usage in bytes");
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_watermark_high_bytes", "High watermark for disk usage in bytes");
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_watermark_flood_stage_bytes", "Flood stage for disk usage in bytes");
+        //
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_watermark_low_pct", "Low watermark for disk usage in pct");
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_watermark_high_pct", "High watermark for disk usage in pct");
+        catalog.registerClusterGauge("cluster_routing_allocation_disk_watermark_flood_stage_pct", "Flood stage watermark for disk usage in pct");
+    }
+
+    @SuppressWarnings({"checkstyle:LineLength", "checkstyle:LeftCurly"})
+    private void updateESSettings(ClusterStatsData stats) {
+        if (stats != null) {
+            catalog.setClusterGauge("cluster_routing_allocation_disk_threshold_enabled", Boolean.TRUE.equals(stats.getThresholdEnabled()) ? 1 : 0);
+            // According to Elasticsearch documentation the following settings must be set either in pct or bytes size.
+            // Mixing is not allowed. We rely on Elasticsearch to do all necessary checks and we simply
+            // output all those metrics that are not null. If this will lead to mixed metric then we do not
+            // consider it our fault.
+            if (stats.getDiskLowInBytes() != null) { catalog.setClusterGauge("cluster_routing_allocation_disk_watermark_low_bytes", stats.getDiskLowInBytes()); }
+            if (stats.getDiskHighInBytes() != null) { catalog.setClusterGauge("cluster_routing_allocation_disk_watermark_high_bytes", stats.getDiskHighInBytes()); }
+            if (stats.getFloodStageInBytes() != null) { catalog.setClusterGauge("cluster_routing_allocation_disk_watermark_flood_stage_bytes", stats.getFloodStageInBytes()); }
+            //
+            if (stats.getDiskLowInPct() != null) { catalog.setClusterGauge("cluster_routing_allocation_disk_watermark_low_pct", stats.getDiskLowInPct()); }
+            if (stats.getDiskHighInPct() != null) { catalog.setClusterGauge("cluster_routing_allocation_disk_watermark_high_pct", stats.getDiskHighInPct()); }
+            if (stats.getFloodStageInPct() != null) { catalog.setClusterGauge("cluster_routing_allocation_disk_watermark_flood_stage_pct", stats.getFloodStageInPct()); }
+        }
+    }
+
     public void updateMetrics(ClusterHealthResponse clusterHealthResponse, NodeStats nodeStats,
-                              IndicesStatsResponse indicesStats) {
+                              IndicesStatsResponse indicesStats, ClusterStatsData clusterStatsData) {
         Summary.Timer timer = catalog.startSummaryTimer("metrics_generate_time_seconds");
 
         updateClusterMetrics(clusterHealthResponse);
@@ -924,6 +966,9 @@ public class PrometheusMetricsCollector {
         updateJVMMetrics(nodeStats.getJvm());
         updateOsMetrics(nodeStats.getOs());
         updateFsMetrics(nodeStats.getFs());
+        if (PROMETHEUS_CLUSTER_SETTINGS.get(settings)) {
+            updateESSettings(clusterStatsData);
+        }
 
         timer.observeDuration();
     }

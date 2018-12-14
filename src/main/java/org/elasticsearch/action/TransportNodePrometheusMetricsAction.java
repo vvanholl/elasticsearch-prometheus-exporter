@@ -17,6 +17,7 @@
 
 package org.elasticsearch.action;
 
+import static org.compuscene.metrics.prometheus.PrometheusMetricsCollector.PROMETHEUS_CLUSTER_SETTINGS;
 import static org.compuscene.metrics.prometheus.PrometheusMetricsCollector.PROMETHEUS_INDICES;
 
 import org.elasticsearch.ElasticsearchException;
@@ -24,6 +25,8 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsRequest;
 import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsResponse;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.support.ActionFilters;
@@ -33,24 +36,34 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
 
 /**
  * Transport action class for Prometheus Exporter plugin.
+ *
+ * It performs several requests within the cluster to gather "cluster health", "nodes stats", "indices stats"
+ * and "cluster state" (i.e. cluster settings) info. Some of those requests are optional depending on plugin
+ * settings.
  */
 public class TransportNodePrometheusMetricsAction extends HandledTransportAction<NodePrometheusMetricsRequest,
         NodePrometheusMetricsResponse> {
     private final Client client;
+    private final Settings settings;
+    private final ClusterSettings clusterSettings;
 
     @Inject
     public TransportNodePrometheusMetricsAction(Settings settings, ThreadPool threadPool, Client client,
                                                 TransportService transportService, ActionFilters actionFilters,
-                                                IndexNameExpressionResolver indexNameExpressionResolver) {
+                                                IndexNameExpressionResolver indexNameExpressionResolver,
+                                                ClusterSettings clusterSettings) {
         super(settings, NodePrometheusMetricsAction.NAME, threadPool, transportService, actionFilters,
                 indexNameExpressionResolver, NodePrometheusMetricsRequest::new);
         this.client = client;
+        this.settings = settings;
+        this.clusterSettings = clusterSettings;
     }
 
     @Override
@@ -59,13 +72,29 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
     }
 
     private class AsyncAction {
+
         private final ActionListener<NodePrometheusMetricsResponse> listener;
+
         private final ClusterHealthRequest healthRequest;
         private final NodesStatsRequest nodesStatsRequest;
         private final IndicesStatsRequest indicesStatsRequest;
-        private ClusterHealthResponse clusterHealthResponse;
-        private NodesStatsResponse nodesStatsResponse;
+        private final ClusterStateRequest clusterStateRequest;
 
+        private ClusterHealthResponse clusterHealthResponse = null;
+        private NodesStatsResponse nodesStatsResponse = null;
+        private IndicesStatsResponse indicesStatsResponse = null;
+        private ClusterStateResponse clusterStateResponse = null;
+
+        // All the requests are executed in sequential non-blocking order.
+        // It is implemented by wrapping each individual request with ActionListener
+        // and chaining all of them into a sequence. The last member of the chain call method that gathers
+        // all the responses from previous requests and pass them to outer listener (i.e. calling client).
+        // Optional requests are skipped.
+        //
+        // In the future we might consider executing all the requests in parallel if needed (CountDownLatch?),
+        // however, some of the requests can impact cluster performance (especially if the cluster is already overloaded)
+        // and in this situation it is better to run all requests in predictable order so that collected metrics
+        // stay consistent.
         private AsyncAction(ActionListener<NodePrometheusMetricsResponse> listener) {
             this.listener = listener;
 
@@ -77,54 +106,85 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
             this.healthRequest.level(ClusterHealthRequest.Level.SHARDS);
 
             this.nodesStatsRequest = Requests.nodesStatsRequest("_local").clear().all();
-            // Note: this request is not "node-specific", it does not support any "_local" notion
+
+            // Indices stats request is not "node-specific", it does not support any "_local" notion
             // it is broad-casted to all cluster nodes.
-            this.indicesStatsRequest = new IndicesStatsRequest();
+            this.indicesStatsRequest = PROMETHEUS_INDICES.get(settings) ? new IndicesStatsRequest() : null;
+
+            // Cluster settings are get via ClusterStateRequest (see elasticsearch RestClusterGetSettingsAction for details)
+            // We prefer to send it to master node (hence local=false; it should be set by default but we want to be sure).
+            this.clusterStateRequest = PROMETHEUS_CLUSTER_SETTINGS.get(settings) ? Requests.clusterStateRequest()
+                    .clear().metaData(true).local(false) : null;
         }
 
-        private ActionListener<IndicesStatsResponse> indicesStatsResponseActionListener =
-                new ActionListener<IndicesStatsResponse>() {
-            @Override
-            public void onResponse(IndicesStatsResponse indicesStatsResponse) {
-                listener.onResponse(buildResponse(clusterHealthResponse, nodesStatsResponse, indicesStatsResponse));
-            }
+        private void gatherRequests() {
+            listener.onResponse(buildResponse(clusterHealthResponse, nodesStatsResponse, indicesStatsResponse,
+                    clusterStateResponse));
+        }
 
-            @Override
-            public void onFailure(Exception e) {
-                listener.onFailure(new ElasticsearchException("Indices stats request failed", e));
-            }
-        };
-
-        private ActionListener<NodesStatsResponse> nodesStatsResponseActionListener = new ActionListener<NodesStatsResponse>() {
-            @Override
-            public void onResponse(NodesStatsResponse nodeStats) {
-                if (PROMETHEUS_INDICES.get(settings)) {
-                    nodesStatsResponse = nodeStats;
-                    client.admin().indices().stats(indicesStatsRequest, indicesStatsResponseActionListener);
-                } else {
-                    listener.onResponse(buildResponse(clusterHealthResponse, nodeStats, null));
+        private ActionListener<ClusterStateResponse> clusterStateResponseActionListener =
+            new ActionListener<ClusterStateResponse>() {
+                @Override
+                public void onResponse(ClusterStateResponse response) {
+                    clusterStateResponse = response;
+                    gatherRequests();
                 }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                listener.onFailure(new ElasticsearchException("Nodes stats request failed", e));
-            }
-        };
+                @Override
+                public void onFailure(Exception e) {
+                    listener.onFailure(new ElasticsearchException("Cluster state request failed", e));
+                }
+            };
+
+        private ActionListener<IndicesStatsResponse> indicesStatsResponseActionListener =
+            new ActionListener<IndicesStatsResponse>() {
+                @Override
+                public void onResponse(IndicesStatsResponse response) {
+                    indicesStatsResponse = response;
+                    if (PROMETHEUS_CLUSTER_SETTINGS.get(settings)) {
+                        client.admin().cluster().state(clusterStateRequest, clusterStateResponseActionListener);
+                    } else {
+                        gatherRequests();
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    listener.onFailure(new ElasticsearchException("Indices stats request failed", e));
+                }
+            };
+
+        private ActionListener<NodesStatsResponse> nodesStatsResponseActionListener =
+            new ActionListener<NodesStatsResponse>() {
+                @Override
+                public void onResponse(NodesStatsResponse nodeStats) {
+                    nodesStatsResponse = nodeStats;
+                    if (PROMETHEUS_INDICES.get(settings)) {
+                        client.admin().indices().stats(indicesStatsRequest, indicesStatsResponseActionListener);
+                    } else {
+                        indicesStatsResponseActionListener.onResponse(null);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    listener.onFailure(new ElasticsearchException("Nodes stats request failed", e));
+                }
+            };
 
         private ActionListener<ClusterHealthResponse> clusterHealthResponseActionListener =
-                new ActionListener<ClusterHealthResponse>() {
-            @Override
-            public void onResponse(ClusterHealthResponse response) {
-                clusterHealthResponse = response;
-                client.admin().cluster().nodesStats(nodesStatsRequest, nodesStatsResponseActionListener);
-            }
+            new ActionListener<ClusterHealthResponse>() {
+                @Override
+                public void onResponse(ClusterHealthResponse response) {
+                    clusterHealthResponse = response;
+                    client.admin().cluster().nodesStats(nodesStatsRequest, nodesStatsResponseActionListener);
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                listener.onFailure(new ElasticsearchException("Cluster health request failed", e));
-            }
-        };
+                @Override
+                public void onFailure(Exception e) {
+                    listener.onFailure(new ElasticsearchException("Cluster health request failed", e));
+                }
+            };
 
         private void start() {
             client.admin().cluster().health(healthRequest, clusterHealthResponseActionListener);
@@ -132,9 +192,11 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
 
         protected NodePrometheusMetricsResponse buildResponse(ClusterHealthResponse clusterHealth,
                                                               NodesStatsResponse nodesStats,
-                                                              @Nullable IndicesStatsResponse indicesStats) {
+                                                              @Nullable IndicesStatsResponse indicesStats,
+                                                              @Nullable ClusterStateResponse clusterStateResponse) {
             NodePrometheusMetricsResponse response = new NodePrometheusMetricsResponse(clusterHealth,
-                    nodesStats.getNodes().get(0), indicesStats);
+                    nodesStats.getNodes().get(0), indicesStats, clusterStateResponse,
+                    settings, clusterSettings);
             if (logger.isTraceEnabled()) {
                 logger.trace("Return response: [{}]", response);
             }
