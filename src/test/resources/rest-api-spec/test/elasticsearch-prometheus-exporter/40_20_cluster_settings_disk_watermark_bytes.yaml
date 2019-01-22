@@ -127,3 +127,12 @@
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_bytes \s gauge
         (\n \# \s (HELP|TYPE).* | \s*)
         /
+
+  # Clean up the cluster state. See https://github.com/vvanholl/elasticsearch-prometheus-exporter/issues/154
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            cluster.routing.allocation.disk.watermark.low: null
+            cluster.routing.allocation.disk.watermark.high: null
+        flat_settings: true
