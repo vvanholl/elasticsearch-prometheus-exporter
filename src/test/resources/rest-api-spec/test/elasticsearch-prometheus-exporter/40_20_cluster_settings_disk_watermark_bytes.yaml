@@ -1,0 +1,138 @@
+---
+"Cluster settings statistics: watermark":
+
+  # -----------------------------------
+  # By default cluster.routing.allocation.disk.watermark.* are set according to:
+  # https://www.elastic.co/guide/en/elasticsearch/reference/master/disk-allocator.html
+  # ---
+  # However, the REST test framework sets these settings in ClusterFormationTasks.groovy to '1b'.
+  # Or see buildSrc/src/main/java/org/elasticsearch/gradle/testclusters/ElasticsearchNode.java
+  # Things seems to be still moving in Elasticsearch...
+  - do:
+      cluster.get_settings:
+        include_defaults: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
+  - match: {defaults.cluster.routing.allocation.disk.watermark.low: "1b"}
+  - match: {defaults.cluster.routing.allocation.disk.watermark.high: "1b"}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_low_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_low_bytes \s gauge \n
+        es_cluster_routing_allocation_disk_watermark_low_bytes\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_high_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_bytes \s gauge \n
+        es_cluster_routing_allocation_disk_watermark_high_bytes\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  # At the same time all pct alternatives do not report any metric values but they are still present.
+  # This is recommended, see https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics
+  #
+  # The following regexp-s work as follows:
+  # After the metric HELP and TYPE is found then only one the following two options is expected:
+  #   a) another "# HELP/TYPE" pattern is found because other metric is following right away
+  #   b) "<EOF>" This is the case we are in the end of the report
+  # Anything else is a bug.
+  #
+  # (tip: test regex online at https://regexr.com/)
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_low_pct (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_low_pct \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_high_pct (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_pct \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  # -----------------------------------
+  # Switch to pct based watermark values:
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            cluster.routing.allocation.disk.watermark.low: "99.9%"
+            cluster.routing.allocation.disk.watermark.high: "99.9%"
+        flat_settings: true
+
+  - do:
+      cluster.get_settings:
+        include_defaults: true
+
+  - match: {transient: {}}
+  - match: {persistent.cluster.routing.allocation.disk.watermark.low: "99.9%"}
+  - match: {persistent.cluster.routing.allocation.disk.watermark.high: "99.9%"}
+
+  # Verify in Prometheus metrics:
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_low_pct (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_low_pct \s gauge \n
+        es_cluster_routing_allocation_disk_watermark_low_pct\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 99\.9 \n?
+        .*/
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_high_pct (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_pct \s gauge \n
+        es_cluster_routing_allocation_disk_watermark_high_pct\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 99\.9 \n?
+        .*/
+
+  # At the same time all bytes alternatives do not report any metric values but they are still present.
+  # This is recommended, see https://prometheus.io/docs/practices/instrumentation/#avoid-missing-metrics
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_low_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_low_bytes \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_watermark_high_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_bytes \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  # Clean up the cluster state. See https://github.com/vvanholl/elasticsearch-prometheus-exporter/issues/154
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            cluster.routing.allocation.disk.watermark.low: null
+            cluster.routing.allocation.disk.watermark.high: null
+        flat_settings: true

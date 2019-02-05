@@ -50,6 +50,11 @@ page at http://checkstyle.sourceforge.net/config.html -->
 
         -->
 
+        <module name="SuppressWarningsHolder" />
+        <module name="SuppressWarnings">
+            <property name="id" value="checkstyle:suppresswarnings"/>
+        </module>
+
         <module name="RedundantImport">
             <!-- Checks for redundant import statements. -->
             <property name="severity" value="warning"/>
@@ -322,4 +327,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
         </module>
 
     </module>
+
+    <module name="SuppressWarningsFilter"/>
+
 </module>

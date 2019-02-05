@@ -1,3 +1,20 @@
+/*
+ * Copyright [2016] [Vincent VAN HOLLEBEKE]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.elasticsearch.plugin.prometheus;
 
 import org.apache.logging.log4j.Logger;
@@ -8,10 +25,8 @@ import org.elasticsearch.action.NodePrometheusMetricsAction;
 import org.elasticsearch.action.TransportNodePrometheusMetricsAction;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
-import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.settings.*;
-import org.elasticsearch.index.IndexModule;
 import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.rest.RestController;
@@ -27,14 +42,8 @@ import java.util.function.Supplier;
 public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
     private static final Logger logger = Loggers.getLogger(PrometheusExporterPlugin.class);
 
-    @Inject
     public PrometheusExporterPlugin() {
         logger.info("starting Prometheus exporter plugin");
-    }
-
-    @Override
-    public void onIndexModule(IndexModule indexModule) {
-        super.onIndexModule(indexModule);
     }
 
     @Override
@@ -57,6 +66,7 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
     @Override
     public List<Setting<?>> getSettings() {
         return Arrays.asList(
+                PrometheusMetricsCollector.PROMETHEUS_CLUSTER_SETTINGS,
                 PrometheusMetricsCollector.PROMETHEUS_INDICES
         );
     }

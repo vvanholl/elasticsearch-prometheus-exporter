@@ -1,0 +1,51 @@
+# At this moment this is mostly smoke test only. The goal is the have a test to verify
+# that metrics are relevant to specific ES node only but it seems that
+# current esplugin does not support for communication with specific ES nodes
+# only (see below for more details).
+#
+# Going forward one possible solution would be to implement this in Java similarly
+# to PrometheusResponseIntegTestCase in PR#64:
+# https://github.com/vvanholl/elasticsearch-prometheus-exporter/pull/64/files#diff-f91e6938f65298463b1935f9311d5e13
+---
+"Prometheus metrics can be pulled":
+
+  - do:
+      prometheus.metrics: {}
+
+  # Output is pure text hence we need to rely solely on regex expressions.
+  # See: https://github.com/elastic/elasticsearch/tree/master/rest-api-spec/src/main/resources/rest-api-spec/test#test-file-structure
+
+  - match:
+      $body: |
+               /.* es_indices_segments_memory_bytes .*/
+
+  - match:
+      $body: /# HELP es_os_swap_total_bytes Total swap size\n# TYPE es_os_swap_total_bytes gauge\n.*/
+
+
+#---
+#"Pull Prometheus metrics from individual nodes":
+#  - skip:
+#      features: node_selector
+#
+#  - do:
+#      cat.nodes:
+#        h: name,id
+#        full_id: true
+#        format: json
+#
+#  # we know there are 2 nodes, keep id and name of all nodes so that we can iterate over them later...
+#  - set: { 0.id: node0 }
+#  - set: { 0.name: node0_name }
+#  - set: { 1.id: node1 }
+#  - set: { 1.name: node1_name }
+#
+#  # Node selector does not not currently allow to filter specific node
+#  # or I do not know how to do it using attributes.
+#  # See: https://discuss.elastic.co/t/interacting-with-individual-nodes-in-rest-api-integration-tests-using-esplugin-support/152095/2
+#  - do:
+#      node_selector:
+#        attribute:
+#          name: node-0
+#      prometheus.metrics: {}
+#

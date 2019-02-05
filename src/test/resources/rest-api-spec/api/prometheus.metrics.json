@@ -1,0 +1,13 @@
+{
+  "prometheus.metrics": {
+    "documentation": "https://github.com/vvanholl/elasticsearch-prometheus-exporter/",
+    "methods": ["GET"],
+    "url": {
+      "path": "/_prometheus/metrics",
+      "paths": ["/_prometheus/metrics"],
+      "parts": {},
+      "params": {}
+    },
+    "body": null
+  }
+}

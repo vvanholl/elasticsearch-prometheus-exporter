@@ -1,12 +1,12 @@
-# Prometheus Exporter Plugin for ElasticSearch
+# Prometheus Exporter Plugin for Elasticsearch
 
-This is a builtin exporter from ElasticSearch to Prometheus.
-It collects all relevant metrics and make them available to Prometheus via ElasticSearch REST API.
+This is a builtin exporter from Elasticsearch to Prometheus.
+It collects all relevant metrics and makes them available to Prometheus via the Elasticsearch REST API.
 
-**Current available metrics are :**
+**Currently, the available metrics are:**
 
 - Cluster status
-- Nodes status :
+- Nodes status:
     - JVM
     - Indices (global)
     - Transport
@@ -17,6 +17,7 @@ It collects all relevant metrics and make them available to Prometheus via Elast
     - File System
     - Circuit Breaker
 - Indices status
+- Cluster settings (selected [disk allocation settings](https://www.elastic.co/guide/en/elasticsearch/reference/master/disk-allocator.html) only)
 
 ## Compatibility matrix
 
@@ -77,43 +78,48 @@ It collects all relevant metrics and make them available to Prometheus via Elast
 
 ## Install
 
-- Since ElasticSearch 5.0.0 :
+- On Elasticsearch 5.x.x :
     `./bin/elasticsearch-plugin install -b https://distfiles.compuscene.net/elasticsearch/elasticsearch-prometheus-exporter-5.6.14.0.zip`
 
 - On old 2.x.x versions :
     `./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip`
 
-**Do not forget to restart the node after installation !**
+**Do not forget to restart the node after the installation!**
 
-Note that the plugin needs special permissions :
+Note that the plugin needs the following special permissions:
 
 - java.lang.RuntimePermission accessClassInPackage.sun.misc
 - java.lang.RuntimePermission accessDeclaredMembers
 - java.lang.reflect.ReflectPermission suppressAccessChecks
 
-If you have a lot of indices and think this data is irelevant, you can disable in the main configuration file:
+If you have a lot of indices and think this data is irrelevant, you can disable in the main configuration file:
 
 ```
 prometheus.indices: false
 ```
 
+To disable exporting cluster settings use:
+```
+prometheus.cluster.settings: false
+```
+
 ## Uninstall
 
-- Since ElasticSearch 5.0.0 :
+- On Elasticsearch 5.x.x:
     `./bin/elasticsearch-plugin remove prometheus-exporter`
 
-- On old 2.x.x versions :
+- On old 2.x.x versions:
     `./bin/plugin remove prometheus-exporter`
 
-Do not forget to restart the node after installation !
+Do not forget to restart the node after installation!
 
 ## Usage
 
-Metrics are directly available at address :
+Metrics are directly available at:
 
-    http://<your_server_address>:9200/_prometheus/metrics
+    http://<your-elasticsearch-host>:9200/_prometheus/metrics
 
-As a sample result, you get :
+As a sample result, you get:
 
 ```
 # HELP es_process_mem_total_virtual_bytes Memory used by ES process
@@ -139,34 +145,52 @@ es_jvm_mem_nonheap_used_bytes{cluster="develop",node="develop01",} 5.5302736E7
 ...
 ```
 
-### Configure Prometheus target
+### Configure the Prometheus target
 
 On your Prometheus servers, configure a new job as usual.
 
-For example, if you have a cluster of 3 nodes :
+For example, if you have a cluster of 3 nodes:
 
+```YAML
+- job_name: elasticsearch
+  scrape_interval: 10s
+  metrics_path: "/_prometheus/metrics"
+  static_configs:
+  - targets:
+    - node1:9200
+    - node1:9200
+    - node3:9200
 ```
--   job_name: elasticsearch
-    scrape_interval: 10s
-    metrics_path: "/_prometheus/metrics"
-    static_configs:
-    - targets:
-      - node1:9200
-      - node1:9200
-      - node3:9200
-```
 
-Of course, you could use a service discovery service instead of a static config.
+Of course, you could use the service discovery service instead of a static config.
 
-Just keep in mind that metrics_path must be `/_prometheus/metrics` otherwise Prometheus will find no metric.
+Just keep in mind that `metrics_path` must be `/_prometheus/metrics`, otherwise Prometheus will find no metric.
 
 ## Project sources
 
-The Maven project site is available at [Github](https://github.com/vvanholl/elasticsearch-prometheus-exporter)
+The Maven project site is available at [GitHub](https://github.com/vvanholl/elasticsearch-prometheus-exporter).
+
+## Testing
+
+Project contains [integration tests](src/test/resources/rest-api-spec) implemented using
+[rest layer](https://github.com/elastic/elasticsearch/blob/master/TESTING.asciidoc#testing-the-rest-layer)
+framework.
+
+Complete test suite is run using:
+```
+gradle clean check
+```
+
+To run individual test file use:
+```
+gradle :integTest \
+  -Dtests.class=org.elasticsearch.rest.PrometheusRestHandlerClientYamlTestSuiteIT \
+  -Dtests.method="test {yaml=resthandler/20_metrics/Prometheus metrics can be pulled}"
+```
 
 ## Credits
 
-This plugin mainly use the [Prometheus JVM Client](https://github.com/prometheus/client_java).
+This plugin mainly uses the [Prometheus JVM Client](https://github.com/prometheus/client_java).
 
 ## License
 
