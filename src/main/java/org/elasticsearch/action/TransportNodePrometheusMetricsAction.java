@@ -17,9 +17,7 @@
 
 package org.elasticsearch.action;
 
-import static org.compuscene.metrics.prometheus.PrometheusMetricsCollector.PROMETHEUS_CLUSTER_SETTINGS;
-import static org.compuscene.metrics.prometheus.PrometheusMetricsCollector.PROMETHEUS_INDICES;
-
+import org.compuscene.metrics.prometheus.PrometheusSettings;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -53,6 +51,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
     private final Client client;
     private final Settings settings;
     private final ClusterSettings clusterSettings;
+    private final PrometheusSettings prometheusSettings;
 
     @Inject
     public TransportNodePrometheusMetricsAction(Settings settings, ThreadPool threadPool, Client client,
@@ -64,6 +63,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
         this.client = client;
         this.settings = settings;
         this.clusterSettings = clusterSettings;
+        this.prometheusSettings = new PrometheusSettings(settings, clusterSettings);
     }
 
     @Override
@@ -84,6 +84,10 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
         private NodesStatsResponse nodesStatsResponse = null;
         private IndicesStatsResponse indicesStatsResponse = null;
         private ClusterStateResponse clusterStateResponse = null;
+
+        // read the state of prometheus dynamic settings only once at the beginning of the async request
+        private boolean isPrometheusIndices = prometheusSettings.getPrometheusIndices();
+        private boolean isPrometheusClusterSettings = prometheusSettings.getPrometheusClusterSettings();
 
         // All the requests are executed in sequential non-blocking order.
         // It is implemented by wrapping each individual request with ActionListener
@@ -109,11 +113,11 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
 
             // Indices stats request is not "node-specific", it does not support any "_local" notion
             // it is broad-casted to all cluster nodes.
-            this.indicesStatsRequest = PROMETHEUS_INDICES.get(settings) ? new IndicesStatsRequest() : null;
+            this.indicesStatsRequest = isPrometheusIndices ? new IndicesStatsRequest() : null;
 
             // Cluster settings are get via ClusterStateRequest (see elasticsearch RestClusterGetSettingsAction for details)
             // We prefer to send it to master node (hence local=false; it should be set by default but we want to be sure).
-            this.clusterStateRequest = PROMETHEUS_CLUSTER_SETTINGS.get(settings) ? Requests.clusterStateRequest()
+            this.clusterStateRequest = isPrometheusClusterSettings ? Requests.clusterStateRequest()
                     .clear().metaData(true).local(false) : null;
         }
 
@@ -141,7 +145,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
                 @Override
                 public void onResponse(IndicesStatsResponse response) {
                     indicesStatsResponse = response;
-                    if (PROMETHEUS_CLUSTER_SETTINGS.get(settings)) {
+                    if (isPrometheusClusterSettings) {
                         client.admin().cluster().state(clusterStateRequest, clusterStateResponseActionListener);
                     } else {
                         gatherRequests();
@@ -159,7 +163,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
                 @Override
                 public void onResponse(NodesStatsResponse nodeStats) {
                     nodesStatsResponse = nodeStats;
-                    if (PROMETHEUS_INDICES.get(settings)) {
+                    if (isPrometheusIndices) {
                         client.admin().indices().stats(indicesStatsRequest, indicesStatsResponseActionListener);
                     } else {
                         indicesStatsResponseActionListener.onResponse(null);

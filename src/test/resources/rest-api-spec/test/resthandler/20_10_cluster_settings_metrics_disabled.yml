@@ -1,0 +1,158 @@
+# Test that disabling cluster settings metrics dynamically
+# causes those metrics being not exposed. We test both the transient and persistent
+# levels. Notice, however, that we are testing only single metric, which means we need
+# another test the verify that all the cluster settings metrics are disabled or enabled.
+---
+"Dynamically disable cluster settings metrics":
+
+  # Let's start with just the default OOTB settings, this means
+  # both the persistent and transient settings levels are empty.
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
+
+  - do:
+      prometheus.metrics: {}
+
+  # We get back some cluster settings metrics...
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/
+
+  # -----------------------------------
+  # Disable the "prometheus.cluster.settings" at the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            prometheus.cluster.settings: false
+        flat_settings: true
+
+  - is_false: transient.prometheus.cluster.settings
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - is_false: transient.prometheus.cluster.settings
+  - match: {persistent: {}}
+
+  # Verify the metrics are not exported now. By repeating the request twice we verify that the response is consistent
+  # across all nodes of the cluster, ie. cluster state changes were propagated correctly.
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  # Disable the "prometheus.cluster.settings" at the PERSISTENT level too:
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            prometheus.cluster.settings: false
+        flat_settings: true
+
+  - is_false: persistent.prometheus.cluster.settings
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - is_false: transient.prometheus.cluster.settings
+  - is_false: persistent.prometheus.cluster.settings
+
+  # Still cluster settings metrics are not exposed...
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  # -----------------------------------
+  # Clear the "prometheus.cluster.settings" at the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            prometheus.cluster.settings: null
+
+  - is_false: transient.prometheus.cluster.settings
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {}}
+  - is_false: persistent.prometheus.cluster.settings
+
+  # Still cluster settings metrics are not exposed...
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge
+        (\n \# \s (HELP|TYPE).* | \s*)
+        /
+
+  # -----------------------------------
+  # Clear the "prometheus.cluster.settings" at the PERSISTENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          persistent:
+            prometheus.cluster.settings: null
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
+
+  - do:
+      prometheus.metrics: {}
+
+  # We get back some cluster settings metrics again
+  - match:
+      $body: |
+        /.*
+        \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
+        \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
+        es_cluster_routing_allocation_disk_threshold_enabled\{
+            cluster="PrometheusExporterITCluster"
+        \,} \s 1\.0 \n?
+        .*/

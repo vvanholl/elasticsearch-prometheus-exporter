@@ -25,9 +25,6 @@ import org.elasticsearch.action.admin.indices.stats.IndexStats;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.cluster.health.ClusterIndexHealth;
 import org.elasticsearch.cluster.node.DiscoveryNode.Role;
-import org.elasticsearch.common.settings.Setting;
-import org.elasticsearch.common.settings.Setting.Property;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.http.HttpStats;
 import org.elasticsearch.indices.NodeIndicesStats;
 import org.elasticsearch.indices.breaker.AllCircuitBreakerStats;
@@ -51,22 +48,16 @@ import io.prometheus.client.Summary;
  * A class that describes a Prometheus metrics collector.
  */
 public class PrometheusMetricsCollector {
-    // These settings become part of cluster state, it is avail via HTTP at
-    // curl <elasticsearch>/_cluster/settings?include_defaults=true&filter_path=defaults.prometheus
-    // It is thus important to keep them under reasonable namespace to avoid collision with
-    // other plugins or future/commercial parts of Elastic Stack itself.
-    // Namespace "prometheus" sounds like safe bet for now.
-    public static final Setting<Boolean> PROMETHEUS_CLUSTER_SETTINGS = Setting.boolSetting("prometheus.cluster.settings",
-            true, Property.NodeScope);
-    public static final Setting<Boolean> PROMETHEUS_INDICES = Setting.boolSetting("prometheus.indices",
-            true, Property.NodeScope);
 
-    private final Settings settings;
-
+    private boolean isPrometheusClusterSettings;
+    private boolean isPrometheusIndices;
     private PrometheusMetricsCatalog catalog;
 
-    public PrometheusMetricsCollector(Settings settings, PrometheusMetricsCatalog catalog) {
-        this.settings = settings;
+    public PrometheusMetricsCollector(PrometheusMetricsCatalog catalog,
+                                      boolean isPrometheusIndices,
+                                      boolean isPrometheusClusterSettings) {
+        this.isPrometheusClusterSettings = isPrometheusClusterSettings;
+        this.isPrometheusIndices = isPrometheusIndices;
         this.catalog = catalog;
     }
 
@@ -76,9 +67,7 @@ public class PrometheusMetricsCollector {
         registerClusterMetrics();
         registerNodeMetrics();
         registerIndicesMetrics();
-        if (PROMETHEUS_INDICES.get(settings)) {
-            registerPerIndexMetrics();
-        }
+        registerPerIndexMetrics();
         registerTransportMetrics();
         registerHTTPMetrics();
         registerThreadPoolMetrics();
@@ -89,9 +78,7 @@ public class PrometheusMetricsCollector {
         registerJVMMetrics();
         registerOsMetrics();
         registerFsMetrics();
-        if (PROMETHEUS_CLUSTER_SETTINGS.get(settings)) {
-            registerESSettings();
-        }
+        registerESSettings();
     }
 
     private void registerClusterMetrics() {
@@ -953,7 +940,7 @@ public class PrometheusMetricsCollector {
         updateClusterMetrics(clusterHealthResponse);
         updateNodeMetrics(nodeStats);
         updateIndicesMetrics(nodeStats.getIndices());
-        if (PROMETHEUS_INDICES.get(settings)) {
+        if (isPrometheusIndices) {
             updatePerIndexMetrics(clusterHealthResponse, indicesStats);
         }
         updateTransportMetrics(nodeStats.getTransport());
@@ -966,7 +953,7 @@ public class PrometheusMetricsCollector {
         updateJVMMetrics(nodeStats.getJvm());
         updateOsMetrics(nodeStats.getOs());
         updateFsMetrics(nodeStats.getFs());
-        if (PROMETHEUS_CLUSTER_SETTINGS.get(settings)) {
+        if (isPrometheusClusterSettings) {
             updateESSettings(clusterStatsData);
         }
 
