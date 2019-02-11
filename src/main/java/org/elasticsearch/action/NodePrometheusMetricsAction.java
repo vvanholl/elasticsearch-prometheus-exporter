@@ -31,6 +31,7 @@ public class NodePrometheusMetricsAction extends Action<NodePrometheusMetricsReq
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public NodePrometheusMetricsResponse newResponse() {
         return new NodePrometheusMetricsResponse();
     }

@@ -1,4 +1,4 @@
-image: gradle:4.10.2-jdk11
+image: gradle:5.2.1-jdk11
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
