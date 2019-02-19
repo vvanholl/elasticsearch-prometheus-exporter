@@ -36,7 +36,7 @@ import java.util.Locale;
  * REST action class for Prometheus Exporter plugin.
  */
 public class RestPrometheusMetricsAction extends BaseRestHandler {
-    Settings settings;
+    private final Settings settings;
 
     @Inject
     public RestPrometheusMetricsAction(Settings settings, RestController controller) {

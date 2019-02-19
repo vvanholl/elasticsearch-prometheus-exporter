@@ -42,7 +42,18 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
     @Nullable private IndicesStatsResponse indicesStats;
     private ClusterStatsData clusterStatsData = null;
 
-    public NodePrometheusMetricsResponse() {
+    public NodePrometheusMetricsResponse(StreamInput in) throws IOException {
+        super.readFrom(in);
+        clusterHealth = ClusterHealthResponse.readResponseFrom(in);
+        nodeStats = NodeStats.readNodeStats(in);
+        BroadcastResponse br = new BroadcastResponse();
+        br.readFrom(in);
+        ShardStats[] ss = in.readArray(ShardStats::readShardStats, (size) -> new ShardStats[size]);
+        indicesStats = PackageAccessHelper.createIndicesStatsResponse(
+                ss, br.getTotalShards(), br.getSuccessfulShards(), br.getFailedShards(),
+                Arrays.asList(br.getShardFailures())
+        );
+        clusterStatsData.readFrom(in);
     }
 
     public NodePrometheusMetricsResponse(ClusterHealthResponse clusterHealth, NodeStats nodesStats,
@@ -74,21 +85,6 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
     @Nullable
     public ClusterStatsData getClusterStatsData() {
         return this.clusterStatsData;
-    }
-
-    @Override
-    public void readFrom(StreamInput in) throws IOException {
-        super.readFrom(in);
-        clusterHealth = ClusterHealthResponse.readResponseFrom(in);
-        nodeStats = NodeStats.readNodeStats(in);
-        BroadcastResponse br = new BroadcastResponse();
-        br.readFrom(in);
-        ShardStats[] ss = in.readArray(ShardStats::readShardStats, (size) -> new ShardStats[size]);
-        indicesStats = PackageAccessHelper.createIndicesStatsResponse(
-                ss, br.getTotalShards(), br.getSuccessfulShards(), br.getFailedShards(),
-                Arrays.asList(br.getShardFailures())
-        );
-        clusterStatsData.readFrom(in);
     }
 
     @Override
