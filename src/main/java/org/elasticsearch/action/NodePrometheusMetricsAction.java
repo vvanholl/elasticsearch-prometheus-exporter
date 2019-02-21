@@ -17,6 +17,7 @@
 package org.elasticsearch.action;
 
 import org.elasticsearch.client.ElasticsearchClient;
+import org.elasticsearch.common.io.stream.Writeable;
 
 /**
  * Action class for Prometheus Exporter plugin.
@@ -31,12 +32,18 @@ public class NodePrometheusMetricsAction extends Action<NodePrometheusMetricsReq
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public NodePrometheusMetricsResponse newResponse() {
-        return new NodePrometheusMetricsResponse();
+        throw new UnsupportedOperationException("usage of Streamable is to be replaced by Writeable");
     }
 
     @Override
     public NodePrometheusRequestBuilder newRequestBuilder(ElasticsearchClient client) {
         return new NodePrometheusRequestBuilder(client, this);
+    }
+
+    @Override
+    public Writeable.Reader<NodePrometheusMetricsResponse> getResponseReader() {
+        return NodePrometheusMetricsResponse::new;
     }
 }
