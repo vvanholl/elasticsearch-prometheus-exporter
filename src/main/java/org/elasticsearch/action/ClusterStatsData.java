@@ -65,6 +65,7 @@ public class ClusterStatsData extends ActionResponse {
     private Double[] floodStageInPctRef = new Double[]{floodStageInPct};
 
 
+    @SuppressWarnings({"checkstyle:LineLength"})
     public ClusterStatsData(ClusterStateResponse clusterStateResponse, Settings settings, ClusterSettings clusterSettings) {
 
         MetaData m = clusterStateResponse.getState().getMetaData();
@@ -114,7 +115,7 @@ public class ClusterStatsData extends ActionResponse {
                     try {
                         bytesPointer[0] = s.getAsBytesSize(key, null).getBytes();
                     } catch (SettingsException | ElasticsearchParseException | NullPointerException e2) {
-                        // TODO: log.debug("This went wrong, but 'Keep Calm and Carry On'")
+                        // TODO(lvlcek): log.debug("This went wrong, but 'Keep Calm and Carry On'")
                         // We should avoid using logs in this class (due to perf impact), instead we should
                         // consider moving this logic to some static helper class/method going forward.
                     }

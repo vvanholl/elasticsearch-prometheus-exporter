@@ -1,0 +1,104 @@
+# Test that disabling index level metrics dynamically
+# causes those metrics being not exposed.
+---
+"Dynamically disable index level metrics":
+
+  # Assume we have no indices in the cluster
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+
+  # twitter index should not be present in the prometheus stats
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[^t][^w][^i][^t][^t][^e][^r].*/
+
+  # Create twitter index
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 1 }
+
+  # Now the twitter index details are present
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[t][w][i][t][t][e][r].*/
+
+  # Let's start with just the default OOTB settings, this means
+  # both the persistent and transient settings levels are empty.
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
+
+  # -----------------------------------
+  # Disable the "prometheus.indices" at the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            prometheus.indices: false
+        flat_settings: true
+
+  - is_false: transient.prometheus.indices
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - is_false: transient.prometheus.indices
+  - match: {persistent: {}}
+
+  # Verify indices metrics are not exported now.
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[^t][^w][^i][^t][^t][^e][^r].*/
+
+  # -----------------------------------
+  # Clear the "prometheus.indices" settings:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            prometheus.indices: null
+        flat_settings: true
+
+  # And we should see the twitter index details back in prometheus metrics
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[t][w][i][t][t][e][r].*/
+
+  # -----------------------------------
+  # Test clean up...
+  - do:
+      indices.delete:
+        index: twitter
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}

@@ -17,9 +17,11 @@
 
 package org.elasticsearch.plugin.prometheus;
 
+import static java.util.Collections.singletonList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
+import org.compuscene.metrics.prometheus.PrometheusSettings;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.NodePrometheusMetricsAction;
@@ -34,6 +36,7 @@ import org.elasticsearch.rest.RestHandler;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -49,7 +52,7 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
 
     @Override
     public List<ActionHandler<? extends ActionRequest, ? extends ActionResponse>> getActions() {
-        return Arrays.asList(
+        return singletonList(
                 new ActionHandler<>(NodePrometheusMetricsAction.INSTANCE, TransportNodePrometheusMetricsAction.class)
         );
     }
@@ -59,16 +62,17 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
                                              IndexScopedSettings indexScopedSettings, SettingsFilter settingsFilter,
                                              IndexNameExpressionResolver indexNameExpressionResolver,
                                              Supplier<DiscoveryNodes> nodesInCluster) {
-        return Arrays.asList(
-                new RestPrometheusMetricsAction(settings, restController)
+        return singletonList(
+                new RestPrometheusMetricsAction(settings, clusterSettings, restController)
         );
     }
 
     @Override
     public List<Setting<?>> getSettings() {
-        return Arrays.asList(
-                PrometheusMetricsCollector.PROMETHEUS_CLUSTER_SETTINGS,
-                PrometheusMetricsCollector.PROMETHEUS_INDICES
+        List<Setting<?>> settings = Arrays.asList(
+                PrometheusSettings.PROMETHEUS_CLUSTER_SETTINGS,
+                PrometheusSettings.PROMETHEUS_INDICES
         );
+        return Collections.unmodifiableList(settings);
     }
 }
