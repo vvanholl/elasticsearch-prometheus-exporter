@@ -27,6 +27,7 @@ import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsException;
+import org.elasticsearch.common.unit.RatioValue;
 
 import java.io.IOException;
 
@@ -109,7 +110,7 @@ public class ClusterStatsData extends ActionResponse {
         String value = s.get(key);
         if (value != null && pctPointer[0] == null) {
             try {
-                pctPointer[0] = s.getAsRatio(key, null).getAsPercent();
+                pctPointer[0] = RatioValue.parseRatioValue(s.get(key, null)).getAsPercent();
             } catch (SettingsException | ElasticsearchParseException | NullPointerException e1) {
                 if (bytesPointer[0] == null) {
                     try {
