@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.elasticsearch.gradle:build-tools:6.6.2" // How can we use ${versions.elasticsearch} here ???
+        classpath "org.elasticsearch.gradle:build-tools:6.7.0" // How can we use ${versions.elasticsearch} here ???
         classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
         classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
         classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
@@ -47,9 +47,11 @@ thirdPartyAudit.enabled = false
 // license header checks can be disabled
 licenseHeaders.enabled = true
 
+// No unit tests in this plugin
+unitTest.enabled = false
+
 // There are only integration tests
 integTestRunner.enabled = true
-test.enabled = false
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
