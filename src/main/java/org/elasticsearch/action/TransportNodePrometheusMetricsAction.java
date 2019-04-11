@@ -17,6 +17,8 @@
 
 package org.elasticsearch.action;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.compuscene.metrics.prometheus.PrometheusSettings;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -31,12 +33,11 @@ import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.HandledTransportAction;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.threadpool.ThreadPool;
+import org.elasticsearch.tasks.Task;
 import org.elasticsearch.transport.TransportService;
 
 /**
@@ -52,14 +53,14 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
     private final Settings settings;
     private final ClusterSettings clusterSettings;
     private final PrometheusSettings prometheusSettings;
+    private final Logger logger = LogManager.getLogger(getClass());
 
     @Inject
-    public TransportNodePrometheusMetricsAction(Settings settings, ThreadPool threadPool, Client client,
+    public TransportNodePrometheusMetricsAction(Settings settings, Client client,
                                                 TransportService transportService, ActionFilters actionFilters,
-                                                IndexNameExpressionResolver indexNameExpressionResolver,
                                                 ClusterSettings clusterSettings) {
-        super(settings, NodePrometheusMetricsAction.NAME, threadPool, transportService, actionFilters,
-                indexNameExpressionResolver, NodePrometheusMetricsRequest::new);
+        super(NodePrometheusMetricsAction.NAME, transportService, actionFilters,
+                NodePrometheusMetricsRequest::new);
         this.client = client;
         this.settings = settings;
         this.clusterSettings = clusterSettings;
@@ -67,7 +68,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
     }
 
     @Override
-    protected void doExecute(NodePrometheusMetricsRequest request, ActionListener<NodePrometheusMetricsResponse> listener) {
+    protected void doExecute(Task task, NodePrometheusMetricsRequest request, ActionListener<NodePrometheusMetricsResponse> listener) {
         new AsyncAction(listener).start();
     }
 

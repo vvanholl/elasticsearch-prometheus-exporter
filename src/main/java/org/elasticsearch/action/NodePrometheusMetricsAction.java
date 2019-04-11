@@ -16,14 +16,12 @@
  */
 package org.elasticsearch.action;
 
-import org.elasticsearch.client.ElasticsearchClient;
 import org.elasticsearch.common.io.stream.Writeable;
 
 /**
  * Action class for Prometheus Exporter plugin.
  */
-public class NodePrometheusMetricsAction extends Action<NodePrometheusMetricsRequest, NodePrometheusMetricsResponse,
-        NodePrometheusRequestBuilder> {
+public class NodePrometheusMetricsAction extends Action<NodePrometheusMetricsResponse> {
     public static final NodePrometheusMetricsAction INSTANCE = new NodePrometheusMetricsAction();
     public static final String NAME = "cluster:monitor/prometheus/metrics";
 
@@ -35,11 +33,6 @@ public class NodePrometheusMetricsAction extends Action<NodePrometheusMetricsReq
     @SuppressWarnings("deprecation")
     public NodePrometheusMetricsResponse newResponse() {
         throw new UnsupportedOperationException("usage of Streamable is to be replaced by Writeable");
-    }
-
-    @Override
-    public NodePrometheusRequestBuilder newRequestBuilder(ElasticsearchClient client) {
-        return new NodePrometheusRequestBuilder(client, this);
     }
 
     @Override
