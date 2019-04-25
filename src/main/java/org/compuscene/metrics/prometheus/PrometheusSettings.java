@@ -21,6 +21,13 @@ import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Settings;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
+import static java.util.Collections.emptyList;
+
 /**
  * A container to keep settings for prometheus up to date with cluster setting changes.
  *
@@ -40,15 +47,21 @@ public class PrometheusSettings {
     public static final Setting<Boolean> PROMETHEUS_INDICES =
             Setting.boolSetting("prometheus.indices", true,
                     Setting.Property.Dynamic, Setting.Property.NodeScope);
+    public static final Setting<List<String>> PROMETHEUS_EXCLUDE =
+            Setting.listSetting("prometheus.exclude", emptyList(),
+                    Function.identity(), Setting.Property.Dynamic, Setting.Property.NodeScope);
 
     private volatile boolean clusterSettings;
     private volatile boolean indices;
+    private volatile List<String> exclude;
 
     public PrometheusSettings(Settings settings, ClusterSettings clusterSettings) {
         setPrometheusClusterSettings(PROMETHEUS_CLUSTER_SETTINGS.get(settings));
         setPrometheusIndices(PROMETHEUS_INDICES.get(settings));
+        setPrometheusExclude(PROMETHEUS_EXCLUDE.get(settings));
         clusterSettings.addSettingsUpdateConsumer(PROMETHEUS_CLUSTER_SETTINGS, this::setPrometheusClusterSettings);
         clusterSettings.addSettingsUpdateConsumer(PROMETHEUS_INDICES, this::setPrometheusIndices);
+        clusterSettings.addSettingsUpdateConsumer(PROMETHEUS_EXCLUDE, this::setPrometheusExclude);
     }
 
     private void setPrometheusClusterSettings(boolean flag) {
@@ -59,11 +72,19 @@ public class PrometheusSettings {
         this.indices = flag;
     }
 
+    private void setPrometheusExclude(List<String> excludes) {
+        this.exclude = excludes;
+    }
+
     public boolean getPrometheusClusterSettings() {
         return this.clusterSettings;
     }
 
     public boolean getPrometheusIndices() {
         return this.indices;
+    }
+
+    public List<String> getPrometheusExclude() {
+        return this.exclude;
     }
 }

@@ -17,6 +17,7 @@
 
 package org.compuscene.metrics.prometheus;
 
+import io.prometheus.client.Collector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
@@ -25,7 +26,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Gauge;
@@ -46,8 +49,9 @@ public class PrometheusMetricsCatalog {
 
     private HashMap<String, Object> metrics;
     private CollectorRegistry registry;
+    private List<String> excludePrefixes;
 
-    public PrometheusMetricsCatalog(String clusterName, String nodeName, String nodeId, String metricPrefix) {
+    public PrometheusMetricsCatalog(String clusterName, String nodeName, String nodeId, String metricPrefix, List<String> excludePrefixes) {
         this.clusterName = clusterName;
         this.nodeName = nodeName;
         this.nodeId = nodeId;
@@ -56,6 +60,7 @@ public class PrometheusMetricsCatalog {
 
         metrics = new HashMap<>();
         registry = new CollectorRegistry();
+        this.excludePrefixes = excludePrefixes;
     }
 
     private String[] getExtendedClusterLabelNames(String... labelNames) {
@@ -98,7 +103,16 @@ public class PrometheusMetricsCatalog {
         return extended;
     }
 
+    private boolean isExcluded(String metric) {
+        return excludePrefixes.stream().anyMatch(metric::startsWith);
+    }
+
     public void registerClusterGauge(String metric, String help, String... labels) {
+        if (isExcluded(metric)) {
+            logger.debug(String.format(Locale.ENGLISH, "Skipping registering %s, excluded", metric));
+            return;
+        }
+
         Gauge gauge = Gauge.build().
                 name(metricPrefix + metric).
                 help(help).
@@ -111,11 +125,20 @@ public class PrometheusMetricsCatalog {
     }
 
     public void setClusterGauge(String metric, double value, String... labelValues) {
-        Gauge gauge = (Gauge) metrics.get(metric);
-        gauge.labels(getExtendedClusterLabelValues(labelValues)).set(value);
+        if (metrics.containsKey(metric)) {
+            Gauge gauge = (Gauge) metrics.get(metric);
+            gauge.labels(getExtendedClusterLabelValues(labelValues)).set(value);
+        } else {
+            logger.debug(String.format(Locale.ENGLISH, "%s is excluded", metric));
+        }
     }
 
     public void registerNodeGauge(String metric, String help, String... labels) {
+        if (isExcluded(metric)) {
+            logger.debug(String.format(Locale.ENGLISH, "Skipping registering %s, excluded", metric));
+            return;
+        }
+
         Gauge gauge = Gauge.build().
                 name(metricPrefix + metric).
                 help(help).
@@ -128,8 +151,10 @@ public class PrometheusMetricsCatalog {
     }
 
     public void setNodeGauge(String metric, double value, String... labelValues) {
-        Gauge gauge = (Gauge) metrics.get(metric);
-        gauge.labels(getExtendedNodeLabelValues(labelValues)).set(value);
+        if (metrics.containsKey(metric)) {
+            Gauge gauge = (Gauge) metrics.get(metric);
+            gauge.labels(getExtendedNodeLabelValues(labelValues)).set(value);
+        }
     }
 
     public void registerSummaryTimer(String metric, String help, String... labels) {

@@ -76,7 +76,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
                     logger.trace("Prepare new Prometheus metric collector for: [{}], [{}], [{}]", clusterName, nodeId,
                             nodeName);
                 }
-                PrometheusMetricsCatalog catalog = new PrometheusMetricsCatalog(clusterName, nodeName, nodeId, "es_");
+                PrometheusMetricsCatalog catalog = new PrometheusMetricsCatalog(clusterName, nodeName, nodeId, "es_", prometheusSettings.getPrometheusExclude());
                 PrometheusMetricsCollector collector = new PrometheusMetricsCollector(
                         catalog,
                         prometheusSettings.getPrometheusIndices(),
