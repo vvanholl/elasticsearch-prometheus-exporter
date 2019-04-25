@@ -1,0 +1,106 @@
+# Test that excluding some metrics dynamically causes
+# those metrics to not be exposed.
+---
+"Dynamically exclude some metrics":
+
+  # Assume we have no indices in the cluster
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 0 }
+
+
+  # twitter index should not be present in the prometheus stats
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*.*/
+
+  # Create twitter index
+  - do:
+      index:
+        index:  twitter
+        type:   foo
+        id:     1
+        body:   { foo: bar }
+
+  - do:
+      indices.refresh: { allow_no_indices: true }
+
+  - do:
+      cluster.stats: {}
+
+  - match: { indices.count: 1 }
+
+  # Now the twitter index details are present
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[t][w][i][t][t][e][r].*/
+
+  # Let's start with just the default OOTB settings, this means
+  # both the persistent and transient settings levels are empty.
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
+
+  # -----------------------------------
+  # Exclude "index_search" via "prometheus.exclude" at the TRANSIENT level:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            prometheus:
+              exclude: ["index_search"]
+        flat_settings: true
+
+  - match: {transient: {prometheus.exclude: ["index_search"]}}
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {transient: {prometheus.exclude: ["index_search"]}}
+  - match: {persistent: {}}
+
+  # Verify excluded "index_search" metrics are not exported now.
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*[^i][^n][^d][^e][^x][^_][^s][^e][^a][^r][^c][^h].*/
+
+  # -----------------------------------
+  # Clear the "prometheus.exclude" settings:
+  - do:
+      cluster.put_settings:
+        body:
+          transient:
+            prometheus:
+              exclude: null
+        flat_settings: true
+
+  # And we should see the twitter index details back in prometheus metrics
+  - do:
+      prometheus.metrics: {}
+
+  - match:
+      $body: /.*index_search.*/
+
+  # -----------------------------------
+  # Test clean up...
+  - do:
+      indices.delete:
+        index: twitter
+
+  - do:
+      cluster.get_settings:
+        flat_settings: true
+
+  - match: {persistent: {}}
+  - match: {transient: {}}
