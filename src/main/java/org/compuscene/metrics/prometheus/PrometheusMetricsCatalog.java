@@ -17,7 +17,6 @@
 
 package org.compuscene.metrics.prometheus;
 
-import io.prometheus.client.Collector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
@@ -28,7 +27,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Gauge;
@@ -51,7 +49,12 @@ public class PrometheusMetricsCatalog {
     private CollectorRegistry registry;
     private List<String> excludePrefixes;
 
-    public PrometheusMetricsCatalog(String clusterName, String nodeName, String nodeId, String metricPrefix, List<String> excludePrefixes) {
+    public PrometheusMetricsCatalog(
+            String clusterName,
+            String nodeName,
+            String nodeId,
+            String metricPrefix,
+            List<String> excludePrefixes) {
         this.clusterName = clusterName;
         this.nodeName = nodeName;
         this.nodeId = nodeId;

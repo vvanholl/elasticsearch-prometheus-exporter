@@ -17,16 +17,14 @@
 
 package org.compuscene.metrics.prometheus;
 
+import static java.util.Collections.emptyList;
+
 import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Settings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-
-import static java.util.Collections.emptyList;
 
 /**
  * A container to keep settings for prometheus up to date with cluster setting changes.
