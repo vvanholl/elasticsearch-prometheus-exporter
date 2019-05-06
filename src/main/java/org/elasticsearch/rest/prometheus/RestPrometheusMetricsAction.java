@@ -20,6 +20,8 @@ package org.elasticsearch.rest.prometheus;
 import static org.elasticsearch.action.NodePrometheusMetricsAction.INSTANCE;
 import static org.elasticsearch.rest.RestRequest.Method.GET;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.compuscene.metrics.prometheus.PrometheusMetricsCatalog;
 import org.compuscene.metrics.prometheus.PrometheusMetricsCollector;
 import org.compuscene.metrics.prometheus.PrometheusSettings;
@@ -27,6 +29,7 @@ import org.elasticsearch.action.NodePrometheusMetricsRequest;
 import org.elasticsearch.action.NodePrometheusMetricsResponse;
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.network.NetworkAddress;
 import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.*;
@@ -40,6 +43,7 @@ import java.util.Locale;
 public class RestPrometheusMetricsAction extends BaseRestHandler {
 
     private final PrometheusSettings prometheusSettings;
+    private final Logger logger = LogManager.getLogger(getClass());
 
     @Inject
     public RestPrometheusMetricsAction(Settings settings, ClusterSettings clusterSettings, RestController controller) {
@@ -58,8 +62,9 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     @Override
     protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
         if (logger.isTraceEnabled()) {
+            String remoteAddress = NetworkAddress.format(request.getHttpChannel().getRemoteAddress());
             logger.trace(String.format(Locale.ENGLISH, "Received request for Prometheus metrics from %s",
-                    request.getRemoteAddress().toString()));
+                    remoteAddress));
         }
 
         NodePrometheusMetricsRequest metricsRequest = new NodePrometheusMetricsRequest();
