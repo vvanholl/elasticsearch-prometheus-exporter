@@ -111,12 +111,24 @@ checkstyle {
     toolVersion = "8.2"
 }
 
+def getCheckedOutGitCommitHash() {
+    def gitFolder = "$projectDir/.git/"
+
+    def head = new File(gitFolder + "HEAD").text.split(":")
+
+    def isCommit = head.length == 1
+    if(isCommit) return head[0].trim()
+
+    def refHead = new File(gitFolder + head[1].trim())
+    refHead.text.trim().take takeFromHash
+}
+
 github {
     owner = github_owner
     repo = github_repo
     token = github_token
     tagName = version
-    targetCommitish = "master"
+    targetCommitish = getCheckedOutGitCommitHash()
     name = version
     assets = [
         "build/distributions/${project.name}-${version}.zip"
