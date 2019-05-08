@@ -20,7 +20,6 @@ plugins {
     id "java"
     id "checkstyle"
     id "co.riiid.gradle" version "0.4.2"
-    id "com.github.mgk.gradle.s3" version "1.4.0"
 }
 
 apply plugin: 'java'
@@ -112,12 +111,6 @@ checkstyle {
     toolVersion = "8.2"
 }
 
-task S3Upload(type: S3Upload /*, dependsOn: buildPluginZip*/) {
-    bucket = s3_bucket
-    key = "elasticsearch/elasticsearch-${project.name}-${version}.zip"
-    file = "build/distributions/${project.name}-${version}.zip"
-}
-
 github {
     owner = github_owner
     repo = github_repo
@@ -130,17 +123,12 @@ github {
     ]
 }
 
-githubRelease {
-    //dependsOn("buildPluginZip")
-    mustRunAfter("S3Upload")
-}
-
 task release() {
     if (version.endsWith("-SNAPSHOT")) {
         doLast {
             println("SNAPSHOT: Nothing to release !")
         }
     } else {
-        dependsOn(["S3Upload", "githubRelease"])
+        dependsOn(["githubRelease"])
     }
 }
