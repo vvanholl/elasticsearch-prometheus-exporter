@@ -47,7 +47,7 @@ thirdPartyAudit.enabled = false
 licenseHeaders.enabled = true
 
 // No unit tests in this plugin
-unitTest.enabled = false
+test.enabled = false
 
 // There are only integration tests
 integTestRunner.enabled = true
