@@ -111,12 +111,30 @@ checkstyle {
     toolVersion = "8.2"
 }
 
+def getGitCommitHash() {
+    def gitFolderPath = "$projectDir/.git/"
+    def gitFolder = new File(gitFolderPath + "HEAD");
+    if (!gitFolder.exists()) {
+        return null
+    }
+
+    def head = gitFolder.text.split(":")
+    def isCommit = (head.length == 1)
+
+    if (isCommit) {
+        return head[0].trim()
+    }
+
+    def refHead = new File(gitFolderPath + head[1].trim())
+    return refHead.text.trim()
+}
+
 github {
     owner = github_owner
     repo = github_repo
     token = github_token
     tagName = version
-    targetCommitish = "master"
+    targetCommitish = getGitCommitHash()
     name = version
     assets = [
         "build/distributions/${project.name}-${version}.zip"
