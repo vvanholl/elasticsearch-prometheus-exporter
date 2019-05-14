@@ -34,6 +34,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 6.7.2          | 6.7.2.0        | May 08, 2019 |
 | 6.7.1          | 6.7.1.0        | Apr 04, 2019 |
 | 6.7.0          | 6.7.0.0        | Apr 02, 2019 |
 | 6.6.2          | 6.6.2.0        | Mar 14, 2019 |
@@ -68,6 +69,8 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 5.6.16         | 5.6.16.0       | Apr 04, 2019 |
+| 5.6.15         | 5.6.15.0       | Feb 21, 2019 |
 | 5.6.14         | 5.6.14.0       | Dec 14, 2018 |
 | 5.6.13         | 5.6.13.1       | Nov 12, 2018 |
 | 5.6.13         | 5.6.13.0       | Nov 07, 2018 |
@@ -125,10 +128,10 @@ It collects all relevant metrics and makes them available to Prometheus via the 
     `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.0.1.0/prometheus-exporter-7.0.1.0.zip`
 
 - Since Elasticsearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.7.1.0/prometheus-exporter-6.7.1.0.zip`
+    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.7.2.0/prometheus-exporter-6.7.2.0.zip`
 
 - On Elasticsearch 5.x.x :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.6.14.0/elasticsearch-prometheus-exporter-5.6.14.0.zip`
+    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.6.16.0/elasticsearch-prometheus-exporter-5.6.16.0.zip`
 
 - On old 2.x.x versions :
     `./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip`
