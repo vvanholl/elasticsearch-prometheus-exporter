@@ -68,7 +68,8 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
     }
 
     @Override
-    protected void doExecute(Task task, NodePrometheusMetricsRequest request, ActionListener<NodePrometheusMetricsResponse> listener) {
+    protected void doExecute(Task task, NodePrometheusMetricsRequest request,
+                             ActionListener<NodePrometheusMetricsResponse> listener) {
         new AsyncAction(listener).start();
     }
 
