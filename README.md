@@ -218,7 +218,7 @@ For example, if you have a cluster of 3 nodes:
   static_configs:
   - targets:
     - node1:9200
-    - node1:9200
+    - node2:9200
     - node3:9200
 ```
 

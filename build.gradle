@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.elasticsearch.gradle:build-tools:7.1.1" // How can we use ${versions.elasticsearch} here ???
+        classpath "org.elasticsearch.gradle:build-tools:7.2.0" // How can we use ${versions.elasticsearch} here ???
         classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
         classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
         classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
