@@ -24,7 +24,7 @@ import org.elasticsearch.action.admin.indices.stats.CommonStats;
 import org.elasticsearch.action.admin.indices.stats.IndexStats;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.cluster.health.ClusterIndexHealth;
-import org.elasticsearch.cluster.node.DiscoveryNode.Role;
+import org.elasticsearch.cluster.node.DiscoveryNodeRole;
 import org.elasticsearch.http.HttpStats;
 import org.elasticsearch.indices.NodeIndicesStats;
 import org.elasticsearch.indices.breaker.AllCircuitBreakerStats;
@@ -129,14 +129,17 @@ public class PrometheusMetricsCollector {
 
     private void updateNodeMetrics(NodeStats ns) {
         if (ns != null) {
+
+            // Plugins can introduce custom node roles from 7.3.0: https://github.com/elastic/elasticsearch/pull/43175
+            // TODO(lukas-vlcek): List of node roles can not be static but needs to be created dynamically.
             Map<String, Integer> roles = new HashMap<>();
 
             roles.put("master", 0);
             roles.put("data", 0);
             roles.put("ingest", 0);
 
-            for (Role r : ns.getNode().getRoles()) {
-                roles.put(r.getRoleName(), 1);
+            for (DiscoveryNodeRole r : ns.getNode().getRoles()) {
+                roles.put(r.roleName(), 1);
             }
 
             for (String k : roles.keySet()) {
