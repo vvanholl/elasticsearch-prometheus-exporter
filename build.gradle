@@ -80,6 +80,14 @@ configurations {
     }
 }
 
+// Fix for https://github.com/elastic/elasticsearch/issues/45073
+// TODO(lukas-vlcek): Should be removed for ES v7.3.1 and later.
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute project(':rest-api-spec') with module ("org.elasticsearch:rest-api-spec:${versions.elasticsearch}")
+  }
+}
+
 dependencies {
     compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
     compile "io.prometheus:simpleclient:${versions.prometheus}"
