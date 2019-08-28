@@ -1,6 +1,10 @@
 import com.github.mgk.gradle.*
 
 buildscript {
+    ext {
+        es_version = version.replaceAll(/\.[0-9]+(|-SNAPSHOT)$/, "")
+    }
+
     repositories {
         mavenLocal()
         mavenCentral()
@@ -8,7 +12,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.elasticsearch.gradle:build-tools:7.2.1" // How can we use ${versions.elasticsearch} here ???
+        classpath "org.elasticsearch.gradle:build-tools:${es_version}"
         classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
         classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
         classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
@@ -64,7 +68,7 @@ repositories {
 
 ext {
     versions = [
-        "elasticsearch": version.replaceAll(/\.[0-9]+(|-SNAPSHOT)$/, ""),
+        "elasticsearch": es_version,
         "prometheus"   : "0.6.0",
         "log4j"        : "2.11.1",
         "junit"        : "4.12"
