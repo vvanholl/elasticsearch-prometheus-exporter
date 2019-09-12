@@ -1,4 +1,4 @@
-image: "compuscene/gradle:5.4.1-jdk12"
+image: "gradle:5.5.1-jdk12"
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -13,7 +13,7 @@ stages:
 
 build:
   stage: "build"
-  script: "gradle --build-cache assemble"
+  script: "su gradle -c 'gradle --build-cache assemble'"
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: "push"
@@ -23,7 +23,7 @@ build:
 
 test:
   stage: "test"
-  script: "gradle check"
+  script: "su gradle -c 'gradle check'"
   artifacts:
     reports:
       junit: "build/reports/integTestRunnerJunit/TEST-*.xml"
@@ -40,7 +40,7 @@ release:
     - "6.x"
     - "master"
   stage: "release"
-  script: "gradle release"
+  script: "su gradle -c 'gradle release'"
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: "pull"
