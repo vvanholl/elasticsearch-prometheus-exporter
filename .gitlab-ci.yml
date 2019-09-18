@@ -13,6 +13,8 @@ stages:
 
 build:
   stage: "build"
+  tags:
+    - "gradle"
   script: "su gradle -c 'gradle --build-cache assemble'"
   cache:
     key: "$CI_COMMIT_REF_NAME"
@@ -23,6 +25,8 @@ build:
 
 test:
   stage: "test"
+  tags:
+    - "gradle"
   script: "su gradle -c 'gradle check'"
   artifacts:
     reports:
@@ -40,6 +44,8 @@ release:
     - "6.x"
     - "master"
   stage: "release"
+  tags:
+    - "gradle"
   script: "su gradle -c 'gradle release'"
   cache:
     key: "$CI_COMMIT_REF_NAME"
