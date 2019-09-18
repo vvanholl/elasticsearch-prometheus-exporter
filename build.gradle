@@ -155,10 +155,9 @@ task release() {
     }
 }
 
-// Fix for https://github.com/elastic/elasticsearch/issues/45073
-// TODO(lukas-vlcek): Should be removed for ES v7.3.1 and later.
-configurations.all {
-  resolutionStrategy.dependencySubstitution {
-    substitute project(':rest-api-spec') with module ("org.elasticsearch:rest-api-spec:${versions.elasticsearch}")
-  }
+// Fix for https://github.com/elastic/elasticsearch/issues/45891
+// TODO(lukas-vlcek): Should be removed for ES v7.3.2 and later.
+configurations.restSpec.withDependencies { dependencies ->
+  dependencies.clear()
+  dependencies.add(project.dependencies.create("org.elasticsearch:rest-api-spec:${es_version}"))
 }
