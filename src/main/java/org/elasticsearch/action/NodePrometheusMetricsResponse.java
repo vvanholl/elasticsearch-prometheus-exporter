@@ -43,12 +43,10 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
     private ClusterStatsData clusterStatsData = null;
 
     public NodePrometheusMetricsResponse(StreamInput in) throws IOException {
-        super.readFrom(in);
         clusterHealth = ClusterHealthResponse.readResponseFrom(in);
-        nodeStats = NodeStats.readNodeStats(in);
-        BroadcastResponse br = new BroadcastResponse();
-        br.readFrom(in);
-        ShardStats[] ss = in.readArray(ShardStats::readShardStats, (size) -> new ShardStats[size]);
+        nodeStats = new NodeStats(in);
+        BroadcastResponse br = new BroadcastResponse(in);
+        ShardStats[] ss = in.readArray(ShardStats::new, (size) -> new ShardStats[size]);
         indicesStats = PackageAccessHelper.createIndicesStatsResponse(
                 ss, br.getTotalShards(), br.getSuccessfulShards(), br.getFailedShards(),
                 Arrays.asList(br.getShardFailures())
@@ -89,7 +87,6 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
 
     @Override
     public void writeTo(StreamOutput out) throws IOException {
-        super.writeTo(out);
         clusterHealth.writeTo(out);
         nodeStats.writeTo(out);
         if (indicesStats != null) {

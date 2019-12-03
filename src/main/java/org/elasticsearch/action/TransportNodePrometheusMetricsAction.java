@@ -59,8 +59,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
     public TransportNodePrometheusMetricsAction(Settings settings, Client client,
                                                 TransportService transportService, ActionFilters actionFilters,
                                                 ClusterSettings clusterSettings) {
-        super(NodePrometheusMetricsAction.NAME, transportService, actionFilters,
-                NodePrometheusMetricsRequest::new);
+        super(NodePrometheusMetricsAction.NAME, transportService, actionFilters, NodePrometheusMetricsRequest::new);
         this.client = client;
         this.settings = settings;
         this.clusterSettings = clusterSettings;

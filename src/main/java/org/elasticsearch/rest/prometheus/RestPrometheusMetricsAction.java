@@ -47,7 +47,6 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
 
     @Inject
     public RestPrometheusMetricsAction(Settings settings, ClusterSettings clusterSettings, RestController controller) {
-        super(settings);
         this.prometheusSettings = new PrometheusSettings(settings, clusterSettings);
         controller.registerHandler(GET, "/_prometheus/metrics", this);
     }

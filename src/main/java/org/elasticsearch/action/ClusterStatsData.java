@@ -125,9 +125,7 @@ public class ClusterStatsData extends ActionResponse {
         }
     }
 
-    @Override
     public void readFrom(StreamInput in) throws IOException {
-        super.readFrom(in);
         thresholdEnabled = in.readOptionalBoolean();
         //
         diskLowInBytes = in.readOptionalLong();
@@ -141,7 +139,6 @@ public class ClusterStatsData extends ActionResponse {
 
     @Override
     public void writeTo(StreamOutput out) throws IOException {
-        super.writeTo(out);
         out.writeOptionalBoolean(thresholdEnabled);
         //
         out.writeOptionalLong(diskLowInBytes);

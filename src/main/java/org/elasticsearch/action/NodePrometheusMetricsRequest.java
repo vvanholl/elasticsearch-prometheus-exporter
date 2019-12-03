@@ -18,11 +18,18 @@
 package org.elasticsearch.action;
 
 import org.elasticsearch.action.support.master.MasterNodeReadRequest;
+import org.elasticsearch.common.io.stream.StreamInput;
 
 /**
  * Action request class for Prometheus Exporter plugin.
  */
 public class NodePrometheusMetricsRequest extends MasterNodeReadRequest<NodePrometheusMetricsRequest> {
+    public NodePrometheusMetricsRequest(StreamInput streamInput) {
+    }
+
+    public NodePrometheusMetricsRequest() {
+    }
+
     @Override
     public ActionRequestValidationException validate() {
         return null;
