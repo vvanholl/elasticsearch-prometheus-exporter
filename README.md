@@ -124,7 +124,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 ## Install
 
 - Since Elasticsearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.8.4.0/prometheus-exporter-6.8.5.0.zip`
+    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.8.5.0/prometheus-exporter-6.8.5.0.zip`
 
 - On Elasticsearch 5.x.x :
     `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.6.16.0/elasticsearch-prometheus-exporter-5.6.16.0.zip`
