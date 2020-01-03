@@ -16,9 +16,9 @@
  */
 package org.elasticsearch.action.admin.indices.stats;
 
-import org.elasticsearch.action.support.DefaultShardOperationFailedException;
+import org.elasticsearch.common.io.stream.StreamInput;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Utility methods.
@@ -27,17 +27,8 @@ public class PackageAccessHelper {
 
     /**
      * Shortcut to IndicesStatsResponse constructor which has package access restriction.
-     *
-     * @param shards            The shards stats.
-     * @param totalShards       The total shards this request ran against.
-     * @param successfulShards  The successful shards this request was executed on.
-     * @param failedShards      The failed shards this request was executed on.
-     * @param shardFailures     The list of shard failures exception.
-     * @return new instance of IndicesStatsResponse.
      */
-    public static IndicesStatsResponse createIndicesStatsResponse(ShardStats[] shards, int totalShards,
-                                                                  int successfulShards, int failedShards,
-                                                                  List<DefaultShardOperationFailedException> shardFailures) {
-        return new IndicesStatsResponse(shards, totalShards, successfulShards, failedShards, shardFailures);
+    public static IndicesStatsResponse createIndicesStatsResponse(StreamInput in) throws IOException {
+        return in.readOptionalWriteable(IndicesStatsResponse::new);
     }
 }

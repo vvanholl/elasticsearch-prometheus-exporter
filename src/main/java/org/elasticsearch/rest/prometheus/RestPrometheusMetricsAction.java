@@ -28,7 +28,6 @@ import org.compuscene.metrics.prometheus.PrometheusSettings;
 import org.elasticsearch.action.NodePrometheusMetricsRequest;
 import org.elasticsearch.action.NodePrometheusMetricsResponse;
 import org.elasticsearch.client.node.NodeClient;
-import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.network.NetworkAddress;
 import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
@@ -45,9 +44,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     private final PrometheusSettings prometheusSettings;
     private final Logger logger = LogManager.getLogger(getClass());
 
-    @Inject
     public RestPrometheusMetricsAction(Settings settings, ClusterSettings clusterSettings, RestController controller) {
-        super(settings);
         this.prometheusSettings = new PrometheusSettings(settings, clusterSettings);
         controller.registerHandler(GET, "/_prometheus/metrics", this);
     }

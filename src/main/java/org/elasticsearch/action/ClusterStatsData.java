@@ -45,6 +45,7 @@ import java.io.IOException;
  * and we do our best in determining if they are currently set as pct or bytes filling appropriate variables with data
  * or null value.
  */
+// TODO(lukas-vlcek): should this extend TransportMessage instead?
 public class ClusterStatsData extends ActionResponse {
 
     private Boolean thresholdEnabled = null;
@@ -65,9 +66,21 @@ public class ClusterStatsData extends ActionResponse {
     private Double[] diskHighInPctRef = new Double[]{diskHighInPct};
     private Double[] floodStageInPctRef = new Double[]{floodStageInPct};
 
+    public ClusterStatsData(StreamInput in) throws IOException {
+        super(in);
+        thresholdEnabled = in.readOptionalBoolean();
+        //
+        diskLowInBytes = in.readOptionalLong();
+        diskHighInBytes = in.readOptionalLong();
+        floodStageInBytes = in.readOptionalLong();
+        //
+        diskLowInPct = in.readOptionalDouble();
+        diskHighInPct = in.readOptionalDouble();
+        floodStageInPct = in.readOptionalDouble();
+    }
 
     @SuppressWarnings({"checkstyle:LineLength"})
-    public ClusterStatsData(ClusterStateResponse clusterStateResponse, Settings settings, ClusterSettings clusterSettings) {
+    ClusterStatsData(ClusterStateResponse clusterStateResponse, Settings settings, ClusterSettings clusterSettings) {
 
         MetaData m = clusterStateResponse.getState().getMetaData();
         // There are several layers of cluster settings in Elasticsearch each having different priority.
@@ -126,22 +139,7 @@ public class ClusterStatsData extends ActionResponse {
     }
 
     @Override
-    public void readFrom(StreamInput in) throws IOException {
-        super.readFrom(in);
-        thresholdEnabled = in.readOptionalBoolean();
-        //
-        diskLowInBytes = in.readOptionalLong();
-        diskHighInBytes = in.readOptionalLong();
-        floodStageInBytes = in.readOptionalLong();
-        //
-        diskLowInPct = in.readOptionalDouble();
-        diskHighInPct = in.readOptionalDouble();
-        floodStageInPct = in.readOptionalDouble();
-    }
-
-    @Override
     public void writeTo(StreamOutput out) throws IOException {
-        super.writeTo(out);
         out.writeOptionalBoolean(thresholdEnabled);
         //
         out.writeOptionalLong(diskLowInBytes);

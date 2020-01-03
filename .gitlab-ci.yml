@@ -1,4 +1,4 @@
-image: "gradle:5.5.1-jdk12"
+image: "gradle:5.6.2-jdk12"
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
