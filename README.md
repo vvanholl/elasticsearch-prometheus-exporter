@@ -42,6 +42,9 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 6.8.6          | 6.8.6.0        | Jan  1, 2020 |
+| 6.8.5          | 6.8.5.0        | Nov 30, 2019 |
+| 6.8.4          | 6.8.4.0        | Nov 03, 2019 |
 | 6.8.3          | 6.8.3.0        | Sep 12, 2019 |
 | 6.8.2          | 6.8.2.0        | Aug 12, 2019 |
 | 6.8.1          | 6.8.1.0        | Jun 24, 2019 |
