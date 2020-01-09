@@ -22,8 +22,6 @@ import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.admin.indices.stats.PackageAccessHelper;
-import org.elasticsearch.action.admin.indices.stats.ShardStats;
-import org.elasticsearch.action.support.broadcast.BroadcastResponse;
 import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -31,7 +29,6 @@ import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Action response class for Prometheus Exporter plugin.
@@ -43,17 +40,11 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
     private ClusterStatsData clusterStatsData = null;
 
     public NodePrometheusMetricsResponse(StreamInput in) throws IOException {
-        super.readFrom(in);
-        clusterHealth = ClusterHealthResponse.readResponseFrom(in);
-        nodeStats = NodeStats.readNodeStats(in);
-        BroadcastResponse br = new BroadcastResponse();
-        br.readFrom(in);
-        ShardStats[] ss = in.readArray(ShardStats::readShardStats, (size) -> new ShardStats[size]);
-        indicesStats = PackageAccessHelper.createIndicesStatsResponse(
-                ss, br.getTotalShards(), br.getSuccessfulShards(), br.getFailedShards(),
-                Arrays.asList(br.getShardFailures())
-        );
-        clusterStatsData.readFrom(in);
+        super(in);
+        clusterHealth = new ClusterHealthResponse(in);
+        nodeStats = new NodeStats(in);
+        indicesStats = PackageAccessHelper.createIndicesStatsResponse(in);
+        clusterStatsData = new ClusterStatsData(in);
     }
 
     public NodePrometheusMetricsResponse(ClusterHealthResponse clusterHealth, NodeStats nodesStats,
@@ -89,14 +80,9 @@ public class NodePrometheusMetricsResponse extends ActionResponse {
 
     @Override
     public void writeTo(StreamOutput out) throws IOException {
-        super.writeTo(out);
         clusterHealth.writeTo(out);
         nodeStats.writeTo(out);
-        if (indicesStats != null) {
-            //indicesStats.writeTo(out);
-            ((BroadcastResponse) indicesStats).writeTo(out);
-            out.writeArray(indicesStats.getShards());
-        }
+        out.writeOptionalWriteable(indicesStats);
         clusterStatsData.writeTo(out);
     }
 }
