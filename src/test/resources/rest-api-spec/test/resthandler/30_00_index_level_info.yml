@@ -34,7 +34,7 @@
         \# \s TYPE \s es_index_shards_number \s gauge \n
         (
           es_index_shards_number\{
-              cluster="PrometheusExporterITCluster",
+              cluster="integTest",
               type="(active_primary|initializing|relocating|shards|active|unassigned)",
               index="twitter"
           ,\} \s+ \d+\.\d+ \n?
@@ -47,7 +47,7 @@
         \# \s HELP \s es_index_status (\s|\w|\d)+ \n
         \# \s TYPE \s es_index_status \s gauge \n
         es_index_status\{
-            cluster="PrometheusExporterITCluster",index="twitter"
+            cluster="integTest",index="twitter"
         \,} \s \d+\.\d+ \n?
         .*/
 
@@ -57,7 +57,7 @@
         \# \s HELP \s es_index_replicas_number (\s|\w|\d)+ \n
         \# \s TYPE \s es_index_replicas_number \s gauge \n
         es_index_replicas_number\{
-            cluster="PrometheusExporterITCluster",index="twitter"
+            cluster="integTest",index="twitter"
         ,\} \s+ \d+\.\d+ \n?
         .*/
 
@@ -97,7 +97,7 @@
         \# \s TYPE \s es_index_doc_number \s gauge \n
         (
           es_index_doc_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -109,7 +109,7 @@
         \# \s TYPE \s es_index_doc_deleted_number \s gauge \n
         (
           es_index_doc_deleted_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -121,7 +121,7 @@
         \# \s TYPE \s es_index_store_size_bytes \s gauge \n
         (
           es_index_store_size_bytes\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

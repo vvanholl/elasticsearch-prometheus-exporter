@@ -34,7 +34,7 @@
         \# \s TYPE \s es_index_segments_number \s gauge \n
         (
           es_index_segments_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +46,7 @@
         \# \s TYPE \s es_index_segments_memory_bytes \s gauge \n
         (
           es_index_segments_memory_bytes\{
-              cluster="PrometheusExporterITCluster",type="(all|bitset|docvalues|indexwriter|norms|storefields|terms|termvectors|versionmap|points)",index="twitter",context="(primaries|total)"
+              cluster="integTest",type="(all|bitset|docvalues|indexwriter|norms|storefields|terms|termvectors|versionmap|points)",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){20}
         .*/
