@@ -34,7 +34,7 @@
         \# \s TYPE \s es_index_completion_size_bytes \s gauge \n
         (
           es_index_completion_size_bytes\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

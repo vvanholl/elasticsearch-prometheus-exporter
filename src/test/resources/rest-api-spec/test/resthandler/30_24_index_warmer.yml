@@ -34,7 +34,7 @@
         \# \s TYPE \s es_index_warmer_current_number \s gauge \n
         (
           es_index_warmer_current_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +46,7 @@
         \# \s TYPE \s es_index_warmer_time_seconds \s gauge \n
         (
           es_index_warmer_time_seconds\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -58,7 +58,7 @@
         \# \s TYPE \s es_index_warmer_count \s gauge \n
         (
           es_index_warmer_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

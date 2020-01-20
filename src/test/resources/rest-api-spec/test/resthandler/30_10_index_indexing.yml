@@ -34,7 +34,7 @@
         \# \s TYPE \s es_index_indexing_delete_count \s gauge \n
         (
           es_index_indexing_delete_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +46,7 @@
         \# \s TYPE \s es_index_indexing_delete_current_number \s gauge \n
         (
           es_index_indexing_delete_current_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -58,7 +58,7 @@
         \# \s TYPE \s es_index_indexing_delete_time_seconds \s gauge \n
         (
           es_index_indexing_delete_time_seconds\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -70,7 +70,7 @@
         \# \s TYPE \s es_index_indexing_index_count \s gauge \n
         (
           es_index_indexing_index_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -82,7 +82,7 @@
         \# \s TYPE \s es_index_indexing_index_current_number \s gauge \n
         (
           es_index_indexing_index_current_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -94,7 +94,7 @@
         \# \s TYPE \s es_index_indexing_index_failed_count \s gauge \n
         (
           es_index_indexing_index_failed_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -106,7 +106,7 @@
         \# \s TYPE \s es_index_indexing_index_time_seconds \s gauge \n
         (
           es_index_indexing_index_time_seconds\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -118,7 +118,7 @@
         \# \s TYPE \s es_index_indexing_noop_update_count \s gauge \n
         (
           es_index_indexing_noop_update_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -130,7 +130,7 @@
         \# \s TYPE \s es_index_indexing_is_throttled_bool \s gauge \n
         (
           es_index_indexing_is_throttled_bool\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -142,7 +142,7 @@
         \# \s TYPE \s es_index_indexing_throttle_time_seconds \s gauge \n
         (
           es_index_indexing_throttle_time_seconds\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

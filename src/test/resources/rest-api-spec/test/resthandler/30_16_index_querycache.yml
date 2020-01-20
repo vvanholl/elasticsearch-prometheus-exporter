@@ -34,7 +34,7 @@
         \# \s TYPE \s es_index_querycache_cache_count \s gauge \n
         (
           es_index_querycache_cache_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +46,7 @@
         \# \s TYPE \s es_index_querycache_cache_size_bytes \s gauge \n
         (
           es_index_querycache_cache_size_bytes\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -58,7 +58,7 @@
         \# \s TYPE \s es_index_querycache_evictions_count \s gauge \n
         (
           es_index_querycache_evictions_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -70,7 +70,7 @@
         \# \s TYPE \s es_index_querycache_hit_count \s gauge \n
         (
           es_index_querycache_hit_count\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -82,7 +82,7 @@
         \# \s TYPE \s es_index_querycache_memory_size_bytes \s gauge \n
         (
           es_index_querycache_memory_size_bytes\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -94,7 +94,7 @@
         \# \s TYPE \s es_index_querycache_miss_number \s gauge \n
         (
           es_index_querycache_miss_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -106,7 +106,7 @@
         \# \s TYPE \s es_index_querycache_total_number \s gauge \n
         (
           es_index_querycache_total_number\{
-              cluster="PrometheusExporterITCluster",index="twitter",context="(primaries|total)"
+              cluster="integTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
