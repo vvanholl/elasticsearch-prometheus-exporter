@@ -36,18 +36,8 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
 
-// ------ TODO(lukas-vlcek): Hack needed for ES 7.5.0 release ------
-// Remove this before release 7.5.1
-// See https://github.com/elastic/elasticsearch/issues/49787#issuecomment-562704640
-configurations.whenObjectAdded { c ->
-    if (c.name == 'elasticsearch_7.5.0_integ_test_zip_null') {
-        project.dependencies.add('elasticsearch_7.5.0_integ_test_zip_null', 'org.elasticsearch.distribution.integ-test-zip:elasticsearch:7.5.0@zip')
-    }
-}
-// ------
-
 // Uncomment if you want to use: System.out.println("Emergency!");
-// Logs are found in build/cluster/integTestCluster*/cwd/run.log
+// Logs are found in build/testcluster/integTest-*/logs/ folder.
 //forbiddenApis {
 //    ignoreFailures = true
 //}
@@ -85,7 +75,7 @@ repositories {
 ext {
     versions = [
         "elasticsearch": es_version,
-        "prometheus"   : "0.6.0",
+        "prometheus"   : "0.8.0",
         "log4j"        : "2.11.1",
         "junit"        : "4.12"
     ]
