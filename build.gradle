@@ -1,11 +1,5 @@
 import com.github.mgk.gradle.*
 
-// ------ TODO(lukas-vlcek): Hack should be removed when possible ------
-// See https://github.com/elastic/elasticsearch/issues/49787#issuecomment-567397768
-import org.elasticsearch.gradle.testclusters.TestClustersRegistry
-import org.elasticsearch.gradle.testclusters.TestClustersPlugin
-// ------
-
 buildscript {
     ext {
         es_version = version.replaceAll(/\.[0-9]+(|-SNAPSHOT)$/, "")
@@ -170,11 +164,3 @@ task release() {
         dependsOn(["githubRelease"])
     }
 }
-
-// ------ TODO(lukas-vlcek): Hack should be removed when possible ------
-// See https://github.com/elastic/elasticsearch/issues/49787#issuecomment-567397768
-TestClustersRegistry registry = project.rootProject.extensions.create("testClustersRegistry", TestClustersRegistry)
-TestClustersPlugin.configureClaimClustersHook(project.gradle, registry)
-TestClustersPlugin.configureStartClustersHook(project.gradle, registry)
-TestClustersPlugin.configureStopClustersHook(project.gradle, registry)
-// ------
