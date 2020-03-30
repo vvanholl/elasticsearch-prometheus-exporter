@@ -27,6 +27,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 7.6.1          | 7.6.1.0        | xxxx         |
 | 7.6.0          | 7.6.0.0        | Feb 12, 2020 |
 | 7.5.2          | 7.5.2.0        | Jan 25, 2020 |
 | 7.5.1          | 7.5.1.0        | Jan 21, 2020 |
@@ -146,7 +147,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 ## Install
 
 - Since Elasticsearch 7.0.0 :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.6.0.0/prometheus-exporter-7.6.0.0.zip`
+    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.6.1.0/prometheus-exporter-7.6.1.0.zip`
 
 - Since Elasticsearch 6.0.0 :
     `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.8.0.0/prometheus-exporter-6.8.0.0.zip`
@@ -253,6 +254,11 @@ The Maven project site is available at [GitHub](https://github.com/vvanholl/elas
 Project contains [integration tests](src/test/resources/rest-api-spec) implemented using
 [rest layer](https://github.com/elastic/elasticsearch/blob/master/TESTING.asciidoc#testing-the-rest-layer)
 framework.
+
+To run everything similar to the gitlab pipeline you can do:
+```
+docker run -v $(pwd):/home/gradle gradle:6.2.1-jdk13 su gradle -c 'gradle check'
+```
 
 Complete test suite is run using:
 ```

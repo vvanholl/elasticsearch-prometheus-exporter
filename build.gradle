@@ -105,8 +105,11 @@ esplugin {
     classname pluginClassname
 }
 
+File es_repo = file("$buildDir/testclusters/repo")
 testClusters.integTest {
     numberOfNodes = 2
+    setting 'path.repo', es_repo.absolutePath
+
 // There does not seem to be any easy way how to setup custom cluster name.
 
 //    This worked in ES 7.4.x, but now results in:
