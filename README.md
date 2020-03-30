@@ -27,7 +27,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
-| 7.6.1          | 7.6.1.0        | xxxx         |
+| 7.6.1          | 7.6.1.0        | Mar 30, 2020 |
 | 7.6.0          | 7.6.0.0        | Feb 12, 2020 |
 | 7.5.2          | 7.5.2.0        | Jan 25, 2020 |
 | 7.5.1          | 7.5.1.0        | Jan 21, 2020 |
@@ -259,6 +259,8 @@ To run everything similar to the gitlab pipeline you can do:
 ```
 docker run -v $(pwd):/home/gradle gradle:6.2.1-jdk13 su gradle -c 'gradle check'
 ```
+NOTE: Please keep version in sync with .gitlab-ci.yml
+
 
 Complete test suite is run using:
 ```
