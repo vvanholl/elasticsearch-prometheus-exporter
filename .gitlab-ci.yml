@@ -1,4 +1,5 @@
-image: "gradle:6.1.1-jdk13"
+image: "gradle:6.2.1-jdk13"
+# Please sync gradle version with README.md
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
