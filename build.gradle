@@ -105,10 +105,16 @@ esplugin {
     classname pluginClassname
 }
 
-File es_repo = file("$buildDir/testclusters/repo")
+// Remove in 7.6.2
+// https://github.com/spinscale/elasticsearch-ingest-langdetect/blob/c619173300113f26411a0bc42da8e41c8d4d72a5/build.gradle#L26
+restResources {
+    restApi {
+        includeCore '*'
+    }
+}
+
 testClusters.integTest {
     numberOfNodes = 2
-    setting 'path.repo', es_repo.absolutePath
 
 // There does not seem to be any easy way how to setup custom cluster name.
 
