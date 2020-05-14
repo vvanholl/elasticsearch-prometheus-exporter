@@ -34,7 +34,11 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.*;
 import org.elasticsearch.rest.action.RestResponseListener;
 
+import java.util.List;
 import java.util.Locale;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * REST action class for Prometheus Exporter plugin.
@@ -44,9 +48,15 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
     private final PrometheusSettings prometheusSettings;
     private final Logger logger = LogManager.getLogger(getClass());
 
-    public RestPrometheusMetricsAction(Settings settings, ClusterSettings clusterSettings, RestController controller) {
+    public RestPrometheusMetricsAction(Settings settings, ClusterSettings clusterSettings) {
         this.prometheusSettings = new PrometheusSettings(settings, clusterSettings);
-        controller.registerHandler(GET, "/_prometheus/metrics", this);
+    }
+
+    @Override
+    public List<Route> routes() {
+        return unmodifiableList(asList(
+            new Route(GET, "/_prometheus/metrics"))
+        );
     }
 
     @Override

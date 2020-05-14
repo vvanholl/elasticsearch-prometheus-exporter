@@ -1,4 +1,4 @@
-image: "gradle:6.3.0-jdk14"
+image: "gradle:6.4.0-jdk14"
 # Please sync gradle version with README.md
 
 variables:
