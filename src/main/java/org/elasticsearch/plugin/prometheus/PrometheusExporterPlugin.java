@@ -63,7 +63,7 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
                                              IndexNameExpressionResolver indexNameExpressionResolver,
                                              Supplier<DiscoveryNodes> nodesInCluster) {
         return singletonList(
-                new RestPrometheusMetricsAction(settings, clusterSettings, restController)
+                new RestPrometheusMetricsAction(settings, clusterSettings)
         );
     }
 
