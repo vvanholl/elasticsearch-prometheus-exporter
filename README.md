@@ -69,73 +69,9 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 | 6.0.1          | 6.0.1.0        | Dec 08, 2017 |
 | 6.0.0          | 6.0.0.0        | Nov 27, 2017 |
 
-### Version 5.X
-
-| Elasticsearch  | Plugin         | Release date |
-| -------------- | -------------- | ------------ |
-| 5.6.16         | 5.6.16.0       | Apr 04, 2019 |
-| 5.6.15         | 5.6.15.0       | Feb 21, 2019 |
-| 5.6.14         | 5.6.14.0       | Dec 14, 2018 |
-| 5.6.13         | 5.6.13.1       | Nov 12, 2018 |
-| 5.6.13         | 5.6.13.0       | Nov 07, 2018 |
-| 5.6.12         | 5.6.12.0       | Sep 24, 2018 |
-| 5.6.11         | 5.6.11.0       | Aug 28, 2018 |
-| 5.6.10         | 5.6.10.0       | Jun 20, 2018 |
-| 5.6.9          | 5.6.9.1        | Apr 30, 2018 |
-| 5.6.9          | 5.6.9.0        | Apr 18, 2018 |
-| 5.6.8          | 5.6.8.0        | Feb 21, 2018 |
-| 5.6.7          | 5.6.7.0        | Jan 30, 2018 |
-| 5.6.6          | 5.6.6.0        | Jan 16, 2018 |
-| 5.6.5          | 5.6.5.0        | Dec 19, 2017 |
-| 5.6.4          | 5.6.4.0        | Nov 08, 2017 |
-| 5.6.3          | 5.6.3.0        | Oct 10, 2017 |
-| 5.6.2          | 5.6.2.0        | Sep 26, 2017 |
-| 5.6.1          | 5.6.1.0        | Sep 19, 2017 |
-| 5.6.0          | 5.6.0.0        | Sep 13, 2017 |
-| 5.5.2          | 5.5.2.0        | Aug 18, 2017 |
-| 5.5.1          | 5.5.1.0        | Jul 26, 2017 |
-| 5.5.0          | 5.5.0.0        | Jul 07, 2017 |
-| 5.4.3          | 5.4.3.0        | Jun 28, 2017 |
-| 5.4.2          | 5.4.2.0        | Jun 22, 2017 |
-| 5.4.1          | 5.4.1.0        | Jun 08, 2017 |
-| 5.4.0          | 5.4.0.0        | May 04, 2017 |
-| 5.3.2          | 5.3.2.0        | Apr 28, 2017 |
-| 5.3.1          | 5.3.1.0        | Apr 24, 2017 |
-| 5.3.0          | 5.3.0.0        | Mar 29, 2017 |
-| 5.2.2          | 5.2.2.0        | Mar 03, 2017 |
-| 5.2.1          | 5.2.1.0        | Feb 17, 2017 |
-| 5.2.0          | 5.2.0.0        | Feb 03, 2017 |
-| 5.1.2          | 5.1.2.0        | Jan 12, 2017 |
-| 5.1.1          | 5.1.1.0        | Dev 29, 2016 |
-| 5.0.1          | 5.0.1.0        | Nov 15, 2016 |
-| 5.0.0          | 5.0.0.0        | Nov 14, 2016 |
-
-### Version 2.X
-
-| Elasticsearch  | Plugin         | Release date |
-| -------------- | -------------- | ------------ |
-| 2.4.1          | 2.4.1.0        | Sep 29, 2016 |
-| 2.4.0          | 2.4.0.0        | Sep 01, 2016 |
-| 2.3.5          | 2.3.5.5        | Aug 29, 2016 |
-| 2.3.5          | 2.3.5.4        | Aug 24, 2016 |
-| 2.3.5          | 2.3.5.3        | Aug 23, 2016 |
-| 2.3.5          | 2.3.5.2        | Aug 23, 2016 |
-| 2.3.5          | 2.3.5.1        | Aug 16, 2016 |
-| 2.3.5          | 2.3.5.0        | Aug 04, 2016 |
-| 2.3.4          | 2.3.4.2        | Aug 02, 2016 |
-| 2.3.4          | 2.3.4.1        | Aug 01, 2016 |
-| 2.3.4          | 2.3.4.0        | Jul 30, 2016 |
-
 ## Install
 
-- Since Elasticsearch 6.0.0 :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.8.10.0/prometheus-exporter-6.8.10.0.zip`
-
-- On Elasticsearch 5.x.x :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.6.16.0/elasticsearch-prometheus-exporter-5.6.16.0.zip`
-
-- On old 2.x.x versions :
-    `./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip`
+`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/6.8.10.0/prometheus-exporter-6.8.10.0.zip`
 
 **Do not forget to restart the node after the installation!**
 
@@ -160,14 +96,7 @@ These settings can be also [updated dynamically](https://www.elastic.co/guide/en
 
 ## Uninstall
 
-- Since Elasticsearch 6.0.0:
-    `./bin/elasticsearch-plugin remove prometheus-exporter`
-
-- On Elasticsearch 5.x.x:
-    `./bin/elasticsearch-plugin remove prometheus-exporter`
-
-- On old 2.x.x versions:
-    `./bin/plugin remove prometheus-exporter`
+`./bin/elasticsearch-plugin remove prometheus-exporter`
 
 Do not forget to restart the node after installation!
 
