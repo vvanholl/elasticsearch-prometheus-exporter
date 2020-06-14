@@ -62,29 +62,9 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 | 5.0.1          | 5.0.1.0        | Nov 15, 2016 |
 | 5.0.0          | 5.0.0.0        | Nov 14, 2016 |
 
-### Version 2.X
-
-| Elasticsearch  | Plugin         | Release date |
-| -------------- | -------------- | ------------ |
-| 2.4.1          | 2.4.1.0        | Sep 29, 2016 |
-| 2.4.0          | 2.4.0.0        | Sep 01, 2016 |
-| 2.3.5          | 2.3.5.5        | Aug 29, 2016 |
-| 2.3.5          | 2.3.5.4        | Aug 24, 2016 |
-| 2.3.5          | 2.3.5.3        | Aug 23, 2016 |
-| 2.3.5          | 2.3.5.2        | Aug 23, 2016 |
-| 2.3.5          | 2.3.5.1        | Aug 16, 2016 |
-| 2.3.5          | 2.3.5.0        | Aug 04, 2016 |
-| 2.3.4          | 2.3.4.2        | Aug 02, 2016 |
-| 2.3.4          | 2.3.4.1        | Aug 01, 2016 |
-| 2.3.4          | 2.3.4.0        | Jul 30, 2016 |
-
 ## Install
 
-- On Elasticsearch 5.x.x :
-    `./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.6.16.0/elasticsearch-prometheus-exporter-5.6.16.0.zip`
-
-- On old 2.x.x versions :
-    `./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.1.0/elasticsearch-prometheus-exporter-2.4.1.0.zip`
+`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/5.6.16.0/elasticsearch-prometheus-exporter-5.6.16.0.zip`
 
 **Do not forget to restart the node after the installation!**
 
@@ -107,11 +87,7 @@ prometheus.cluster.settings: false
 
 ## Uninstall
 
-- On Elasticsearch 5.x.x:
-    `./bin/elasticsearch-plugin remove prometheus-exporter`
-
-- On old 2.x.x versions:
-    `./bin/plugin remove prometheus-exporter`
+`./bin/elasticsearch-plugin remove prometheus-exporter`
 
 Do not forget to restart the node after installation!
 
