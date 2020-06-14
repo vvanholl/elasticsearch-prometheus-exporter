@@ -40,7 +40,7 @@ Current available metrics are :
 
 ## Install
 
-    ./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.6.0/elasticsearch-prometheus-exporter-2.4.6.0.zip
+`./bin/plugin install https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/2.4.6.0/elasticsearch-prometheus-exporter-2.4.6.0.zip`
 
 Do not forget to restart the node after installation !
 
@@ -50,7 +50,8 @@ Note that the plugin needs special permissions :
 - java.lang.reflect.ReflectPermission suppressAccessChecks
 
 ## Uninstall
-    ./bin/plugin remove prometheus-exporter
+
+`./bin/plugin remove prometheus-exporter`
 
 Do not forget to restart the node after installation !
 
