@@ -50,6 +50,9 @@ thirdPartyAudit.enabled = false
 // license header checks can be disabled
 licenseHeaders.enabled = true
 
+// POM validation can be enabled
+validateNebulaPom.enabled = false
+
 // No unit tests in this plugin
 test.enabled = false
 
