@@ -20,7 +20,7 @@ import static org.elasticsearch.cluster.routing.allocation.DiskThresholdSettings
 
 import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
-import org.elasticsearch.cluster.metadata.MetaData;
+import org.elasticsearch.cluster.metadata.Metadata;
 import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -82,7 +82,7 @@ public class ClusterStatsData extends ActionResponse {
     @SuppressWarnings({"checkstyle:LineLength"})
     ClusterStatsData(ClusterStateResponse clusterStateResponse, Settings settings, ClusterSettings clusterSettings) {
 
-        MetaData m = clusterStateResponse.getState().getMetaData();
+        Metadata m = clusterStateResponse.getState().getMetadata();
         // There are several layers of cluster settings in Elasticsearch each having different priority.
         // We need to traverse them from the top priority down to find relevant value of each setting.
         // See https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-update-settings.html#_order_of_precedence

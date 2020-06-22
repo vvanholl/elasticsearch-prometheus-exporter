@@ -130,6 +130,11 @@ testClusters.integTest {
 //    setting 'cluster.name', 'PrometheusExporterITCluster'
 }
 
+licenseHeaders {
+  additionalLicense 'APAC2', 'Apache 2.0 License', 'Licensed under the Apache License, Version 2.0'
+  approvedLicenses = ['Apache 2.0 License']
+}
+
 checkstyle {
     configFile = new File(rootDir, "checkstyle.xml")
     toolVersion = "8.2"
