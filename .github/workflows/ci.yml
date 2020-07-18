@@ -1,0 +1,47 @@
+name: "CI"
+
+on:
+  push:
+    branches:
+      - "master"
+      - "5.x"
+      - "6.x"
+  pull_request:
+    branches:
+      - "master"
+      - "5.x"
+      - "6.x"
+
+env:
+  gradle-version: "6.5"
+  java-version: "14"
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v2"
+      - name: "Set up JDK"
+        uses: "actions/setup-java@v1"
+        with:
+          java-version: "${{ env.java-version }}"
+      - name: "Gradle build"
+        uses: "eskatos/gradle-command-action@v1"
+        with:
+          gradle-version: "${{ env.gradle-version }}"
+          arguments: "--build-cache assemble"
+      - name: "Gradle check"
+        uses: "eskatos/gradle-command-action@v1"
+        with:
+          gradle-version: "${{ env.gradle-version }}"
+          arguments: "check"
+      - name: "Gradle release"
+        if: "contains('refs/heads/master refs/heads/5.x refs/heads/6.x', github.ref)"
+        env:
+          ORG_GRADLE_PROJECT_github_owner: ${{ github.repository_owner }}
+          ORG_GRADLE_PROJECT_github_token: ${{ github.token }}
+        uses: "eskatos/gradle-command-action@v1"
+        with:
+          gradle-version: "${{ env.gradle-version }}"
+          arguments: "release"
