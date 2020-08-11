@@ -29,6 +29,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
+apply plugin: 'elasticsearch.rest-resources'
 
 // Uncomment if you want to use: System.out.println("Emergency!");
 // Logs are found in build/testcluster/integTest-*/logs/ folder.
@@ -92,7 +93,9 @@ dependencies {
     compile "io.prometheus:simpleclient:${versions.prometheus}"
     compile "io.prometheus:simpleclient_common:${versions.prometheus}"
     compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
-    testCompile "junit:junit:${versions.junit}"
+    testCompile (group: 'junit', name: 'junit', version: "${versions.junit}") {
+        exclude group:'org.hamcrest' //also included in ES test framework
+    }
     releaseJars "${project.group}:${project.name}:${project.version}"
 }
 
