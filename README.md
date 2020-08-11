@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/badges/master/pipeline.svg)](https://gitlab.com/vvanholl/elasticsearch-prometheus-exporter/commits/master)
+![CI](https://github.com/vvanholl/elasticsearch-prometheus-exporter/workflows/CI/badge.svg?branch=6.x)
 
 # Prometheus Exporter Plugin for Elasticsearch
 
