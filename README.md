@@ -27,6 +27,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 7.9.0          | 7.9.0.0        | Aug 18, 2020 |
 | 7.8.1          | 7.8.1.0        | Aug 10, 2020 |
 | 7.8.0          | 7.8.0.0        | Jun 22, 2020 |
 | 7.7.1          | 7.7.1.0        | Jun 04, 2020 |
@@ -52,7 +53,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 ## Install
 
-`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.8.1.0/prometheus-exporter-7.8.1.0.zip`
+`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.9.0.0/prometheus-exporter-7.9.0.0.zip`
 
 **Do not forget to restart the node after the installation!**
 
@@ -146,7 +147,7 @@ framework.
 
 To run everything similar to the gitlab pipeline you can do:
 ```
-docker run -v $(pwd):/home/gradle gradle:6.2.1-jdk13 su gradle -c 'gradle check'
+docker run -v $(pwd):/home/gradle gradle:6.6.0-jdk14 su gradle -c 'gradle check'
 ```
 NOTE: Please keep version in sync with .gitlab-ci.yml
 
