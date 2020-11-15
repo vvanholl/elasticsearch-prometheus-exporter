@@ -30,6 +30,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
 apply plugin: 'elasticsearch.rest-resources'
+apply plugin: 'elasticsearch.testclusters'
 
 // Uncomment if you want to use: System.out.println("Emergency!");
 // Logs are found in build/testcluster/integTest-*/logs/ folder.
@@ -57,8 +58,11 @@ validateNebulaPom.enabled = false
 // No unit tests in this plugin
 test.enabled = false
 
-// There are only integration tests
-integTestRunner.enabled = true
+// Temporary disable task :loggerUsageCheck
+loggerUsageCheck.enabled = false
+
+// Temporary disable task :testingConventions
+testingConventions.enabled = false
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
@@ -117,7 +121,7 @@ restResources {
   }
 }
 
-testClusters.integTest {
+testClusters.all {
     numberOfNodes = 2
 
 // There does not seem to be any easy way how to setup custom cluster name.
