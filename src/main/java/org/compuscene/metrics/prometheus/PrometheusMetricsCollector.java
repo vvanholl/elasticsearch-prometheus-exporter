@@ -18,6 +18,7 @@
 package org.compuscene.metrics.prometheus;
 
 import org.elasticsearch.action.ClusterStatsData;
+import org.elasticsearch.action.PrometheusSnapshotLifecycleStats;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
 import org.elasticsearch.action.admin.indices.stats.CommonStats;
@@ -37,11 +38,9 @@ import org.elasticsearch.monitor.process.ProcessStats;
 import org.elasticsearch.script.ScriptStats;
 import org.elasticsearch.threadpool.ThreadPoolStats;
 import org.elasticsearch.transport.TransportStats;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import io.prometheus.client.Summary;
 
 /**
@@ -51,13 +50,16 @@ public class PrometheusMetricsCollector {
 
     private boolean isPrometheusClusterSettings;
     private boolean isPrometheusIndices;
+    private boolean isPrometheusSlm;
     private PrometheusMetricsCatalog catalog;
 
     public PrometheusMetricsCollector(PrometheusMetricsCatalog catalog,
                                       boolean isPrometheusIndices,
-                                      boolean isPrometheusClusterSettings) {
+                                      boolean isPrometheusClusterSettings,
+                                      boolean isPrometheusSlm) {
         this.isPrometheusClusterSettings = isPrometheusClusterSettings;
         this.isPrometheusIndices = isPrometheusIndices;
+        this.isPrometheusSlm = isPrometheusSlm;
         this.catalog = catalog;
     }
 
@@ -79,6 +81,7 @@ public class PrometheusMetricsCollector {
         registerOsMetrics();
         registerFsMetrics();
         registerESSettings();
+        registerSlmMetrics();
     }
 
     private void registerClusterMetrics() {
@@ -916,8 +919,38 @@ public class PrometheusMetricsCollector {
         }
     }
 
+    private void registerSlmMetrics() {
+        catalog.registerClusterGauge("slm_retention_run_count", "SLM Retention Run Count");
+        catalog.registerClusterGauge("slm_retention_failed_count", "SLM Retention Failed Count");
+        catalog.registerClusterGauge("slm_retention_timed_out", "SLM Retention Timed Out");
+        catalog.registerClusterGauge("slm_snapshot_taken", "SLM Snapshot Taken", "policy_id");
+        catalog.registerClusterGauge("slm_snapshot_failed", "SLM Snapshot Failed", "policy_id");
+        catalog.registerClusterGauge("slm_snapshot_deleted", "SLM Snapshot Deleted", "policy_id");
+        catalog.registerClusterGauge("slm_snapshot_delete_failure", "SLM Snapshot Delete Failure", "policy_id");
+    }
+
+    private void updateSlmMetrics(PrometheusSnapshotLifecycleStats slmStats) {
+        if (slmStats != null) {
+            catalog.setClusterGauge("slm_retention_run_count", slmStats.getRetentionRunCount().count());
+            catalog.setClusterGauge("slm_retention_failed_count", slmStats.getRetentionFailedCount().count());
+            catalog.setClusterGauge("slm_retention_timed_out", slmStats.getRetentionTimedOut().count());
+            for (Map.Entry<String, PrometheusSnapshotLifecycleStats.PrometheusSnapshotPolicyStats> entry :
+                slmStats.getPolicyStats().entrySet()) {
+                catalog.setClusterGauge("slm_snapshot_taken", entry.getValue().getSnapshotsTaken().count(),
+                    entry.getValue().getPolicyId());
+                catalog.setClusterGauge("slm_snapshot_failed", entry.getValue().getSnapshotsFailed().count(),
+                    entry.getValue().getPolicyId());
+                catalog.setClusterGauge("slm_snapshot_deleted", entry.getValue().getSnapshotsDeleted().count(),
+                    entry.getValue().getPolicyId());
+                catalog.setClusterGauge("slm_snapshot_delete_failure",
+                    entry.getValue().getSnapshotDeleteFailures().count(), entry.getValue().getPolicyId());
+            }
+        }
+    }
+
     public void updateMetrics(ClusterHealthResponse clusterHealthResponse, NodeStats nodeStats,
-                              IndicesStatsResponse indicesStats, ClusterStatsData clusterStatsData) {
+                              IndicesStatsResponse indicesStats, ClusterStatsData clusterStatsData,
+                              PrometheusSnapshotLifecycleStats slmStats) {
         Summary.Timer timer = catalog.startSummaryTimer("metrics_generate_time_seconds");
 
         updateClusterMetrics(clusterHealthResponse);
@@ -939,6 +972,7 @@ public class PrometheusMetricsCollector {
         if (isPrometheusClusterSettings) {
             updateESSettings(clusterStatsData);
         }
+        updateSlmMetrics(slmStats);
 
         timer.observeDuration();
     }

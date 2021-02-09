@@ -17,7 +17,6 @@
 package org.elasticsearch.action;
 
 import static org.elasticsearch.cluster.routing.allocation.DiskThresholdSettings.*;
-
 import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.cluster.metadata.Metadata;
@@ -28,7 +27,6 @@ import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsException;
 import org.elasticsearch.common.unit.RatioValue;
-
 import java.io.IOException;
 
 
