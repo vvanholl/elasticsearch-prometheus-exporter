@@ -43,26 +43,11 @@ licenseFile = rootProject.file('LICENSE.txt')
 // copyright notices
 noticeFile = rootProject.file('NOTICE.txt')
 
-// dependency license check needs can be enabled
-dependencyLicenses.enabled = false
-
-// thirdparty audit needs can be enabled
-thirdPartyAudit.enabled = false
-
-// license header checks can be disabled
-licenseHeaders.enabled = true
-
 // POM validation can be enabled
 validateNebulaPom.enabled = false
 
 // No unit tests in this plugin
 test.enabled = false
-
-// Temporary disable task :loggerUsageCheck
-loggerUsageCheck.enabled = false
-
-// Temporary disable task :testingConventions
-testingConventions.enabled = false
 
 println "Host: " + java.net.InetAddress.getLocalHost()
 println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
@@ -135,11 +120,6 @@ testClusters.all {
 //    Execution failed for task ':integTestRunner'.
 //    > Testclusters does not allow the following settings to be changed:[cluster.name] for node{::integTest-0}
 //    setting 'cluster.name', 'PrometheusExporterITCluster'
-}
-
-licenseHeaders {
-  additionalLicense 'APAC2', 'Apache 2.0 License', 'Licensed under the Apache License, Version 2.0'
-  approvedLicenses = ['Apache 2.0 License']
 }
 
 checkstyle {

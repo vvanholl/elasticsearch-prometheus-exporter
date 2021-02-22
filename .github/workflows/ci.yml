@@ -13,7 +13,7 @@ on:
       - "6.x"
 
 env:
-  gradle-version: "6.7"
+  gradle-version: "6.8.2"
   java-version: "15"
 
 jobs:
