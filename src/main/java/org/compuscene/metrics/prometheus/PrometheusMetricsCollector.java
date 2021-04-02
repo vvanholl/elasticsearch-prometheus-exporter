@@ -115,7 +115,7 @@ public class PrometheusMetricsCollector {
             catalog.setClusterGauge("cluster_shards_number", chr.getUnassignedShards(), "unassigned");
 
             catalog.setClusterGauge("cluster_pending_tasks_number", chr.getNumberOfPendingTasks());
-            catalog.setClusterGauge("cluster_task_max_waiting_time_seconds", chr.getTaskMaxWaitingTime().getSeconds());
+            catalog.setClusterGauge("cluster_task_max_waiting_time_seconds", chr.getTaskMaxWaitingTime().getMillis() / 1000.0);
 
             catalog.setClusterGauge("cluster_is_timedout_bool", chr.isTimedOut() ? 1 : 0);
 
@@ -247,15 +247,16 @@ public class PrometheusMetricsCollector {
             catalog.setNodeGauge("indices_indexing_delete_count", idx.getIndexing().getTotal().getDeleteCount());
             catalog.setNodeGauge("indices_indexing_delete_current_number", idx.getIndexing().getTotal().getDeleteCurrent());
             catalog.setNodeGauge("indices_indexing_delete_time_seconds",
-                    idx.getIndexing().getTotal().getDeleteTime().seconds());
+                    idx.getIndexing().getTotal().getDeleteTime().millis() / 1000.0);
             catalog.setNodeGauge("indices_indexing_index_count", idx.getIndexing().getTotal().getIndexCount());
             catalog.setNodeGauge("indices_indexing_index_current_number", idx.getIndexing().getTotal().getIndexCurrent());
             catalog.setNodeGauge("indices_indexing_index_failed_count", idx.getIndexing().getTotal().getIndexFailedCount());
-            catalog.setNodeGauge("indices_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTime().seconds());
+            catalog.setNodeGauge("indices_indexing_index_time_seconds",
+                    idx.getIndexing().getTotal().getIndexTime().millis() / 1000.0);
             catalog.setNodeGauge("indices_indexing_noop_update_count", idx.getIndexing().getTotal().getNoopUpdateCount());
             catalog.setNodeGauge("indices_indexing_is_throttled_bool", idx.getIndexing().getTotal().isThrottled() ? 1 : 0);
             catalog.setNodeGauge("indices_indexing_throttle_time_seconds",
-                    idx.getIndexing().getTotal().getThrottleTime().seconds());
+                    idx.getIndexing().getTotal().getThrottleTime().millis() / 1000.0);
 
             catalog.setNodeGauge("indices_get_count", idx.getGet().getCount());
             catalog.setNodeGauge("indices_get_time_seconds", idx.getGet().getTimeInMillis() / 1000.0);
@@ -338,7 +339,8 @@ public class PrometheusMetricsCollector {
 
             catalog.setNodeGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsSource(), "source");
             catalog.setNodeGauge("indices_recovery_current_number", idx.getRecoveryStats().currentAsTarget(), "target");
-            catalog.setNodeGauge("indices_recovery_throttle_time_seconds", idx.getRecoveryStats().throttleTime().getSeconds());
+            catalog.setNodeGauge("indices_recovery_throttle_time_seconds",
+                    idx.getRecoveryStats().throttleTime().getMillis() / 1000.0);
         }
     }
 
@@ -472,14 +474,14 @@ public class PrometheusMetricsCollector {
 
         catalog.setClusterGauge("index_indexing_delete_count", idx.getIndexing().getTotal().getDeleteCount(), indexName, context);
         catalog.setClusterGauge("index_indexing_delete_current_number", idx.getIndexing().getTotal().getDeleteCurrent(), indexName, context);
-        catalog.setClusterGauge("index_indexing_delete_time_seconds", idx.getIndexing().getTotal().getDeleteTime().seconds(), indexName, context);
+        catalog.setClusterGauge("index_indexing_delete_time_seconds", idx.getIndexing().getTotal().getDeleteTime().millis() / 1000.0, indexName, context);
         catalog.setClusterGauge("index_indexing_index_count", idx.getIndexing().getTotal().getIndexCount(), indexName, context);
         catalog.setClusterGauge("index_indexing_index_current_number", idx.getIndexing().getTotal().getIndexCurrent(), indexName, context);
         catalog.setClusterGauge("index_indexing_index_failed_count", idx.getIndexing().getTotal().getIndexFailedCount(), indexName, context);
-        catalog.setClusterGauge("index_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTime().seconds(), indexName, context);
+        catalog.setClusterGauge("index_indexing_index_time_seconds", idx.getIndexing().getTotal().getIndexTime().millis() / 1000.0, indexName, context);
         catalog.setClusterGauge("index_indexing_noop_update_count", idx.getIndexing().getTotal().getNoopUpdateCount(), indexName, context);
         catalog.setClusterGauge("index_indexing_is_throttled_bool", idx.getIndexing().getTotal().isThrottled() ? 1 : 0, indexName, context);
-        catalog.setClusterGauge("index_indexing_throttle_time_seconds", idx.getIndexing().getTotal().getThrottleTime().seconds(), indexName, context);
+        catalog.setClusterGauge("index_indexing_throttle_time_seconds", idx.getIndexing().getTotal().getThrottleTime().millis() / 1000.0, indexName, context);
 
         catalog.setClusterGauge("index_get_count", idx.getGet().getCount(), indexName, context);
         catalog.setClusterGauge("index_get_time_seconds", idx.getGet().getTimeInMillis() / 1000.0, indexName, context);
@@ -557,7 +559,7 @@ public class PrometheusMetricsCollector {
 
         catalog.setClusterGauge("index_recovery_current_number", idx.getRecoveryStats().currentAsSource(), "source", indexName, context);
         catalog.setClusterGauge("index_recovery_current_number", idx.getRecoveryStats().currentAsTarget(), "target", indexName, context);
-        catalog.setClusterGauge("index_recovery_throttle_time_seconds", idx.getRecoveryStats().throttleTime().getSeconds(), indexName, context);
+        catalog.setClusterGauge("index_recovery_throttle_time_seconds", idx.getRecoveryStats().throttleTime().getMillis() / 1000.0, indexName, context);
 
         catalog.setClusterGauge("index_translog_operations_number", idx.getTranslog().estimatedNumberOfOperations(), indexName, context);
         catalog.setClusterGauge("index_translog_size_bytes", idx.getTranslog().getTranslogSizeInBytes(), indexName, context);
@@ -716,7 +718,7 @@ public class PrometheusMetricsCollector {
     private void updateProcessMetrics(ProcessStats ps) {
         if (ps != null) {
             catalog.setNodeGauge("process_cpu_percent", ps.getCpu().getPercent());
-            catalog.setNodeGauge("process_cpu_time_seconds", ps.getCpu().getTotal().getSeconds());
+            catalog.setNodeGauge("process_cpu_time_seconds", ps.getCpu().getTotal().getMillis() / 1000.0);
 
             catalog.setNodeGauge("process_mem_total_virtual_bytes", ps.getMem().getTotalVirtual().getBytes());
 
@@ -780,7 +782,7 @@ public class PrometheusMetricsCollector {
             for (JvmStats.GarbageCollector gc : jvm.getGc().getCollectors()) {
                 String name = gc.getName();
                 catalog.setNodeGauge("jvm_gc_collection_count", gc.getCollectionCount(), name);
-                catalog.setNodeGauge("jvm_gc_collection_time_seconds", gc.getCollectionTime().getSeconds(), name);
+                catalog.setNodeGauge("jvm_gc_collection_time_seconds", gc.getCollectionTime().getMillis() / 1000.0, name);
             }
 
             for (JvmStats.BufferPool bp : jvm.getBufferPools()) {
