@@ -48,7 +48,6 @@ import io.prometheus.client.Summary;
  * A class that describes a Prometheus metrics collector.
  */
 public class PrometheusMetricsCollector {
-
     private boolean isPrometheusClusterSettings;
     private boolean isPrometheusIndices;
     private PrometheusMetricsCatalog catalog;
@@ -727,6 +726,7 @@ public class PrometheusMetricsCollector {
 
     private void registerJVMMetrics() {
         catalog.registerNodeGauge("jvm_uptime_seconds", "JVM uptime");
+        catalog.registerNodeGauge("jvm_init_time_seconds", "JVM initialization time in seconds");
         catalog.registerNodeGauge("jvm_mem_heap_max_bytes", "Maximum used memory in heap");
         catalog.registerNodeGauge("jvm_mem_heap_used_bytes", "Memory used in heap");
         catalog.registerNodeGauge("jvm_mem_heap_used_percent", "Percentage of memory used in heap");
@@ -758,6 +758,7 @@ public class PrometheusMetricsCollector {
     private void updateJVMMetrics(JvmStats jvm) {
         if (jvm != null) {
             catalog.setNodeGauge("jvm_uptime_seconds", jvm.getUptime().getSeconds());
+            catalog.setNodeGauge("jvm_init_time_seconds", System.currentTimeMillis() / 1000.0 - jvm.getUptime().getSeconds());
 
             catalog.setNodeGauge("jvm_mem_heap_max_bytes", jvm.getMem().getHeapMax().getBytes());
             catalog.setNodeGauge("jvm_mem_heap_used_bytes", jvm.getMem().getHeapUsed().getBytes());
