@@ -90,6 +90,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
         // read the state of prometheus dynamic settings only once at the beginning of the async request
         private boolean isPrometheusIndices = prometheusSettings.getPrometheusIndices();
         private boolean isPrometheusClusterSettings = prometheusSettings.getPrometheusClusterSettings();
+        private boolean isPrometheusSlm = prometheusSettings.getPrometheusSlm();
 
         // All the requests are executed in sequential non-blocking order.
         // It is implemented by wrapping each individual request with ActionListener
@@ -119,7 +120,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
 
             // Cluster settings are get via ClusterStateRequest (see elasticsearch RestClusterGetSettingsAction for details)
             // We prefer to send it to master node (hence local=false; it should be set by default but we want to be sure).
-            this.clusterStateRequest = isPrometheusClusterSettings ? Requests.clusterStateRequest()
+            this.clusterStateRequest = (isPrometheusClusterSettings || isPrometheusSlm)  ? Requests.clusterStateRequest()
                     .clear().metadata(true).local(false) : null;
         }
 
@@ -147,7 +148,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
                 @Override
                 public void onResponse(IndicesStatsResponse response) {
                     indicesStatsResponse = response;
-                    if (isPrometheusClusterSettings) {
+                    if (isPrometheusClusterSettings || isPrometheusSlm) {
                         client.admin().cluster().state(clusterStateRequest, clusterStateResponseActionListener);
                     } else {
                         gatherRequests();
@@ -202,7 +203,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
                                                               @Nullable ClusterStateResponse clusterStateResponse) {
             NodePrometheusMetricsResponse response = new NodePrometheusMetricsResponse(clusterHealth,
                     nodesStats.getNodes().get(0), indicesStats, clusterStateResponse,
-                    settings, clusterSettings);
+                    settings, clusterSettings, prometheusSettings);
             if (logger.isTraceEnabled()) {
                 logger.trace("Return response: [{}]", response);
             }

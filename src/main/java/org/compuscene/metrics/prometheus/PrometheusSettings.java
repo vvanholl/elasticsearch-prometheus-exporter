@@ -40,15 +40,21 @@ public class PrometheusSettings {
     public static final Setting<Boolean> PROMETHEUS_INDICES =
             Setting.boolSetting("prometheus.indices", true,
                     Setting.Property.Dynamic, Setting.Property.NodeScope);
+    public static final Setting<Boolean> PROMETHEUS_SLM =
+            Setting.boolSetting("prometheus.slm", true,
+                Setting.Property.Dynamic, Setting.Property.NodeScope);
 
     private volatile boolean clusterSettings;
     private volatile boolean indices;
+    private volatile boolean slm;
 
     public PrometheusSettings(Settings settings, ClusterSettings clusterSettings) {
         setPrometheusClusterSettings(PROMETHEUS_CLUSTER_SETTINGS.get(settings));
         setPrometheusIndices(PROMETHEUS_INDICES.get(settings));
+        setPrometheusSlm(PROMETHEUS_SLM.get(settings));
         clusterSettings.addSettingsUpdateConsumer(PROMETHEUS_CLUSTER_SETTINGS, this::setPrometheusClusterSettings);
         clusterSettings.addSettingsUpdateConsumer(PROMETHEUS_INDICES, this::setPrometheusIndices);
+        clusterSettings.addSettingsUpdateConsumer(PROMETHEUS_SLM, this::setPrometheusSlm);
     }
 
     private void setPrometheusClusterSettings(boolean flag) {
@@ -59,11 +65,19 @@ public class PrometheusSettings {
         this.indices = flag;
     }
 
+    private void setPrometheusSlm(boolean flag) {
+        this.slm = flag;
+    }
+
     public boolean getPrometheusClusterSettings() {
         return this.clusterSettings;
     }
 
     public boolean getPrometheusIndices() {
         return this.indices;
+    }
+
+    public boolean getPrometheusSlm() {
+        return this.slm;
     }
 }

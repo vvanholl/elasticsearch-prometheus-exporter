@@ -17,9 +17,10 @@
 
 package org.elasticsearch.rest.prometheus;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static org.elasticsearch.action.NodePrometheusMetricsAction.INSTANCE;
 import static org.elasticsearch.rest.RestRequest.Method.GET;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compuscene.metrics.prometheus.PrometheusMetricsCatalog;
@@ -33,12 +34,9 @@ import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.*;
 import org.elasticsearch.rest.action.RestResponseListener;
-
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * REST action class for Prometheus Exporter plugin.
@@ -92,10 +90,11 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
                 PrometheusMetricsCollector collector = new PrometheusMetricsCollector(
                         catalog,
                         prometheusSettings.getPrometheusIndices(),
-                        prometheusSettings.getPrometheusClusterSettings());
+                        prometheusSettings.getPrometheusClusterSettings(),
+                        prometheusSettings.getPrometheusSlm());
                 collector.registerMetrics();
                 collector.updateMetrics(response.getClusterHealth(), response.getNodeStats(), response.getIndicesStats(),
-                        response.getClusterStatsData());
+                        response.getClusterStatsData(), response.getSlmStats());
                 return new BytesRestResponse(RestStatus.OK, collector.getCatalog().toTextFormat());
             }
         });

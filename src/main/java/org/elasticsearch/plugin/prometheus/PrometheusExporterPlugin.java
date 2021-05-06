@@ -18,7 +18,6 @@
 package org.elasticsearch.plugin.prometheus;
 
 import static java.util.Collections.singletonList;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compuscene.metrics.prometheus.PrometheusSettings;
@@ -34,7 +33,6 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestHandler;
 import org.elasticsearch.rest.prometheus.RestPrometheusMetricsAction;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +69,8 @@ public class PrometheusExporterPlugin extends Plugin implements ActionPlugin {
     public List<Setting<?>> getSettings() {
         List<Setting<?>> settings = Arrays.asList(
                 PrometheusSettings.PROMETHEUS_CLUSTER_SETTINGS,
-                PrometheusSettings.PROMETHEUS_INDICES
+                PrometheusSettings.PROMETHEUS_INDICES,
+                PrometheusSettings.PROMETHEUS_SLM
         );
         return Collections.unmodifiableList(settings);
     }

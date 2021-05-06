@@ -20,6 +20,9 @@ It collects all relevant metrics and makes them available to Prometheus via the 
     - Circuit Breaker
 - Indices status
 - Cluster settings (selected [disk allocation settings](https://www.elastic.co/guide/en/elasticsearch/reference/master/disk-allocator.html) only)
+- Snapshot lifecycle stats:
+    - retention run
+    - per policy-id stats (snapshot taken, failed, deleted, failed delete)
 
 ## Compatibility matrix
 
@@ -82,6 +85,11 @@ prometheus.indices: false
 To disable exporting cluster settings use:
 ```
 prometheus.cluster.settings: false
+```
+
+To disable exporting snapshot lifecycle stats use:
+```
+prometheus.slm: false
 ```
 
 These settings can be also [updated dynamically](https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-update-settings.html).

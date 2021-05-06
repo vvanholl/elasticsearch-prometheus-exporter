@@ -17,7 +17,6 @@
 package org.elasticsearch.action.admin.indices.stats;
 
 import org.elasticsearch.common.io.stream.StreamInput;
-
 import java.io.IOException;
 
 /**
