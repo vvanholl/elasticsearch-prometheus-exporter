@@ -44,7 +44,7 @@ licenseFile = rootProject.file('LICENSE.txt')
 noticeFile = rootProject.file('NOTICE.txt')
 
 // POM validation can be enabled
-validateNebulaPom.enabled = false
+validateElasticPom.enabled = false
 
 // No unit tests in this plugin
 test.enabled = false
@@ -69,6 +69,7 @@ ext {
 }
 
 configurations {
+    runtime
     releaseJars {
         extendsFrom runtime
         exclude group: "org.elasticsearch"
@@ -78,11 +79,11 @@ configurations {
 }
 
 dependencies {
-    compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-    compile "io.prometheus:simpleclient:${versions.prometheus}"
-    compile "io.prometheus:simpleclient_common:${versions.prometheus}"
-    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
-    testCompile (group: 'junit', name: 'junit', version: "${versions.junit}") {
+    api "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
+    api "io.prometheus:simpleclient:${versions.prometheus}"
+    api "io.prometheus:simpleclient_common:${versions.prometheus}"
+    api "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    testImplementation (group: 'junit', name: 'junit', version: "${versions.junit}") {
         exclude group:'org.hamcrest' //also included in ES test framework
     }
     releaseJars "${project.group}:${project.name}:${project.version}"
@@ -98,12 +99,6 @@ esplugin {
     name pluginName
     description pluginDescription
     classname pluginClassname
-}
-
-restResources {
-  restApi {
-    includeCore '*'
-  }
 }
 
 testClusters.all {
