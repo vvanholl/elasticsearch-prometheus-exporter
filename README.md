@@ -156,11 +156,11 @@ Project contains [integration tests](src/test/resources/rest-api-spec) implement
 [rest layer](https://github.com/elastic/elasticsearch/blob/master/TESTING.asciidoc#testing-the-rest-layer)
 framework.
 
-To run everything similar to the gitlab pipeline you can do:
+To run everything similar to the GitHub Actions pipeline you can do:
 ```
-docker run -v $(pwd):/home/gradle gradle:6.6.0-jdk14 su gradle -c 'gradle check'
+docker run -v $(pwd):/home/gradle gradle:7.0.2-jdk16 su gradle -c 'gradle check'
 ```
-NOTE: Please keep version in sync with .gitlab-ci.yml
+NOTE: Please keep version in sync with .github/workflows/ci.yml
 
 
 Complete test suite is run using:
