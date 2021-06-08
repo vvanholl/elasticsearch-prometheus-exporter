@@ -13,8 +13,8 @@ on:
       - "6.x"
 
 env:
-  gradle-version: "6.8.2"
-  java-version: "15"
+  gradle-version: "7.0.2"
+  java-version: "16"
 
 jobs:
   build:
@@ -36,12 +36,12 @@ jobs:
         with:
           gradle-version: "${{ env.gradle-version }}"
           arguments: "check"
-      - name: "Gradle release"
+      - name: "GitHub release"
         if: "contains('refs/heads/master refs/heads/5.x refs/heads/6.x', github.ref)"
-        env:
-          ORG_GRADLE_PROJECT_github_owner: ${{ github.repository_owner }}
-          ORG_GRADLE_PROJECT_github_token: ${{ github.token }}
-        uses: "eskatos/gradle-command-action@v1"
-        with:
-          gradle-version: "${{ env.gradle-version }}"
-          arguments: "release"
+        run: |
+          version=$(cat gradle.properties | grep -e "^version *=" | awk -F" *= *" '{print $NF}')
+          is_snapshot=$(echo ${version} | grep -e "-SNAPSHOT$" | wc -l)
+          if [ "$is_snapshot" == "0" ]; then
+              echo ${{ github.token }} | gh auth login --with-token
+              gh release create ${version} ./build/distributions/*.zip
+          fi

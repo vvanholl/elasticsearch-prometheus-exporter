@@ -23,7 +23,6 @@ buildscript {
 plugins {
     id "java"
     id "checkstyle"
-    id "co.riiid.gradle" version "0.4.2"
 }
 
 apply plugin: 'java'
@@ -44,7 +43,7 @@ licenseFile = rootProject.file('LICENSE.txt')
 noticeFile = rootProject.file('NOTICE.txt')
 
 // POM validation can be enabled
-validateNebulaPom.enabled = false
+validateElasticPom.enabled = false
 
 // No unit tests in this plugin
 test.enabled = false
@@ -69,6 +68,7 @@ ext {
 }
 
 configurations {
+    runtime
     releaseJars {
         extendsFrom runtime
         exclude group: "org.elasticsearch"
@@ -78,11 +78,11 @@ configurations {
 }
 
 dependencies {
-    compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-    compile "io.prometheus:simpleclient:${versions.prometheus}"
-    compile "io.prometheus:simpleclient_common:${versions.prometheus}"
-    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
-    testCompile (group: 'junit', name: 'junit', version: "${versions.junit}") {
+    api "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
+    api "io.prometheus:simpleclient:${versions.prometheus}"
+    api "io.prometheus:simpleclient_common:${versions.prometheus}"
+    api "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    testImplementation (group: 'junit', name: 'junit', version: "${versions.junit}") {
         exclude group:'org.hamcrest' //also included in ES test framework
     }
     releaseJars "${project.group}:${project.name}:${project.version}"
@@ -98,12 +98,6 @@ esplugin {
     name pluginName
     description pluginDescription
     classname pluginClassname
-}
-
-restResources {
-  restApi {
-    includeCore '*'
-  }
 }
 
 testClusters.all {
@@ -125,44 +119,4 @@ testClusters.all {
 checkstyle {
     configFile = new File(rootDir, "checkstyle.xml")
     toolVersion = "8.2"
-}
-
-def getGitCommitHash() {
-    def gitFolderPath = "$projectDir/.git/"
-    def gitFolder = new File(gitFolderPath + "HEAD");
-    if (!gitFolder.exists()) {
-        return null
-    }
-
-    def head = gitFolder.text.split(":")
-    def isCommit = (head.length == 1)
-
-    if (isCommit) {
-        return head[0].trim()
-    }
-
-    def refHead = new File(gitFolderPath + head[1].trim())
-    return refHead.text.trim()
-}
-
-github {
-    owner = github_owner
-    repo = github_repo
-    token = github_token
-    tagName = version
-    targetCommitish = getGitCommitHash()
-    name = version
-    assets = [
-        "build/distributions/${project.name}-${version}.zip"
-    ]
-}
-
-task release() {
-    if (version.endsWith("-SNAPSHOT")) {
-        doLast {
-            println("SNAPSHOT: Nothing to release !")
-        }
-    } else {
-        dependsOn(["githubRelease"])
-    }
 }

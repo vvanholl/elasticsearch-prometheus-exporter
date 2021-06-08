@@ -27,6 +27,9 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 7.13.0         | 7.13.0.0       | May 27, 2021 |
+| 7.12.1         | 7.12.1.0       | May 01, 2021 |
+| 7.12.0         | 7.12.0.0       | Apr 04, 2021 |
 | 7.11.2         | 7.11.2.0       | Mar 20, 2021 |
 | 7.11.1         | 7.11.1.0       | Feb 22, 2021 |
 | 7.10.2         | 7.10.2.0       | Jan 24, 2021 |
@@ -61,7 +64,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 ## Install
 
-`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.11.2.0/prometheus-exporter-7.11.2.0.zip`
+`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.13.0.0/prometheus-exporter-7.13.0.0.zip`
 
 **Do not forget to restart the node after the installation!**
 
@@ -153,11 +156,11 @@ Project contains [integration tests](src/test/resources/rest-api-spec) implement
 [rest layer](https://github.com/elastic/elasticsearch/blob/master/TESTING.asciidoc#testing-the-rest-layer)
 framework.
 
-To run everything similar to the gitlab pipeline you can do:
+To run everything similar to the GitHub Actions pipeline you can do:
 ```
-docker run -v $(pwd):/home/gradle gradle:6.6.0-jdk14 su gradle -c 'gradle check'
+docker run -v $(pwd):/home/gradle gradle:7.0.2-jdk16 su gradle -c 'gradle check'
 ```
-NOTE: Please keep version in sync with .gitlab-ci.yml
+NOTE: Please keep version in sync with .github/workflows/ci.yml
 
 
 Complete test suite is run using:
