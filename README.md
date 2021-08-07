@@ -27,6 +27,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
+| 7.14.0         | 7.14.0.0       | Aug 07, 2021 |
 | 7.13.4         | 7.13.4.0       | Jul 21, 2021 |
 | 7.13.3         | 7.13.3.0       | Jul 07, 2021 |
 | 7.13.2         | 7.13.2.0       | Jun 15, 2021 |
@@ -47,7 +48,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 | 7.8.0          | 7.8.0.0        | Jun 22, 2020 |
 | 7.7.1          | 7.7.1.0        | Jun 04, 2020 |
 | 7.7.0          | 7.7.0.0        | May 14, 2020 |
-| 7.6.2          | 7.6.2.0        | Apr  6, 2020 |
+| 7.6.2          | 7.6.2.0        | Apr 06, 2020 |
 | 7.6.1          | 7.6.1.0        | Mar 30, 2020 |
 | 7.6.0          | 7.6.0.0        | Feb 12, 2020 |
 | 7.5.2          | 7.5.2.0        | Jan 25, 2020 |
@@ -68,7 +69,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 ## Install
 
-`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.13.4.0/prometheus-exporter-7.13.4.0.zip`
+`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.14.0.0/prometheus-exporter-7.14.0.0.zip`
 
 **Do not forget to restart the node after the installation!**
 
