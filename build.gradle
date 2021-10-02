@@ -2,7 +2,7 @@ import com.github.mgk.gradle.*
 
 buildscript {
     ext {
-        es_version = version.replaceAll(/\.[0-9]+(|-SNAPSHOT)$/, "")
+        es_version = version.replaceAll(/\.[0-9]+(|-.+)$/, "")
     }
 
     repositories {
