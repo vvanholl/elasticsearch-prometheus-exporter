@@ -21,7 +21,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 

@@ -14,7 +14,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 
@@ -34,7 +33,7 @@
         \# \s TYPE \s es_index_flush_total_count \s gauge \n
         (
           es_index_flush_total_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +45,7 @@
         \# \s TYPE \s es_index_flush_total_time_seconds \s gauge \n
         (
           es_index_flush_total_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

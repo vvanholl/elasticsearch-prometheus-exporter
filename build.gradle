@@ -26,6 +26,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
+apply plugin: 'elasticsearch.yaml-rest-test'
 apply plugin: 'elasticsearch.testclusters'
 
 // Uncomment if you want to use: System.out.println("Emergency!");
@@ -70,9 +71,9 @@ dependencies {
     implementation "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
     implementation "io.prometheus:simpleclient:${versions.prometheus}"
     implementation "io.prometheus:simpleclient_common:${versions.prometheus}"
-    implementation "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    yamlRestTestRuntimeOnly "org.apache.logging.log4j:log4j-core:${versions.log4j}"
     testImplementation (group: 'junit', name: 'junit', version: "${versions.junit}") {
-        exclude group:'org.hamcrest' //also included in ES test framework
+    exclude group:'org.hamcrest' //also included in ES test framework
     }
     releaseJars "${project.group}:${project.name}:${project.version}"
 }
@@ -91,18 +92,6 @@ esplugin {
 
 testClusters.all {
     numberOfNodes = 2
-
-// There does not seem to be any easy way how to setup custom cluster name.
-
-//    This worked in ES 7.4.x, but now results in:
-//    A problem occurred evaluating root project 'prometheus-exporter'.
-//    > Cannot set the property 'clusterName' because the backing field is final.
-//    clusterName = "PrometheusExporterITCluster"
-
-//    This does not work in ES 7.5.x too:
-//    Execution failed for task ':integTestRunner'.
-//    > Testclusters does not allow the following settings to be changed:[cluster.name] for node{::integTest-0}
-//    setting 'cluster.name', 'PrometheusExporterITCluster'
 }
 
 checkstyle {

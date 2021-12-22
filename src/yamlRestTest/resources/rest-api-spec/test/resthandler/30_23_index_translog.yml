@@ -14,7 +14,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 
@@ -34,7 +33,7 @@
         \# \s TYPE \s es_index_translog_operations_number \s gauge \n
         (
           es_index_translog_operations_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +45,7 @@
         \# \s TYPE \s es_index_translog_size_bytes \s gauge \n
         (
           es_index_translog_size_bytes\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -58,7 +57,7 @@
         \# \s TYPE \s es_index_translog_uncommitted_operations_number \s gauge \n
         (
           es_index_translog_uncommitted_operations_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -70,7 +69,7 @@
         \# \s TYPE \s es_index_translog_uncommitted_size_bytes \s gauge \n
         (
           es_index_translog_uncommitted_size_bytes\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

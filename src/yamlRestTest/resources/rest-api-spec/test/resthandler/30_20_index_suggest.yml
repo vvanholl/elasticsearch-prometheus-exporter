@@ -1,5 +1,5 @@
 ---
-"Index level statistics (index_warmer_*)":
+"Index level statistics (index_suggest_*)":
 
   # -----------------------------------
   # We expect no indices in the cluster
@@ -14,7 +14,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 
@@ -30,11 +29,11 @@
   - match:
       $body: |
         /.*
-        \# \s HELP \s es_index_warmer_current_number (\s|\w|\d)+ \n
-        \# \s TYPE \s es_index_warmer_current_number \s gauge \n
+        \# \s HELP \s es_index_suggest_current_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_suggest_current_number \s gauge \n
         (
-          es_index_warmer_current_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+          es_index_suggest_current_number\{
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -42,11 +41,11 @@
   - match:
       $body: |
         /.*
-        \# \s HELP \s es_index_warmer_time_seconds (\s|\w|\d)+ \n
-        \# \s TYPE \s es_index_warmer_time_seconds \s gauge \n
+        \# \s HELP \s es_index_suggest_count (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_suggest_count \s gauge \n
         (
-          es_index_warmer_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+          es_index_suggest_count\{
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -54,11 +53,11 @@
   - match:
       $body: |
         /.*
-        \# \s HELP \s es_index_warmer_count (\s|\w|\d)+ \n
-        \# \s TYPE \s es_index_warmer_count \s gauge \n
+        \# \s HELP \s es_index_suggest_time_seconds (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_suggest_time_seconds \s gauge \n
         (
-          es_index_warmer_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+          es_index_suggest_time_seconds\{
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

@@ -14,7 +14,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 
@@ -34,7 +33,7 @@
         \# \s TYPE \s es_index_get_count \s gauge \n
         (
           es_index_get_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +45,7 @@
         \# \s TYPE \s es_index_get_time_seconds \s gauge \n
         (
           es_index_get_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -58,7 +57,7 @@
         \# \s TYPE \s es_index_get_exists_count \s gauge \n
         (
           es_index_get_exists_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -70,7 +69,7 @@
         \# \s TYPE \s es_index_get_exists_time_seconds \s gauge \n
         (
           es_index_get_exists_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -82,7 +81,7 @@
         \# \s TYPE \s es_index_get_missing_count \s gauge \n
         (
           es_index_get_missing_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -94,7 +93,7 @@
         \# \s TYPE \s es_index_get_missing_time_seconds \s gauge \n
         (
           es_index_get_missing_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -106,7 +105,7 @@
         \# \s TYPE \s es_index_get_current_number \s gauge \n
         (
           es_index_get_current_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

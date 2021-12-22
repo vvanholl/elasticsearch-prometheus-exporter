@@ -28,7 +28,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_watermark_low_bytes (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_low_bytes \s gauge \n
         es_cluster_routing_allocation_disk_watermark_low_bytes\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -38,7 +38,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_watermark_high_bytes (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_bytes \s gauge \n
         es_cluster_routing_allocation_disk_watermark_high_bytes\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -48,7 +48,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_watermark_flood_stage_bytes (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_flood_stage_bytes \s gauge \n
         es_cluster_routing_allocation_disk_watermark_flood_stage_bytes\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -117,7 +117,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_watermark_low_pct (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_low_pct \s gauge \n
         es_cluster_routing_allocation_disk_watermark_low_pct\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 99\.9 \n?
         .*/
 
@@ -127,7 +127,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_watermark_high_pct (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_high_pct \s gauge \n
         es_cluster_routing_allocation_disk_watermark_high_pct\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 99\.9 \n?
         .*/
 
@@ -137,7 +137,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_watermark_flood_stage_pct (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_watermark_flood_stage_pct \s gauge \n
         es_cluster_routing_allocation_disk_watermark_flood_stage_pct\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 99\.9 \n?
         .*/
 
