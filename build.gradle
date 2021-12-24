@@ -71,6 +71,7 @@ dependencies {
     implementation "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
     implementation "io.prometheus:simpleclient:${versions.prometheus}"
     implementation "io.prometheus:simpleclient_common:${versions.prometheus}"
+    implementation "io.prometheus:simpleclient_hotspot:${versions.prometheus}"
     yamlRestTestRuntimeOnly "org.apache.logging.log4j:log4j-core:${versions.log4j}"
     testImplementation (group: 'junit', name: 'junit', version: "${versions.junit}") {
     exclude group:'org.hamcrest' //also included in ES test framework

@@ -31,6 +31,7 @@ import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
 import io.prometheus.client.exporter.common.TextFormat;
+import io.prometheus.client.hotspot.DefaultExports;
 
 /**
  * A class that describes a Prometheus metrics catalog.
@@ -56,6 +57,7 @@ public class PrometheusMetricsCatalog {
 
         metrics = new HashMap<>();
         registry = new CollectorRegistry();
+        DefaultExports.register(registry);
     }
 
     private String[] getExtendedClusterLabelNames(String... labelNames) {
