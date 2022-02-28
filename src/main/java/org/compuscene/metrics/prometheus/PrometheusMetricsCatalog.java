@@ -33,6 +33,13 @@ import io.prometheus.client.Summary;
 import io.prometheus.client.exporter.common.TextFormat;
 import io.prometheus.client.hotspot.DefaultExports;
 
+import org.elasticsearch.SpecialPermission;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
 /**
  * A class that describes a Prometheus metrics catalog.
  */
@@ -153,7 +160,15 @@ public class PrometheusMetricsCatalog {
 
     public String toTextFormat() throws IOException {
         Writer writer = new StringWriter();
-        TextFormat.write004(writer, registry.metricFamilySamples());
+        SpecialPermission.check();
+        try {
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                TextFormat.write004(writer, registry.metricFamilySamples());
+                return null;
+            });
+        } catch (PrivilegedActionException e) {
+            throw (IOException) e.getCause();
+        }
         return writer.toString();
     }
 }
