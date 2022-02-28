@@ -83,6 +83,8 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 Note that the plugin needs the following special permissions:
 
+- java.lang.RuntimePermission accessClassInPackage.com.sun.management
+- java.io.FilePermission /proc/self/ read
 - java.lang.RuntimePermission accessClassInPackage.sun.misc
 - java.lang.RuntimePermission accessDeclaredMembers
 - java.lang.reflect.ReflectPermission suppressAccessChecks
