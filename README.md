@@ -23,7 +23,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 ## Compatibility matrix
 
-### Version 7.X
+### Version 8.X
 
 | Elasticsearch  | Plugin         | Release date |
 | -------------- | -------------- | ------------ |
