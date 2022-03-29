@@ -18,7 +18,7 @@
 package org.elasticsearch.action;
 
 import org.elasticsearch.action.support.master.MasterNodeReadOperationRequestBuilder;
-import org.elasticsearch.client.ElasticsearchClient;
+import org.elasticsearch.client.internal.ElasticsearchClient;
 
 /**
  * Request builder class for Prometheus Exporter plugin.
