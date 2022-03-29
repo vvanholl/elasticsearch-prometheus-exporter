@@ -1,4 +1,4 @@
-![CI](https://github.com/vvanholl/elasticsearch-prometheus-exporter/workflows/CI/badge.svg?branch=master)
+![CI](https://github.com/AdmiralGT/elasticsearch-prometheus-exporter/workflows/CI/badge.svg?branch=master)
 
 # Prometheus Exporter Plugin for Elasticsearch
 
@@ -80,7 +80,7 @@ It collects all relevant metrics and makes them available to Prometheus via the 
 
 ## Install
 
-`./bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/8.1.1.0/prometheus-exporter-8.1.1.0.zip`
+`./bin/elasticsearch-plugin install -b https://github.com/AdmiralGT/elasticsearch-prometheus-exporter/releases/download/8.1.1.0/prometheus-exporter-8.1.1.0.zip`
 
 **Do not forget to restart the node after the installation!**
 
@@ -164,7 +164,7 @@ Just keep in mind that `metrics_path` must be `/_prometheus/metrics`, otherwise 
 
 ## Project sources
 
-The Maven project site is available at [GitHub](https://github.com/vvanholl/elasticsearch-prometheus-exporter).
+The Maven project site is available at [GitHub](https://github.com/AdmiralGT/elasticsearch-prometheus-exporter).
 
 ## Testing
 
