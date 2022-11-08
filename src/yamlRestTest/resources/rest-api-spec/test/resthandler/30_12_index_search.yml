@@ -14,7 +14,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 
@@ -34,7 +33,7 @@
         \# \s TYPE \s es_index_search_open_contexts_number \s gauge \n
         (
           es_index_search_open_contexts_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -46,7 +45,7 @@
         \# \s TYPE \s es_index_search_fetch_count \s gauge \n
         (
           es_index_search_fetch_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -58,7 +57,7 @@
         \# \s TYPE \s es_index_search_fetch_current_number \s gauge \n
         (
           es_index_search_fetch_current_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -70,7 +69,7 @@
         \# \s TYPE \s es_index_search_fetch_time_seconds \s gauge \n
         (
           es_index_search_fetch_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -82,7 +81,7 @@
         \# \s TYPE \s es_index_search_query_count \s gauge \n
         (
           es_index_search_query_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -94,7 +93,7 @@
         \# \s TYPE \s es_index_search_query_current_number \s gauge \n
         (
           es_index_search_query_current_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -106,7 +105,7 @@
         \# \s TYPE \s es_index_search_query_time_seconds \s gauge \n
         (
           es_index_search_query_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -118,7 +117,7 @@
         \# \s TYPE \s es_index_search_scroll_count \s gauge \n
         (
           es_index_search_scroll_count\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -130,7 +129,7 @@
         \# \s TYPE \s es_index_search_scroll_current_number \s gauge \n
         (
           es_index_search_scroll_current_number\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/
@@ -142,7 +141,7 @@
         \# \s TYPE \s es_index_search_scroll_time_seconds \s gauge \n
         (
           es_index_search_scroll_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
         ){2}
         .*/

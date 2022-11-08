@@ -23,7 +23,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
         es_cluster_routing_allocation_disk_threshold_enabled\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -55,7 +55,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
         es_cluster_routing_allocation_disk_threshold_enabled\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 0\.0 \n?
         .*/
 
@@ -87,7 +87,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
         es_cluster_routing_allocation_disk_threshold_enabled\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -120,7 +120,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
         es_cluster_routing_allocation_disk_threshold_enabled\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -152,7 +152,7 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
         es_cluster_routing_allocation_disk_threshold_enabled\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/
 
@@ -184,6 +184,6 @@
         \# \s HELP \s es_cluster_routing_allocation_disk_threshold_enabled (\s|\w|\d)+ \n
         \# \s TYPE \s es_cluster_routing_allocation_disk_threshold_enabled \s gauge \n
         es_cluster_routing_allocation_disk_threshold_enabled\{
-            cluster="integTest"
+            cluster="yamlRestTest"
         \,} \s 1\.0 \n?
         .*/

@@ -34,11 +34,11 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.*;
 import org.elasticsearch.rest.action.RestResponseListener;
 
-import java.util.List;
-import java.util.Locale;
-
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * REST action class for Prometheus Exporter plugin.

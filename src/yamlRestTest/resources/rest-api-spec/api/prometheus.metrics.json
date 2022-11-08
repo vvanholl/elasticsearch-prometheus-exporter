@@ -4,6 +4,7 @@
       "url":"https://github.com/vvanholl/elasticsearch-prometheus-exporter/"
     },
     "stability": "stable",
+    "visibility" : "public",
     "url":{
       "paths":[
         {

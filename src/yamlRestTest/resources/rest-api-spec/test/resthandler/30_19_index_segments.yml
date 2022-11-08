@@ -1,5 +1,5 @@
 ---
-"Index level statistics (index_recovery_*)":
+"Index level statistics (index_segments_*)":
 
   # -----------------------------------
   # We expect no indices in the cluster
@@ -14,7 +14,6 @@
   - do:
       index:
         index:  twitter
-        type:   foo
         id:     1
         body:   { foo: bar }
 
@@ -30,23 +29,23 @@
   - match:
       $body: |
         /.*
-        \# \s HELP \s es_index_recovery_current_number (\s|\w|\d)+ \n
-        \# \s TYPE \s es_index_recovery_current_number \s gauge \n
+        \# \s HELP \s es_index_segments_number (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_segments_number \s gauge \n
         (
-          es_index_recovery_current_number\{
-              cluster="integTest",type="(source|target)",index="twitter",context="(primaries|total)"
+          es_index_segments_number\{
+              cluster="yamlRestTest",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
-        ){4}
+        ){2}
         .*/
 
   - match:
       $body: |
         /.*
-        \# \s HELP \s es_index_recovery_throttle_time_seconds (\s|\w|\d)+ \n
-        \# \s TYPE \s es_index_recovery_throttle_time_seconds \s gauge \n
+        \# \s HELP \s es_index_segments_memory_bytes (\s|\w|\d)+ \n
+        \# \s TYPE \s es_index_segments_memory_bytes \s gauge \n
         (
-          es_index_recovery_throttle_time_seconds\{
-              cluster="integTest",index="twitter",context="(primaries|total)"
+          es_index_segments_memory_bytes\{
+              cluster="yamlRestTest",type="(all|bitset|docvalues|indexwriter|norms|storefields|terms|termvectors|versionmap|points)",index="twitter",context="(primaries|total)"
           ,\} \s+ \d+\.\d+ \n?
-        ){2}
+        ){20}
         .*/

@@ -21,13 +21,13 @@ import static org.elasticsearch.cluster.routing.allocation.DiskThresholdSettings
 import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.cluster.metadata.Metadata;
-import org.elasticsearch.core.Nullable;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.settings.ClusterSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsException;
 import org.elasticsearch.common.unit.RatioValue;
+import org.elasticsearch.core.Nullable;
 
 import java.io.IOException;
 
