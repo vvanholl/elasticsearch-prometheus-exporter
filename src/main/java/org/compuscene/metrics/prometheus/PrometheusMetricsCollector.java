@@ -401,7 +401,6 @@ public class PrometheusMetricsCollector {
 
         catalog.registerGauge("index_refresh_total_count", "Count of refreshes", "index", "context");
         catalog.registerGauge("index_refresh_total_time_seconds", "Time spent while refreshes", "index", "context");
-        catalog.registerGauge("index_refresh_listeners_number", "Number of refresh listeners", "index", "context");
 
         catalog.registerGauge("index_flush_total_count", "Count of flushes", "index", "context");
         catalog.registerGauge("index_flush_total_time_seconds", "Total time spent while flushes", "index", "context");
@@ -425,10 +424,6 @@ public class PrometheusMetricsCollector {
         catalog.registerGauge("index_segments_number", "Current number of segments", "index", "context");
         catalog.registerGauge("index_segments_memory_bytes", "Memory used by segments", "type", "index", "context");
 
-        catalog.registerGauge("index_suggest_current_number", "Current rate of suggests", "index", "context");
-        catalog.registerGauge("index_suggest_count", "Count of suggests", "index", "context");
-        catalog.registerGauge("index_suggest_time_seconds", "Time spent while making suggests", "index", "context");
-
         catalog.registerGauge("index_requestcache_memory_size_bytes", "Memory used for request cache", "index", "context");
         catalog.registerGauge("index_requestcache_hit_count", "Number of hits in request cache", "index", "context");
         catalog.registerGauge("index_requestcache_miss_count", "Number of misses in request cache", "index", "context");
@@ -439,8 +434,6 @@ public class PrometheusMetricsCollector {
 
         catalog.registerGauge("index_translog_operations_number", "Current number of translog operations", "index", "context");
         catalog.registerGauge("index_translog_size_bytes", "Translog size", "index", "context");
-        catalog.registerGauge("index_translog_uncommitted_operations_number", "Current number of uncommitted translog operations", "index", "context");
-        catalog.registerGauge("index_translog_uncommitted_size_bytes", "Translog uncommitted size", "index", "context");
 
         catalog.registerGauge("index_warmer_current_number", "Current number of warmer", "index", "context");
         catalog.registerGauge("index_warmer_time_seconds", "Time spent during warmers", "index", "context");
@@ -518,7 +511,6 @@ public class PrometheusMetricsCollector {
 
         catalog.setGauge("index_refresh_total_count", idx.getRefresh().getTotal(), indexName, context);
         catalog.setGauge("index_refresh_total_time_seconds", idx.getRefresh().getTotalTimeInMillis() / 1000.0, indexName, context);
-        catalog.setGauge("index_refresh_listeners_number", idx.getRefresh().getListeners(), indexName, context);
 
         catalog.setGauge("index_flush_total_count", idx.getFlush().getTotal(), indexName, context);
         catalog.setGauge("index_flush_total_time_seconds", idx.getFlush().getTotalTimeInMillis() / 1000.0, indexName, context);
@@ -549,11 +541,6 @@ public class PrometheusMetricsCollector {
         catalog.setGauge("index_segments_memory_bytes", idx.getSegments().getTermsMemoryInBytes(), "terms", indexName, context);
         catalog.setGauge("index_segments_memory_bytes", idx.getSegments().getTermVectorsMemoryInBytes(), "termvectors", indexName, context);
         catalog.setGauge("index_segments_memory_bytes", idx.getSegments().getVersionMapMemoryInBytes(), "versionmap", indexName, context);
-        catalog.setGauge("index_segments_memory_bytes", idx.getSegments().getPointsMemoryInBytes(), "points", indexName, context);
-
-        catalog.setGauge("index_suggest_current_number", idx.getSearch().getTotal().getSuggestCurrent(), indexName, context);
-        catalog.setGauge("index_suggest_count", idx.getSearch().getTotal().getSuggestCount(), indexName, context);
-        catalog.setGauge("index_suggest_time_seconds", idx.getSearch().getTotal().getSuggestTimeInMillis() / 1000.0, indexName, context);
 
         catalog.setGauge("index_requestcache_memory_size_bytes", idx.getRequestCache().getMemorySizeInBytes(), indexName, context);
         catalog.setGauge("index_requestcache_hit_count", idx.getRequestCache().getHitCount(), indexName, context);
@@ -566,8 +553,6 @@ public class PrometheusMetricsCollector {
 
         catalog.setGauge("index_translog_operations_number", idx.getTranslog().estimatedNumberOfOperations(), indexName, context);
         catalog.setGauge("index_translog_size_bytes", idx.getTranslog().getTranslogSizeInBytes(), indexName, context);
-        catalog.setGauge("index_translog_uncommitted_operations_number", idx.getTranslog().getUncommittedOperations(), indexName, context);
-        catalog.setGauge("index_translog_uncommitted_size_bytes", idx.getTranslog().getUncommittedSizeInBytes(), indexName, context);
 
         catalog.setGauge("index_warmer_current_number", idx.getWarmer().current(), indexName, context);
         catalog.setGauge("index_warmer_time_seconds", idx.getWarmer().totalTimeInMillis(), indexName, context);
