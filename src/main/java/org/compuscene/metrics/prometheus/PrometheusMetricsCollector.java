@@ -43,6 +43,7 @@ public class PrometheusMetricsCollector {
         registerClusterMetrics();
         registerJVMMetrics();
         registerIndicesMetrics();
+        registerPerIndexMetrics();
         registerTransportMetrics();
         registerHTTPMetrics();
         registerScriptMetrics();
@@ -720,13 +721,14 @@ public class PrometheusMetricsCollector {
         }
     }
 
-    public void updateMetrics(ClusterHealthResponse clusterHealthResponse, NodeStats nodeStats) {
+    public void updateMetrics(ClusterHealthResponse clusterHealthResponse, NodeStats nodeStats, IndicesStatsResponse indicesStats) {
         Summary.Timer timer = catalog.startSummaryTimer("metrics_generate_time_seconds", node, nodeId);
 
         updateClusterMetrics(clusterHealthResponse);
 
         updateJVMMetrics(nodeStats.getJvm());
         updateIndicesMetrics(nodeStats.getIndices());
+        updatePerIndexMetrics(clusterHealthResponse, indicesStats);
         updateTransportMetrics(nodeStats.getTransport());
         updateHTTPMetrics(nodeStats.getHttp());
         updateScriptMetrics(nodeStats.getScriptStats());
