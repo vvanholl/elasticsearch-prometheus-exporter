@@ -43,7 +43,7 @@ public class RestPrometheusMetricsAction extends BaseRestHandler {
                     logger.trace("Prepare new Prometheus metric collector for: [{}], [{}], [{}]", clusterName, nodeId, nodeName);
                 }
                 PrometheusMetricsCollector collector = new PrometheusMetricsCollector(clusterName, nodeName, nodeId);
-                collector.updateMetrics(response.getClusterHealth(), response.getNodeStats());
+                collector.updateMetrics(response.getClusterHealth(), response.getNodeStats(), response.getIndicesStats());
 
                 return new BytesRestResponse(RestStatus.OK, collector.getCatalog().toTextFormat());
             }

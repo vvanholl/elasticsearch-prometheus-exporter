@@ -5,10 +5,13 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsRequest;
 import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsResponse;
+import org.elasticsearch.action.admin.indices.stats.IndicesStatsRequest;
+import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.HandledTransportAction;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
+import org.elasticsearch.common.Nullable;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.threadpool.ThreadPool;
@@ -37,6 +40,7 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
         private final ClusterHealthRequest healthRequest;
         private final NodesStatsRequest nodesStatsRequest;
         private ClusterHealthResponse clusterHealthResponse;
+        private NodesStatsResponse nodesStatsResponse;
 
         private AsyncAction(NodePrometheusMetricsRequest request, ActionListener<NodePrometheusMetricsResponse> listener) {
             this.listener = listener;
@@ -49,10 +53,23 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
             client.admin().cluster().health(healthRequest, clusterHealthResponseActionListener);
         }
 
+        private ActionListener<IndicesStatsResponse> indicesStatsResponseActionListener =
+            new ActionListener<IndicesStatsResponse>() {
+                @Override
+                public void onResponse(IndicesStatsResponse indicesStatsResponse) {
+                    listener.onResponse(buildResponse(clusterHealthResponse, nodesStatsResponse, indicesStatsResponse));
+                }
+                @Override
+                public void onFailure(Throwable e) {
+                    listener.onFailure(new ElasticsearchException("Indices stats request failed", e));
+                }
+            };
+
         private ActionListener<NodesStatsResponse> nodesStatsResponseActionListener = new ActionListener<NodesStatsResponse>() {
             @Override
             public void onResponse(NodesStatsResponse nodeStats) {
-                listener.onResponse(buildResponse(clusterHealthResponse, nodeStats));
+                nodesStatsResponse = nodeStats;
+                client.admin().indices().stats(new IndicesStatsRequest(), indicesStatsResponseActionListener);
             }
 
             @Override
@@ -74,8 +91,9 @@ public class TransportNodePrometheusMetricsAction extends HandledTransportAction
             }
         };
 
-        protected NodePrometheusMetricsResponse buildResponse(ClusterHealthResponse clusterHealth, NodesStatsResponse nodesStats) {
-            NodePrometheusMetricsResponse response = new NodePrometheusMetricsResponse(clusterHealth, nodesStats.getAt(0));
+        protected NodePrometheusMetricsResponse buildResponse(ClusterHealthResponse clusterHealth, NodesStatsResponse nodesStats, @Nullable
+            IndicesStatsResponse indicesStats) {
+            NodePrometheusMetricsResponse response = new NodePrometheusMetricsResponse(clusterHealth, nodesStats.getAt(0), indicesStats);
             if (logger.isTraceEnabled()) {
                 logger.trace("Return response: [{}]", response);
             }
